@@ -1,0 +1,16 @@
+{
+	"name": "glitch dungeon++",
+	"version": "1.0.0",
+	"description": "Sequel to a classic.",
+	"main": "index.html",
+	"window": {
+		"icon": "icon.png",
+		"toolbar": true,
+		"width": 640,
+		"min_width": 640,
+		"max_width": 640,
+		"height": 519,
+		"min_height": 519,
+		"max_height": 519
+	}
+}
