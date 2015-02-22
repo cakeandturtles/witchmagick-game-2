@@ -1,20 +1,64 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>arcane dog warrior</title>
-	<style type="text/css">
-		body{
-			margin: 0;
-			background: #000000;
-			color: #ff00aa
-			overflow-x: hidden;
-			overflow-y: hidden;
-		}
-	</style>
-	<script src="scripts/main.js"></script>
-  </head>
-  <body>
-	<canvas id="glitch_canvas" width="640" height="480" oncontextmenu="return false;">
-	</canvas>
-  </body>
+<head>
+<title>arcane dog warrior</title>
+<style type="text/css">
+	body{
+		margin: 0;
+		background: #000000;
+		color: #ff00aa;
+		font-family: monospace;
+		overflow-x: hidden;
+		overflow-y: hidden;
+	}
+	table,tr,td{
+		margin: 0;
+		padding: 0;
+		border-collapse: collapse;
+	}
+	textarea, pre { 
+		-moz-tab-size:4; 
+		-o-tab-size:4; 
+		tab-size:4; 
+	}
+</style>
+<!--libraries and utils-->
+<script src="scripts/lib/webgl-utils.js"></script>
+<script src="scripts/utils.js"></script>
+<!--managers-->
+<script src="scripts/managers/KeyManager.js"></script>
+<script src="scripts/managers/InputManager.js"></script>
+<script src="scripts/managers/ResourceManager.js"></script>
+<script src="scripts/managers/CorruptionManager.js"></script>
+<!--entities-->
+<script src="scripts/entities/abstract/Animation.js"></script>
+<script src="scripts/entities/abstract/GameObject.js"></script>
+<script src="scripts/entities/abstract/GameSprite.js"></script>
+<script src="scripts/entities/abstract/GameMover.js"></script>
+<script src="scripts/entities/Player.js"></script>
+<!--game & main-->
+<script src="scripts/game.js"></script>
+<script src="scripts/main.js"></script>
+
+</head>
+<body>
+	<table><tr>
+	<td>
+		<canvas id="glitch_canvas" width="640" height="480" oncontextmenu="return false;"></canvas>
+	</td>
+	<td>
+		<div style="height:480px;padding-left:10px;">
+			Object: <select id="corruption_object_menu"></select>
+			<br/>
+			Methods: <select id="corruption_method_menu"></select>
+		</div>
+	</td>
+	</tr></table>
+	<br/>
+	<span style="color: #ffffff;">Edit Code:</span><br/>
+	<textarea id="glitch_textarea" style="width:920px;height:360px;"></textarea>
+</tr>
+</table>
+<input id="glitch_button" type="submit" value="Edit Code for Object's Method" />
+</body>
 </html>

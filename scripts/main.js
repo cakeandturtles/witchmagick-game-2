@@ -1,12 +1,19 @@
 var CANVAS_WIDTH;
 var CANVAS_HEIGHT;
 
-window.onload = function(){
+var GlitchDungeon = function(){};
+GlitchDungeon.game = {};
+GlitchDungeon.resource_manager = {};
+GlitchDungeon.init = function(){
 	var canvas = document.getElementById("glitch_canvas");
 	CANVAS_WIDTH = canvas.width;
 	CANVAS_HEIGHT = canvas.height;
 	
-	var ctx = canvas.getContext("2d");
-	ctx.fillStyle = "#ff00aa";
-	ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+	GlitchDungeon.game = new Game(canvas);
+	GlitchDungeon.resource_manager = new ResourceManager();
+	GlitchDungeon.resource_manager.LoadResources(canvas, function(){
+		GlitchDungeon.game.start();
+	});
 }
+
+window.onload = GlitchDungeon.init;

@@ -1,0 +1,18 @@
+classic:
+--------
+-walk off platforms without checking for ground below
+-momentum variable tweaks
+-"climb up" walls
+-disable damage
+-gravity reverse (similar to momentum tweak)
+-walkthroughwalls
+
+==========================
+new:
+-------
+LOCOMOTIVE:
+	-switch entity positions (push all entities forward in array, and move last to front)
+	-trail of glitched solid/semi-solid blocks appear in your tile space once you leave it
+NPC-INTERACTIVE:
+	-take on NPC form upon walking through it
+	

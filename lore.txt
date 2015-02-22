@@ -8,4 +8,7 @@ digital glitch dungeon academy lore::
 -Changing environmental soundtracks (like Jazz Punk):
 	-Actually, Jazz Punk's variety of play is something I'm very interested in recreating, shaped of course by the platformer glitch mechanics
 	
+-Allow keys to be rebind
+	-and spells to be rebound to different key slots
+	
 -http://erichermit.tumblr.com/paybyart
