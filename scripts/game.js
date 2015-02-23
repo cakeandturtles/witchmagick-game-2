@@ -29,7 +29,7 @@ Game.prototype.update = function(){
 Game.prototype.render = function(){	
 	//draw the game
 	sharpen(this.ctx);
-	this.ctx.fillStyle = "#ff00ff";
+	this.ctx.fillStyle = "#000000";
 	this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
 	
 	this.room.player.Render(this.ctx, this.room.camera);

@@ -1,0 +1,80 @@
+<head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>glitch dream dungeon</title>
+<script type="text/javascript" src="./design_files/Blob.js"></script><style type="text/css"></style><style type="text/css"></style><style type="text/css"></style><style type="text/css"></style>
+<script type="text/javascript" src="./design_files/FileSaver.min.js"></script>
+<script type="text/javascript">
+var design_document_page;
+var is_document_html = false;
+
+window.onload = function(){
+	design_document_page = document.getElementById("design_document_page");
+}
+
+window.onkeydown = function(event){
+	if (event.ctrlKey || event.metaKey){
+		switch (String.fromCharCode(event.which).toLowerCase()){
+			case 's':
+				event.preventDefault();
+				saveDocument();
+				break;
+			case 't':
+				event.preventDefault();
+				toggleHTML();
+				break;
+		}
+	}
+}
+
+function saveDocument(){
+	var markup = document.documentElement.innerHTML;
+	var blob = new Blob([markup], {type: "application/xhtml+xml;charset=" + document.characterSet});
+	saveAs(blob, "design.html");
+}
+
+function toggleHTML(){
+	var text = design_document_page.innerHTML;
+	if (is_document_html){
+		design_document_page.innerHTML = htmlUnescape(text);
+	}else{
+		design_document_page.innerHTML = htmlEscape(text);
+	}
+	is_document_html = !is_document_html;
+}
+
+var htmltags = [
+	['&', '&amp;'],
+	['"', '&quot;'],
+	["'", '&#39;'],
+	['<', '&lt;'],
+	['>', '&gt;']
+];
+
+//http://stackoverflow.com/questions/1219860/html-encoding-in-javascript-jquery
+function htmlEscape(str) {
+	for (var i = 0; i < htmltags.length; i++){
+		var regex = new RegExp(htmltags[i][0], 'g');
+		var replacement = htmltags[i][1];
+		str = String(str).replace(regex, replacement);
+	}
+	return str;
+}
+
+function htmlUnescape(str){
+	for (var i = 0; i < htmltags.length; i++){
+		var regex = new RegExp(htmltags[i][1], 'g');
+		var replacement = htmltags[i][0];
+		str = String(str).replace(regex, replacement);
+	}
+	return str;
+}
+</script>
+<style type="text/css"></style></head>
+<body>
+<input type="submit" value="toggle HTML markup" onclick="toggleHTML();"> (or press CTRL+T) <br>
+<input type="submit" value="save design document" onclick="saveDocument();"> (or press CTRL+S) 
+<div id="design_document_page" contenteditable="true">
+	<h1>glitch dream dungeon design document:</h1><div><i>general design idealogue:</i></div><div><i><br></i></div><div><span style="color: rgb(34, 34, 34); font-family: arial, sans-serif; font-size: 12.8000001907349px; background-color: rgb(255, 255, 255);">0. Various levels with different objectives:&nbsp;</span></div><div><span style="color: rgb(34, 34, 34); font-family: arial, sans-serif; font-size: 12.8000001907349px; background-color: rgb(255, 255, 255);">&nbsp; a. (collect frogs, find a new friend by talking to them and making them like you, make a&nbsp;</span><span style="color: rgb(34, 34, 34); font-family: arial, sans-serif; font-size: 12.8000001907349px; background-color: rgb(255, 255, 255);">personalized web page, come to terms with your emotions ).&nbsp;</span></div><div><span style="color: rgb(34, 34, 34); font-family: arial, sans-serif; font-size: 12.8000001907349px; background-color: rgb(255, 255, 255);">&nbsp; &nbsp; i.&nbsp;</span><span style="color: rgb(34, 34, 34); font-family: arial, sans-serif; font-size: 12.8000001907349px; background-color: rgb(255, 255, 255);">sword fight and platform challenge level</span></div><div><span style="color: rgb(34, 34, 34); font-family: arial, sans-serif; font-size: 12.8000001907349px; background-color: rgb(255, 255, 255);">&nbsp; b. Each completed objective rewards you with a artifact of that level (frog&nbsp;</span><span style="color: rgb(34, 34, 34); font-family: arial, sans-serif; font-size: 12.8000001907349px; background-color: rgb(255, 255, 255);">wizard staff, etc).&nbsp;</span></div><div><span style="color: rgb(34, 34, 34); font-family: arial, sans-serif; font-size: 12.8000001907349px; background-color: rgb(255, 255, 255);">&nbsp; c. Artifacts are required to unlock certain warp gates (think super Mario 64).&nbsp;</span></div><div><span style="color: rgb(34, 34, 34); font-family: arial, sans-serif; font-size: 12.8000001907349px; background-color: rgb(255, 255, 255);">&nbsp; d. Getting a minimum (not all) amount to&nbsp;</span><span style="color: rgb(34, 34, 34); font-family: arial, sans-serif; font-size: 12.8000001907349px; background-color: rgb(255, 255, 255);">unlock final boss</span></div><div><span style="color: rgb(34, 34, 34); font-family: arial, sans-serif; font-size: 12.8000001907349px; background-color: rgb(255, 255, 255);"><br></span></div><div><span style="color: rgb(34, 34, 34); font-family: arial, sans-serif; font-size: 12.8000001907349px; background-color: rgb(255, 255, 255);">1. First level: collect hidden frogs in a Pokemon snap puzzle forest river area.&nbsp;</span></div><div><span style="color: rgb(34, 34, 34); font-family: arial, sans-serif; font-size: 12.8000001907349px; background-color: rgb(255, 255, 255);">&nbsp; a. Each frog a unique color/look and musical tone.&nbsp;</span></div><div><span style="color: rgb(34, 34, 34); font-family: arial, sans-serif; font-size: 12.8000001907349px; background-color: rgb(255, 255, 255);">&nbsp; b. Npc&nbsp;</span><span style="color: rgb(34, 34, 34); font-family: arial, sans-serif; font-size: 12.8000001907349px; background-color: rgb(255, 255, 255);">safari bug catchers scattered around.&nbsp;</span></div><div><span style="color: rgb(34, 34, 34); font-family: arial, sans-serif; font-size: 12.8000001907349px; background-color: rgb(255, 255, 255);">&nbsp; &nbsp; i. Npc all look different and have personalities and reflect upon you player character.&nbsp;&nbsp;</span></div><div><span style="color: rgb(34, 34, 34); font-family: arial, sans-serif; font-size: 12.8000001907349px; background-color: rgb(255, 255, 255);"><br></span></div><div><span style="color: rgb(34, 34, 34); font-family: arial, sans-serif; font-size: 12.8000001907349px; background-color: rgb(255, 255, 255);">2. <b>Warp gates</b> scattered throughout level let you instantly transport to a new level&nbsp;</span></div><div><span style="color: rgb(34, 34, 34); font-family: arial, sans-serif; font-size: 12.8000001907349px; background-color: rgb(255, 255, 255);">&nbsp; a. (gate remains, but competition of level objective isn't&nbsp;</span><span style="color: rgb(34, 34, 34); font-family: arial, sans-serif; font-size: 12.8000001907349px; background-color: rgb(255, 255, 255);">necessary.)</span></div><div><span style="color: rgb(34, 34, 34); font-family: arial, sans-serif; font-size: 12.8000001907349px; background-color: rgb(255, 255, 255);">&nbsp; b. Warp gates allow levels to intertwine.&nbsp;</span></div><div><span style="color: rgb(34, 34, 34); font-family: arial, sans-serif; font-size: 12.8000001907349px; background-color: rgb(255, 255, 255);">&nbsp; c. Find eventually a travel arcane book that lets you teleport to previously found gate&nbsp;</span><span style="color: rgb(34, 34, 34); font-family: arial, sans-serif; font-size: 12.8000001907349px; background-color: rgb(255, 255, 255);">areas from your memory.</span></div><div><span style="color: rgb(34, 34, 34); font-family: arial, sans-serif; font-size: 12.8000001907349px; background-color: rgb(255, 255, 255);"><br></span></div><div><span style="color: rgb(34, 34, 34); font-family: arial, sans-serif; font-size: 12.8000001907349px; background-color: rgb(255, 255, 255);">3.&nbsp;</span><span style="color: rgb(34, 34, 34); font-family: arial, sans-serif; font-size: 12.8000001907349px; background-color: rgb(255, 255, 255);">All throughout you have a magic tome that can only carry one spell at a time.&nbsp;</span></div><div><span style="color: rgb(34, 34, 34); font-family: arial, sans-serif; font-size: 12.8000001907349px; background-color: rgb(255, 255, 255);">&nbsp; a. Find upgrades to allow it to hold more spells. Earlier&nbsp;</span><span style="color: rgb(34, 34, 34); font-family: arial, sans-serif; font-size: 12.8000001907349px; background-color: rgb(255, 255, 255);">challenges can be hacked with spells located in other levels</span></div><div><span style="color: rgb(34, 34, 34); font-family: arial, sans-serif; font-size: 12.8000001907349px; background-color: rgb(255, 255, 255);"><br></span></div><div><span style="color: rgb(34, 34, 34); font-family: arial, sans-serif; font-size: 12.8000001907349px; background-color: rgb(255, 255, 255);">4.&nbsp;</span><span style="color: rgb(34, 34, 34); font-family: arial, sans-serif; font-size: 12.8000001907349px; background-color: rgb(255, 255, 255);">During development, mercilessly steal graphics and music and gameplay ideas as you compose and remix a weird interconnected dream&nbsp;</span><span style="color: rgb(34, 34, 34); font-family: arial, sans-serif; font-size: 12.8000001907349px; background-color: rgb(255, 255, 255);">vaporwave mesh of experiences, then during refinement and testing, make non copyright versions of them</span></div><div><span style="color: rgb(34, 34, 34); font-family: arial, sans-serif; font-size: 12.8000001907349px; background-color: rgb(255, 255, 255);"><br></span></div><div><span style="color: rgb(34, 34, 34); font-family: arial, sans-serif; font-size: 12.8000001907349px; background-color: rgb(255, 255, 255);"><br></span></div><div><font color="#222222" face="arial, sans-serif"><span style="font-size: 12.8000001907349px; background-color: rgb(255, 255, 255);">&nbsp; :)</span></font></div>
+</div>
+
+
+</body>

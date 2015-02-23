@@ -1,12 +1,17 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>arcane dog warrior</title>
+<title>arcane frog</title>
 <style type="text/css">
+	canvas{
+		outline: 1px solid #00ff00;
+	}
 	body{
 		margin: 0;
 		background: #000000;
-		color: #ff00aa;
+		background: linear-gradient(cyan, magenta); 
+		
+		color: #ff00ff;
 		font-family: monospace;
 		overflow-x: hidden;
 		overflow-y: hidden;
@@ -20,6 +25,8 @@
 		-moz-tab-size:4; 
 		-o-tab-size:4; 
 		tab-size:4; 
+		background-color: #000000;
+		color: #00ffff;
 	}
 </style>
 <!--libraries and utils-->
@@ -47,10 +54,20 @@
 		<canvas id="glitch_canvas" width="640" height="480" oncontextmenu="return false;"></canvas>
 	</td>
 	<td>
-		<div style="height:480px;padding-left:10px;">
-			Object: <select id="corruption_object_menu"></select>
+		<div style="height:480px;">
+		<u>Level Editor:</u>
+		<div style="padding-left:10px;">
+			Category: <select id="level_category_menu"></select>
+			<br/>
+			Object: <select id="level_object_menu"></select>
+		</div>
+		<br/>
+		<u>Modify instance code:</u>
+		<div style="padding-left:10px;">
+			Instance: <select id="corruption_object_menu"></select>
 			<br/>
 			Methods: <select id="corruption_method_menu"></select>
+		</div>
 		</div>
 	</td>
 	</tr></table>
