@@ -44,9 +44,9 @@ Tile.prototype.Render = function(ctx, camera){
 			break;
 		default: return;
 	}
-	ctx.fillRect(~~(this.x-camera.x+0.5), 
-				 ~~(this.y-camera.y+0.5),
-				Tile.WIDTH, Tile.HEIGHT);
+	ctx.fillRect(~~(this.x-camera.x+0.5)*camera.zoom, 
+				 ~~(this.y-camera.y+0.5)*camera.zoom,
+				Tile.WIDTH*camera.zoom, Tile.HEIGHT*camera.zoom);
 }
 
 //////////////////////////////////////////////////////////TILE MANAGER

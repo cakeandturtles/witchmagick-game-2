@@ -4,7 +4,7 @@
 <title>arcane frog</title>
 <style type="text/css">
 	canvas{
-		outline: 1px solid #00ff00;
+		outline: 1px solid #00ffff;
 	}
 	body{
 		margin: 0;
@@ -41,6 +41,7 @@
 <script src="scripts/managers/CorruptionManager.js"></script>
 <!--room managers-->
 <script src="scripts/managers/rooms/TileManager.js"></script>
+<script src="scripts/managers/rooms/Camera.js"></script>
 <script src="scripts/managers/rooms/Room.js"></script>
 <!--entities-->
 <script src="scripts/entities/abstract/Animation.js"></script>
@@ -59,7 +60,7 @@
 		<canvas id="glitch_canvas" width="640" height="480" oncontextmenu="return false;"></canvas>
 	</td>
 	<td>
-		<div style="height:480px;">
+	  <div style="height:480px;">
 		<u>Level Editor:</u>
 		<div style="padding-left:10px;">
 			Category: <select id="level_category_menu"></select>
@@ -73,7 +74,33 @@
 			<br/>
 			Methods: <select id="corruption_method_menu"></select>
 		</div>
-		</div>
+		<br/>
+		<input type="submit" id="zoom_test_button" value="Zoom Test Start" style="margin-left: 10px;"/>
+		<script type="text/javascript">
+			var add = 0.01;
+			var zoomTest = function (){
+			  GlitchDungeon.game.room.camera.zoom += add;
+			  if (GlitchDungeon.game.room.camera.zoom >= 3.0){
+				add = -0.01;
+			  }
+			  if (GlitchDungeon.game.room.camera.zoom <= 0.3){
+				add = 0.01;
+			  }
+			}
+			var zoom_test_id = null;
+			
+			document.getElementById("zoom_test_button").addEventListener('click', function(e){
+				if (zoom_test_id === null){
+					zoom_test_id = window.setInterval(zoomTest, 50);
+					document.getElementById("zoom_test_button").value = "Stop Zoom Test";
+				}else{
+					window.clearInterval(zoom_test_id);
+					zoom_test_id = null;
+					document.getElementById("zoom_test_button").value = "Zoom Test Start";
+				}
+			});
+		</script>
+	  </div>
 	</td>
 	</tr></table>
 	<br/>
@@ -81,6 +108,7 @@
 	<textarea id="glitch_textarea" style="width:920px;height:360px;"></textarea>
 </tr>
 </table>
-<input id="glitch_button" type="submit" value="Edit Code for Object's Method" />
+<input id="glitch_button" type="submit" value="Edit Code for Object's Method (CTRL + S)" />
+<span id="glitch_save_text" style="color:#00ffff;font-weight:bold;"></span>
 </body>
 </html>

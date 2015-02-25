@@ -29,7 +29,7 @@ Game.prototype.tick = function(){
 }
 
 Game.prototype.update = function(){
-	var delta = 1;
+	var delta = 1.5;
 	
 	this.input_manager.Update(delta, this.room.player);
 	this.room.Update(delta);

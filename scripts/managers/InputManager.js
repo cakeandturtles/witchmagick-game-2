@@ -43,4 +43,6 @@ InputManager.prototype.Update = function(delta, player){
 	else if(this.KeyUp(this.P1_DOWN)){
 		player.StopPressingDown(delta);
 	}
+	
+	this.key_manager.ForgetKeysPressed();
 }

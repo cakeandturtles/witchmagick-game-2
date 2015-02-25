@@ -4,6 +4,8 @@ var Corruption = function(room){
 	this.method_menu = document.getElementById("corruption_method_menu");
 	this.textarea = document.getElementById("glitch_textarea");
 	this.corrupt_button = document.getElementById("glitch_button");
+	this.save_text = document.getElementById("glitch_save_text");
+	this.save_text_timeout_id = null;
 	
 	var self = this;
 	this.object_menu.onchange = function(){
@@ -31,7 +33,7 @@ var Corruption = function(room){
 }
 
 Corruption.prototype.textareaKeyDown = function(event){
-	if (!(!(event.which == 115 && (event.ctrlKey || event.metaKey)) && !(event.which == 19))){		
+	if ((event.ctrlKey || event.metaKey) && String.fromCharCode(event.which).toLowerCase() === 's'){		
 		this.saveAndInjectMethod();
 		event.preventDefault();
 		return false;
@@ -71,6 +73,16 @@ Corruption.prototype.saveAndInjectMethod = function(){
 	
 	var func = new Function(method.arguments, method.body);
 	this.current_object[method_name] = func;
+	
+	this.save_text.innerHTML = "";
+	var self = this;
+	window.clearTimeout(this.save_text_timeout_id);
+	this.save_text_timeout_id = window.setTimeout(function(){
+		self.save_text.innerHTML = "Method Updated!";
+		self.save_text_timeout_id = window.setTimeout(function(){
+			self.save_text.innerHTML = "";
+		}, 1000);
+	}, 300);
 }
 
 Corruption.prototype.populateObjectMenu = function(room){

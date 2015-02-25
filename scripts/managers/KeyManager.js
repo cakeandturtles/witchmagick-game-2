@@ -53,6 +53,8 @@ KeyManager.prototype.ForgetKeysPressed = function(){
 }
 
 KeyManager.prototype.PreventArrowDefaults = function(e){
+	return;
+	
 	switch(e.keyCode){
     case KeyManager.LEFT: 
 	case KeyManager.UP: 
