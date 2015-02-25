@@ -15,12 +15,12 @@ Player.prototype.Export = function(){
 	obj.img_name = "player_grey_sheet";
 	return obj;
 }
-Player.prototype.Update = function(delta, map){
-	this.DieToSpikesAndStuff(map);
-	GameMover.prototype.Update.call(this, delta, map);
+Player.prototype.Update = function(delta, tile_manager, entity_manager){
+	this.DieToSpikesAndStuff(tile_manager, entity_manager);
+	GameMover.prototype.Update.call(this, delta, tile_manager, entity_manager);
 }
 
-Player.prototype.DieToSpikesAndStuff = function(map){
+Player.prototype.DieToSpikesAndStuff = function(tile_manager, entity_manager){
 	var q = 3;
 	var x = this.x;
 	var y = this.y;
@@ -28,8 +28,9 @@ Player.prototype.DieToSpikesAndStuff = function(map){
 	var tb = this.tb;
 	var rb = this.rb;
 	var bb = this.bb;
-	for (var i = 0; i < map.entities.length; i++){
-		if (map.entities[i].kill_player && (this.IsRectColliding(map.entities[i], x+lb+q, y+tb+q,x+rb-q,y+bb-q))){
+	var entities = entity_manager.GetEntities();
+	for (var i = 0; i < entities.length; i++){
+		if (entities[i].kill_player && (this.IsRectColliding(entities[i], x+lb+q, y+tb+q,x+rb-q,y+bb-q))){
 			this.Die();
 			return;
 		}
@@ -43,8 +44,8 @@ Player.prototype.DieToSpikesAndStuff = function(map){
 	
 	for (var i = top_tile; i <= bottom_tile; i++){
 		for (var j = left_tile; j <= right_tile; j++){
-			if (!map.isValidTile(i, j)) continue;
-			var tile = map.tiles[i][j];
+			var tile = tile_manager.GetTile(j, i);
+			if (tile === null) continue;
 			if (tile.collision != Tile.KILL_PLAYER && !tile.kill_player) continue;
 			
 			if (this.IsRectColliding(tile, x+lb+q, y+tb+q,x+rb-q,y+bb-q)){

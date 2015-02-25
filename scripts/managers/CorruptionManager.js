@@ -74,7 +74,7 @@ Corruption.prototype.saveAndInjectMethod = function(){
 }
 
 Corruption.prototype.populateObjectMenu = function(room){
-	this.room_objects = getObjectKeys(room);
+	this.room_objects = getObjectKeys({player: room.player});
 	populateSelectOptions(this.object_menu, this.room_objects, true);
 }
 

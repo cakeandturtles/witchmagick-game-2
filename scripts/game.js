@@ -1,13 +1,18 @@
-function Game(canvas){
-	this.canvas = canvas;
-}
-
 Game.prototype.start = function(){
 	this.ctx = this.canvas.getContext('2d');
 	
-	this.room = {
-		player: new Player(CANVAS_WIDTH/4, CANVAS_HEIGHT/4)
-		,camera: { x: 0, y: 0 }
+	this.room = new Room(
+		Game.CANVAS_WIDTH/2, 
+		Game.CANVAS_HEIGHT/2
+	);
+	
+	this.input_manager = new InputManager();
+	var self = this;
+	window.onkeydown = function(e){
+		self.input_manager.key_manager.KeyDown(e);
+	}
+	window.onkeyup = function(e){
+		self.input_manager.key_manager.KeyUp(e);
 	}
 	
 	this.corruption_manager = new Corruption(this.room);
@@ -24,6 +29,10 @@ Game.prototype.tick = function(){
 }
 
 Game.prototype.update = function(){
+	var delta = 1;
+	
+	this.input_manager.Update(delta, this.room.player);
+	this.room.Update(delta);
 }
 
 Game.prototype.render = function(){	
@@ -32,5 +41,5 @@ Game.prototype.render = function(){
 	this.ctx.fillStyle = "#000000";
 	this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
 	
-	this.room.player.Render(this.ctx, this.room.camera);
+	this.room.Render(this.ctx);
 }

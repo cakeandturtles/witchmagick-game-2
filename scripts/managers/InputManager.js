@@ -19,28 +19,28 @@ InputManager.prototype.KeyPressed = function(key){
 	return this.key_manager.keys_pressed[key];
 }
 
-InputManager.prototype.Update = function(player){
+InputManager.prototype.Update = function(delta, player){
 	if (this.KeyDown(this.P1_RIGHT)){
-		player.MoveRight();
+		player.MoveRight(delta);
 	}
 	else if (this.KeyDown(this.P1_LEFT)){
-		player.MoveLeft();
+		player.MoveLeft(delta);
 	}
 	
 	if (this.KeyPressed(this.P1_JUMP)){
-		player.StartJump();
+		player.StartJump(delta);
 	}
 	else if (this.KeyDown(this.P1_JUMP)){
-		player.Jump();
+		player.Jump(delta);
 	}
 	if (this.KeyUp(this.P1_JUMP)){
-		player.StopJump();
+		player.StopJump(delta);
 	}
 	
 	if (this.KeyPressed(this.P1_DOWN)){
-		player.PressDown();
+		player.PressDown(delta);
 	}
 	else if(this.KeyUp(this.P1_DOWN)){
-		player.StopPressingDown();
+		player.StopPressingDown(delta);
 	}
 }

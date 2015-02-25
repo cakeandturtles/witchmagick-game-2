@@ -43,7 +43,7 @@ GameObject.prototype.ResetPosition = function(){
 	this.x = this.original_x;
 	this.y = this.original_y;
 }
-GameObject.prototype.Update = function(delta, map){}
+GameObject.prototype.Update = function(delta, tile_manager, entity_manager){}
 GameObject.prototype.Render = function(ctx, camera){}
 
 GameObject.ZIndexSort = function(a,b){

@@ -1,13 +1,24 @@
 <head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
 <title>glitch dream dungeon</title>
-<script type="text/javascript" src="./design_files/Blob.js"></script><style type="text/css"></style><style type="text/css"></style><style type="text/css"></style><style type="text/css"></style><style type="text/css"></style>
-<script type="text/javascript" src="./design_files/FileSaver.min.js"></script>
+<script type="text/javascript" src="./scripts/lib/Blob.js"></script>
+<script type="text/javascript" src="./scripts/lib/FileSaver.min.js"></script>
+<script type="text/javascript" src="./scripts/lib/jquery-1.11.2.min.js"></script>
 <script type="text/javascript">
 var design_document_page;
 var is_document_html = false;
 
 window.onload = function(){
 	design_document_page = document.getElementById("design_document_page");
+	
+	$(design_document_page).on("DOMNodeInserted", $.proxy(function(e){
+		if (e.target.tagName == "SPAN"){
+			var helper = $("<b>helper</b>");
+			$(e.target).before(helper);
+			helper.after($(e.target).contents());
+			helper.remove();
+			$(e.target).remove();
+		}
+	}, this));
 }
 
 window.onkeydown = function(event){

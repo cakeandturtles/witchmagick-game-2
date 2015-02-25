@@ -35,7 +35,7 @@ function GameMover(x, y, lb, tb, rb, bb, img_name, max_run_vel, jump_vel, termin
 	this.original_grav_acc = 0.8;
 	this.float_grav_acc = 0.4;
 	this.grav_acc = this.original_grav_acc;//35.1; //pixels/second
-	this.jump_vel = defaultValue(jump_vel, 4.5);
+	this.jump_vel = defaultValue(jump_vel, 6.0);
 	this.is_jumping = false;
 	this.jump_timer = 0;
 	this.jump_time_limit = 30;
@@ -78,12 +78,12 @@ GameMover.prototype.ResetPosition = function(){
 
 /** FUNCTION DEFINITIONS****************************************/
 /**????????????????????????????????????????????????????????????*/
-GameMover.prototype.Update = function(delta, map)
+GameMover.prototype.Update = function(delta, tile_manager, entity_manager)
 {
-	this.DieToSuffocation(map);
+	this.DieToSuffocation(tile_manager);
 	
 	if (!this.stuck_in_wall){
-		this.ApplyPhysics(delta, map);
+		this.ApplyPhysics(delta, tile_manager, entity_manager);
 		this.prev_x = this.x;
 		this.prev_y = this.y;
 		if (!this.on_ground){
@@ -95,11 +95,11 @@ GameMover.prototype.Update = function(delta, map)
 	}
 	this.UpdateAnimationFromState();
 	
-	GameSprite.prototype.Update.call(this, delta, map);
+	GameSprite.prototype.Update.call(this, delta, tile_manager, entity_manager);
 }
 
 /*********************PHYSICS AND COLLISION DETECTIONS********************/
-GameMover.prototype.DieToSuffocation = function(map){
+GameMover.prototype.DieToSuffocation = function(tile_manager){
 	if (!this.die_to_suffocation) return;
 	console.log("let's try to die :)!");
 	this.die_to_suffocation = false;
@@ -119,8 +119,8 @@ GameMover.prototype.DieToSuffocation = function(map){
 	
 	for (var i = top_tile; i <= bottom_tile; i++){
 		for (var j = left_tile; j <= right_tile; j++){
-			if (!map.isValidTile(i, j)) continue;
-			var tile = map.tiles[i][j];
+			var tile = tile_manager.GetTile(j, i);
+			if (tile === null) continue;
 			if (tile.collision === Tile.GHOST || tile.collision === Tile.FALLTHROUGH){
 				continue;
 			}
@@ -172,14 +172,14 @@ GameMover.prototype.DieToSuffocation = function(map){
 
 GameMover.prototype.Die = function(){}
 
-GameMover.prototype.ApplyPhysics = function(delta, map)
+GameMover.prototype.ApplyPhysics = function(delta, tile_manager, entity_manager)
 {
 	var prev_pos = {x: this.x, y: this.y};
 	
 	this.ApplyGravity(delta);
 	
-	if (!this.horizontal_input) this.MoveStop();
-	this.HandleCollisionsAndMove(map, delta);
+	if (!this.horizontal_input) this.MoveStop(delta);
+	this.HandleCollisionsAndMove(delta, tile_manager, entity_manager);
 	this.horizontal_input = false;
 	
 	if (this.x == prev_pos.x) this.vel.x = 0;
@@ -191,20 +191,20 @@ GameMover.prototype.ApplyGravity = function(delta){
 	if (!this.on_ground){
 		if (this.vel.y < this.terminal_vel)
 		{
-			this.vel.y += (this.grav_acc * (delta/DNUM));
+			this.vel.y += (this.grav_acc * (delta));
 			if (this.vel.y > this.terminal_vel) 
 				this.vel.y = this.terminal_vel;
 		}else if (this.vel.y > this.terminal_vel){
-			this.vel.y -= (this.grav_acc * (delta/DNUM));
+			this.vel.y -= (this.grav_acc * (delta));
 			if (this.vel.y < this.terminal_vel)
 				this.vel.y = this.terminal_vel;
 		}
 	}else{ this.vel.y = 0; }
 }
 
-GameMover.prototype.HandleCollisionsAndMove = function(map){
-	this.vel.x *= (delta/DNUM);
-	this.vel.y *= (delta/DNUM);
+GameMover.prototype.HandleCollisionsAndMove = function(delta, tile_manager, entity_manager){
+	this.vel.x *= (delta);
+	this.vel.y *= (delta);
 
 	var left_tile = Math.floor((this.x + this.lb + this.vel.x - 1) / Tile.WIDTH);
 	var right_tile = Math.ceil((this.x + this.rb + this.vel.x + 1) / Tile.WIDTH);
@@ -218,23 +218,23 @@ GameMover.prototype.HandleCollisionsAndMove = function(map){
 	var q_vert = 3;
 	var floor_tile = null;
 	
-	floor_tile = this.HandleHorizontalCollisions(map, left_tile, right_tile, top_tile, bottom_tile, q_horz, floor_tile);
+	floor_tile = this.HandleHorizontalCollisions(tile_manager, entity_manager, left_tile, right_tile, top_tile, bottom_tile, q_horz, floor_tile);
 	this.x += this.vel.x;
-	this.HandleVerticalCollisions(map, left_tile, right_tile, top_tile, bottom_tile, q_vert);
+	this.HandleVerticalCollisions(tile_manager, entity_manager, left_tile, right_tile, top_tile, bottom_tile, q_vert);
 	this.y += this.vel.y;
 	if (this.vel.y != 0) this.played_land_sound = false;
 	
-	this.vel.x /= (delta/DNUM);
-	this.vel.y /= (delta/DNUM);
+	this.vel.x /= (delta);
+	this.vel.y /= (delta);
 }
 
-GameMover.prototype.HandleHorizontalCollisions = function(map, left_tile, right_tile, top_tile, bottom_tile, q, floor_tile){
+GameMover.prototype.HandleHorizontalCollisions = function(tile_manager, entity_manager, left_tile, right_tile, top_tile, bottom_tile, q, floor_tile){
 	this.horizontal_collision = false;
 	//Check all potentially colliding tiles
 	for (var i = top_tile; i <= bottom_tile; i++){
 		for (var j = left_tile; j <= right_tile; j++){
-			if (!map.isValidTile(i, j)) continue;
-			var tile = map.tiles[i][j];
+			var tile = tile_manager.GetTile(j, i);
+			if (tile === null) continue;
 			//don't check for collisions if potential tile is "out of bounds" or not solid
 			if (tile.collision != Tile.SOLID && tile.collision != Tile.SUPER_SOLID) continue;
 			
@@ -271,12 +271,14 @@ GameMover.prototype.HandleHorizontalCollisions = function(map, left_tile, right_
 	}
 }
 
-GameMover.prototype.HandleVerticalCollisions = function(map, left_tile, right_tile, top_tile, bottom_tile, q){
+GameMover.prototype.HandleVerticalCollisions = function(tile_manager, entity_manager, left_tile, right_tile, top_tile, bottom_tile, q){
+	//console.log(left_tile + ", " + right_tile + ", " + top_tile + ", " + bottom_tile);
 	//Check all potentially colliding tiles
+
 	for (var i = top_tile; i <= bottom_tile; i++){
 		for (var j = left_tile; j <= right_tile; j++){
-			if (!map.isValidTile(i, j)) continue;
-			var tile = map.tiles[i][j];
+			var tile = tile_manager.GetTile(j, i);
+			if (tile === null) continue;
 			//don't check for collisions if potential tile is "out of bounds" or not solid
 			if (tile.collision == Tile.GHOST || tile.collision == Tile.KILL_PLAYER) continue;
 			//Check for top collisions
@@ -292,7 +294,7 @@ GameMover.prototype.HandleVerticalCollisions = function(map, left_tile, right_ti
 					continue;
 					
 				if (!this.played_land_sound){
-					Utils.playSound("land");
+					//Utils.playSound("land");
 					this.played_land_sound = true;
 				}
 				this.vel.y = 0;
@@ -333,19 +335,19 @@ GameMover.prototype.UpdateAnimationFromState = function(){
 }
 
 /*******************FUNCTIONS FOR MOVEMENT INPUT BY OBJECT*****************/
-GameMover.prototype.MoveLeft = function(){
+GameMover.prototype.MoveLeft = function(delta){
 	this.facing = Facing.LEFT;
 	//if (this.vel.x > 0) this.vel.x = 0;
-	this.Move(-1);
+	this.Move(delta, -1);
 }
 
-GameMover.prototype.MoveRight = function(){
+GameMover.prototype.MoveRight = function(delta){
 	this.facing = Facing.RIGHT;
 	//if (this.vel.x < 0) this.vel.x = 0;
-	this.Move(1);
+	this.Move(delta, 1);
 }
 
-GameMover.prototype.Move = function(mult){
+GameMover.prototype.Move = function(delta, mult){
 	this.mult = mult;
 	this.pressed_down = false;
 
@@ -359,36 +361,36 @@ GameMover.prototype.Move = function(mult){
 	else{ acc = this.air_run_acc; }
 	
 	if (Math.abs(this.vel.x) < this.max_run_vel){
-		this.vel.x += (acc * mult) * (delta/DNUM);
+		this.vel.x += (acc * mult) * (delta);
 		this.CorrectVelocity(mult);
 	}
 	else if (Math.abs(this.vel.x) > this.max_run_vel){
-		this.vel.x -= (acc * mult) * (delta/DNUM);
+		this.vel.x -= (acc * mult) * (delta);
 		if (Math.abs(this.vel.x) < this.max_run_vel)
 			this.vel.x = this.max_run_vel * mult;
 	}
 	else if (Math.abs(this.vel.x) == this.max_run_vel && this.vel.x != this.max_run_vel * mult){
-		this.vel.x += (acc * mult) * (delta/DNUM);
+		this.vel.x += (acc * mult) * (delta);
 	}
 }
 
-GameMover.prototype.MoveStop = function(){
+GameMover.prototype.MoveStop = function(delta){
 	this.mult = 0;
 	if (this.on_ground){
 		if (this.vel.x > 0){
-			this.vel.x -= (this.gnd_run_dec) * (delta/DNUM);
+			this.vel.x -= (this.gnd_run_dec) * (delta);
 			if (this.vel.x < 0) this.vel.x = 0;
 		}else if (this.vel.x < 0){
-			this.vel.x += (this.gnd_run_dec) * (delta/DNUM);
+			this.vel.x += (this.gnd_run_dec) * (delta);
 			if (this.vel.x > 0) this.vel.x = 0;
 		}
 		this.move_state = MoveState.STANDING;
 	}else{
 		if (this.vel.x > 0){
-			this.vel.x -= (this.air_run_dec) * (delta/DNUM);
+			this.vel.x -= (this.air_run_dec) * (delta);
 			if (this.vel.x < 0) this.vel.x = 0;
 		}else if (this.vel.x < 0){
-			this.vel.x += (this.air_run_dec) * (delta/DNUM);
+			this.vel.x += (this.air_run_dec) * (delta);
 			if (this.vel.x > 0) this.vel.x = 0;
 		}
 	}
@@ -399,9 +401,9 @@ GameMover.prototype.CorrectVelocity = function(mult){
 		this.vel.x = this.max_run_vel * mult;
 }
 
-GameMover.prototype.StartJump = function(){
+GameMover.prototype.StartJump = function(delta){
 	if (this.on_ground){
-		Utils.playSound("jump");
+		//Utils.playSound("jump");
 		this.vel.y = -this.jump_vel;
 		this.is_jumping = true;
 		this.jump_timer = 0;
@@ -409,31 +411,31 @@ GameMover.prototype.StartJump = function(){
 	}
 }
 
-GameMover.prototype.Jump = function(){
+GameMover.prototype.Jump = function(delta){
 	if (this.is_jumping){
-		this.jump_timer+=(delta/DNUM);
+		this.jump_timer+=(delta);
 		if (this.jump_timer >= this.jump_time_limit){
 			this.jump_timer = 0;
 			this.is_jumping = false;
 			this.grav_acc = this.original_grav_acc;
 		}else{
 			this.grav_acc = this.float_grav_acc;
-			this.vel.y += (-this.jump_vel * ((this.jump_time_limit - (this.jump_timer/2)) / (this.jump_time_limit * 60))) * (delta/DNUM);
+			this.vel.y += (-this.jump_vel * ((this.jump_time_limit - (this.jump_timer/2)) / (this.jump_time_limit * 60))) * (delta);
 		}
 	}
 }
 
-GameMover.prototype.StopJump = function(){
+GameMover.prototype.StopJump = function(delta){
 	this.is_jumping = false;
 	this.grav_acc = this.original_grav_acc;
 }
 
-GameMover.prototype.PressDown = function(){
+GameMover.prototype.PressDown = function(delta){
 	this.pressing_down = true;
 	this.pressed_down = true;
 	this.on_ground = false;
 }
 
-GameMover.prototype.StopPressingDown = function(){
+GameMover.prototype.StopPressingDown = function(delta){
 	this.pressing_down = false;
 }
