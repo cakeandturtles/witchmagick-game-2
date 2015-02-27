@@ -9,7 +9,7 @@ function Room(width, height){
 	};
 	
 	this.player = new Player(width/2, height/2);
-	this.camera = new Camera(0, 0, 1);
+	this.camera = new Camera(0, 0, 2);
 	this.camera.Track(this.player);
 }
 

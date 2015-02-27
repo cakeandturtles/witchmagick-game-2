@@ -57,7 +57,7 @@
 <body>
 	<table><tr>
 	<td>
-		<canvas id="glitch_canvas" width="640" height="480" oncontextmenu="return false;"></canvas>
+		<canvas id="glitch_canvas" style="width:640px;height:480px;" width="640" height="480" oncontextmenu="return false;"></canvas>
 	</td>
 	<td>
 	  <div style="height:480px;">
@@ -80,10 +80,10 @@
 			var add = 0.01;
 			var zoomTest = function (){
 			  GlitchDungeon.game.room.camera.zoom += add;
-			  if (GlitchDungeon.game.room.camera.zoom >= 3.0){
+			  if (GlitchDungeon.game.room.camera.zoom >= 6.0){
 				add = -0.01;
 			  }
-			  if (GlitchDungeon.game.room.camera.zoom <= 0.3){
+			  if (GlitchDungeon.game.room.camera.zoom <= 1){
 				add = 0.01;
 			  }
 			}

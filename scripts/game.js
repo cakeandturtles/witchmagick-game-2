@@ -1,5 +1,7 @@
 Game.prototype.start = function(){
 	this.ctx = this.canvas.getContext('2d');
+	this.canvas.width = Game.CANVAS_WIDTH;
+	this.canvas.height = Game.CANVAS_HEIGHT;
 	
 	this.room = new Room(
 		Game.CANVAS_WIDTH/2, 
