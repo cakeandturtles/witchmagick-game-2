@@ -31,10 +31,10 @@ Tile.prototype.Render = function(ctx, camera){
 	switch (this.collision){
 		case Tile.GHOST: return;
 		case Tile.FALLTHROUGH:
-			ctx.fillStyle = "#00ffff";
+			ctx.fillStyle = color1;
 			break;
 		case Tile.SOLID:
-			ctx.fillStyle = "#ff00ff";
+			ctx.fillStyle = color2;
 			break;
 		case Tile.SUPER_SOLID:
 			ctx.fillStyle = "#ffffff";

@@ -99,3 +99,33 @@ Corruption.prototype.populateMethodMenu = function(){
 	this.object_methods = getObjectMethods(object);
 	populateSelectOptions(this.method_menu, this.object_methods, true);
 }
+
+////////////////////////////////////////////////////////////
+Corruption.prototype.canvasMouseDown = function(e){
+	var x = e.clientX;
+	var y = e.clientY;
+	
+	console.log(x + ", " + y);
+	
+	var room = GlitchDungeon.game.room;
+	var camera = room.camera;
+	
+	x /= camera.zoom;
+	y /= camera.zoom;
+	
+	x += camera.x;
+	y += camera.y;
+	
+	x /= Tile.WIDTH;
+	y /= Tile.HEIGHT;
+	
+	x = ~~Math.floor(x);
+	y = ~~Math.floor(y);
+	
+	
+	room.tile_manager.AddTile(x, y, Tile.SOLID);
+}
+
+Corruption.prototype.canvasMouseUp = function(e){
+	
+}

@@ -18,6 +18,9 @@ Game.prototype.start = function(){
 	}
 	
 	this.corruption_manager = new Corruption(this.room);
+	this.canvas.onmousedown = function(e){
+		self.corruption_manager.canvasMouseDown(e);
+	}
 
 	this.tick();
 }
