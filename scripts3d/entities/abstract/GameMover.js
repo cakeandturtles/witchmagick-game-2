@@ -4,16 +4,11 @@ MoveState.RUNNING = 1;
 MoveState.JUMPING = 2;
 MoveState.FALLING = 3;
 
-function Facing(){}
-Facing.LEFT = 0;
-Facing.RIGHT = 1;
-
-function GameMover(x, y, lb, tb, rb, bb, img_name, max_run_vel, jump_vel, terminal_vel){
-	GameSprite.call(this, x, y, lb, tb, rb, bb, img_name);
+function GameMover(x, y, z, bounding_box, img_name, max_run_vel, jump_vel, terminal_vel){
+	GameSprite.call(this, x, y, z, bounding_box, img_name);
 	this.type = "GameMover";
 	
-	this.prev_x = this.x;
-	this.prev_y = this.y;
+	this.prev_coordinates = [this.x, this.y, this.z];
 	this.max_run_vel = defaultValue(max_run_vel, 2.0); //pixels/second
 	this.gnd_run_acc = this.max_run_vel/3.0;
 	this.gnd_run_dec = this.max_run_vel/3.0;
@@ -30,14 +25,14 @@ function GameMover(x, y, lb, tb, rb, bb, img_name, max_run_vel, jump_vel, termin
 	this.has_double_jumped = false;
 	this.stuck_in_wall = false;
 	
-	this.vel = {x: 0, y: 0};
+	this.vel = {x: 0, y: 0, z:0};
 	
-	this.grav_acc = 0.8;//35.1; //pixels/second
+	this.grav_acc = -0.0025;//pixels/second
 	this.jump_vel = defaultValue(jump_vel, 4.5);
 	this.is_jumping = false;
 	this.jump_timer = 0;
 	this.jump_time_limit = 15;
-	this.terminal_vel = defaultValue(terminal_vel, 7.0);
+	this.terminal_vel = defaultValue(terminal_vel, -0.022);
 	this.jump_acc = 35.0; 
 	this.was_on_ground = true;
 	this.on_ground = true;
@@ -46,7 +41,8 @@ function GameMover(x, y, lb, tb, rb, bb, img_name, max_run_vel, jump_vel, termin
 	
 	this.move_state = MoveState.STANDING;
 	this.prev_move_state = this.move_state;
-	this.facing = Facing.RIGHT;
+	//facing is on an angle (degreees), with 0.0 being positive x, moving counterclockwise
+	this.facing = 90.0; 
 	this.original_facing = this.facing;
 	
 	this.die_to_suffocation = false;
@@ -76,24 +72,23 @@ GameMover.prototype.ResetPosition = function(){
 
 /** FUNCTION DEFINITIONS****************************************/
 /**????????????????????????????????????????????????????????????*/
-GameMover.prototype.Update = function(delta, tile_manager, entity_manager)
+GameMover.prototype.Update = function(delta, plane_manager, entity_manager)
 {
-	this.DieToSuffocation(tile_manager);
+	//this.DieToSuffocation(tile_manager);
 	
-	if (!this.stuck_in_wall){
-		this.ApplyPhysics(delta, tile_manager, entity_manager);
-		this.prev_x = this.x;
-		this.prev_y = this.y;
+	//if (!this.stuck_in_wall){
+		this.ApplyPhysics(delta, plane_manager, entity_manager);
+		this.prev_coordinates = [this.x, this.y, this.z];
 		if (!this.on_ground){
 			if (!this.was_on_ground)
 				this.pressed_down = false;
 			if (this.vel.y < 0) this.move_state = MoveState.JUMPING;
 			else this.move_state = MoveState.FALLING;
 		}
-	}
-	this.UpdateAnimationFromState();
+	//}
+	//this.UpdateAnimationFromState();
 	
-	GameSprite.prototype.Update.call(this, delta, tile_manager, entity_manager);
+	GameSprite.prototype.Update.call(this, delta, plane_manager, entity_manager);
 }
 
 /*********************PHYSICS AND COLLISION DETECTIONS********************/
@@ -170,66 +165,70 @@ GameMover.prototype.DieToSuffocation = function(tile_manager){
 
 GameMover.prototype.Die = function(){}
 
-GameMover.prototype.ApplyPhysics = function(delta, tile_manager, entity_manager)
+GameMover.prototype.ApplyPhysics = function(delta, plane_manager, entity_manager)
 {
-	var prev_pos = {x: this.x, y: this.y};
+	//var prev_pos = {x: this.x, y: this.y, z: this.z};
 	
 	this.ApplyGravity(delta);
 	
-	if (!this.horizontal_input) this.MoveStop(delta);
-	this.HandleCollisionsAndMove(delta, tile_manager, entity_manager);
-	this.horizontal_input = false;
+	//if (!this.horizontal_input) this.MoveStop(delta);
+	this.HandleCollisionsAndMove(delta, plane_manager, entity_manager);
+	//this.horizontal_input = false;
 	
-	if (this.x == prev_pos.x) this.vel.x = 0;
-	if (this.y == prev_pos.y) this.vel.y = 0;
-	this.previous_bottom = this.y + this.bb;
+	/*if (this.x === prev_pos.x) this.vel.x = 0;
+	if (this.y === prev_pos.y) this.vel.y = 0;
+	if (this.y === prev_pos.z) this.vel.z = 0;
+	this.previous_bottom = this.y + this.y2;*/
 }
 
 GameMover.prototype.ApplyGravity = function(delta){
 	if (!this.on_ground){
-		if (this.vel.y < this.terminal_vel)
-		{
+		if (this.vel.y > this.terminal_vel){
 			this.vel.y += (this.grav_acc * (delta));
-			if (this.vel.y > this.terminal_vel) 
+			if (this.vel.y < this.terminal_vel) 
 				this.vel.y = this.terminal_vel;
-		}else if (this.vel.y > this.terminal_vel){
+		}else if (this.vel.y < this.terminal_vel){
 			this.vel.y -= (this.grav_acc * (delta));
-			if (this.vel.y < this.terminal_vel)
+			if (this.vel.y > this.terminal_vel)
 				this.vel.y = this.terminal_vel;
 		}
 	}else{ this.vel.y = 0; }
 }
 
-GameMover.prototype.HandleCollisionsAndMove = function(delta, tile_manager, entity_manager){
+GameMover.prototype.HandleCollisionsAndMove = function(delta, plane_manager, entity_manager){
 	this.vel.x *= (delta);
 	this.vel.y *= (delta);
+	this.vel.z *= (delta);
 
-	var left_tile = Math.floor((this.x + this.lb + this.vel.x - 1) / Tile.WIDTH);
+	//I don't know how we can initially filter planes like I did with tiles
+	/*var left_tile = Math.floor((this.x + this.lb + this.vel.x - 1) / Tile.WIDTH);
 	var right_tile = Math.ceil((this.x + this.rb + this.vel.x + 1) / Tile.WIDTH);
 	var top_tile = Math.floor((this.y + this.tb + this.vel.y - 1) / Tile.HEIGHT);
 	var bottom_tile = Math.ceil((this.y + this.bb + this.vel.y + 1) / Tile.HEIGHT);
+	*/
 	
 	// Reset flag to search for ground collision.
 	this.was_on_ground = this.on_ground;
 	this.on_ground = false;
-	var q_horz = 3; //q is used to minimize height checked in horizontal collisions and etc.
-	var q_vert = 3;
+	var q_horz = 0.009; //q is used to minimize height checked in horizontal collisions and etc.
+	var q_vert = 0.009;
 	var floor_tile = null;
 	
-	floor_tile = this.HandleHorizontalCollisions(tile_manager, entity_manager, left_tile, right_tile, top_tile, bottom_tile, q_horz, floor_tile);
-	this.x += this.vel.x;
-	this.HandleVerticalCollisions(tile_manager, entity_manager, left_tile, right_tile, top_tile, bottom_tile, q_vert);
+	//floor_tile = this.HandleHorizontalCollisions(tile_manager, entity_manager, left_tile, right_tile, top_tile, bottom_tile, q_horz, floor_tile);
+	//this.x += this.vel.x;
+	this.HandleVerticalCollisions(plane_manager, entity_manager, q_vert);
 	this.y += this.vel.y;
 	if (this.vel.y != 0) this.played_land_sound = false;
 	
 	this.vel.x /= (delta);
 	this.vel.y /= (delta);
+	this.vel.z /= (delta);
 }
 
 GameMover.prototype.HandleHorizontalCollisions = function(tile_manager, entity_manager, left_tile, right_tile, top_tile, bottom_tile, q, floor_tile){
 	this.horizontal_collision = false;
 	//Check all potentially colliding tiles
-	for (var i = top_tile; i <= bottom_tile; i++){
+	/*for (var i = top_tile; i <= bottom_tile; i++){
 		for (var j = left_tile; j <= right_tile; j++){
 			var tile = tile_manager.GetTile(j, i);
 			if (tile === null) continue;
@@ -266,42 +265,60 @@ GameMover.prototype.HandleHorizontalCollisions = function(tile_manager, entity_m
 				}
 			}
 		}
-	}
+	}*/
 }
 
-GameMover.prototype.HandleVerticalCollisions = function(tile_manager, entity_manager, left_tile, right_tile, top_tile, bottom_tile, q){
+GameMover.prototype.HandleVerticalCollisions = function(plane_manager, entity_manager, q){
 	//console.log(left_tile + ", " + right_tile + ", " + top_tile + ", " + bottom_tile);
-	//Check all potentially colliding tiles
-
-	for (var i = top_tile; i <= bottom_tile; i++){
-		for (var j = left_tile; j <= right_tile; j++){
-			var tile = tile_manager.GetTile(j, i);
-			if (tile === null) continue;
-			//don't check for collisions if potential tile is "out of bounds" or not solid
-			if (tile.collision == Tile.GHOST || tile.collision == Tile.KILL_PLAYER) continue;
-			//Check for top collisions
-			if (this.vel.y < 0 && tile.collision != Tile.FALLTHROUGH && this.IsRectColliding(tile, this.x + this.lb + q, this.y + this.tb + this.vel.y-1, this.x + this.rb - q, this.y + this.tb)){
-				this.vel.y = 0;
-				this.y = tile.y + Tile.HEIGHT - this.tb;
-			}
-			
-			//Check for bottom collisions
-			if (this.vel.y >= 0 && this.IsRectColliding(tile, this.x + this.lb + q, this.y + this.bb, this.x + this.rb - q, this.y + this.bb + this.vel.y + 1)){
-				//Don't count bottom collision for fallthrough platforms if we're not at the top of it
-				if (tile.collision == Tile.FALLTHROUGH && (tile.y < this.y + this.bb || this.pressing_down))
-					continue;
-					
-				if (!this.played_land_sound){
-					//Utils.playSound("land");
-					this.played_land_sound = true;
-				}
-				this.vel.y = 0;
-				this.on_ground = true;
-				this.has_double_jumped = false;
-				this.y = tile.y - this.bb;
-			}
+	//Check all potentially colliding planes
+	//an efficiency filter should be applied at some point
+	for (var plane_key in plane_manager.planes){ if (plane_manager.planes.hasOwnProperty(plane_key)){
+		var plane = plane_manager.planes[plane_key];
+		if (plane === null) continue;
+		
+		//don't check collisions if plane is not solid
+		if (plane.collision === Plane.GHOST || plane.collision === Plane.KILL_PLAYER) continue;
+				
+		//check for top collision (this is assuming non rotating bodies)
+		//apply the velocity to the bounding box!!!
+		var box = {
+			x1: this.x + this.x1 + q,
+			x2: this.x + this.x2 - q,
+			y1: this.y + this.y2 + this.vel.y + 0.003,
+			y2: this.y + this.y2,
+			z1:	this.z + this.z1 + q,
+			z2: this.z + this.z2 - q
+		};
+		
+		if (this.vel.y >= 0 && this.IsPlaneColliding(plane, box.x1, box.x2, box.y1, box.y2, box.z1, box.z2)){
+			this.vel.y = 0;
+			this.y = plane.GetYPosition((box.x1+box.x2)/2, (box.z1+box.z2)/2);
 		}
-	}
+		
+		//check for bottom collision (also assuming non rotating bodies)
+		//apply the velocity to the bounding box
+		box = {
+			x1: this.x + this.x1 + q,
+			x2: this.x + this.x2 - q,
+			y1: this.y + this.y1,
+			y2: this.y + this.y1 + this.vel.y - 0.003,
+			z1:	this.z + this.z1 + q,
+			z2: this.z + this.z2 - q
+		};
+		if (this.vel.y <= 0 && this.IsPlaneColliding(plane, box.x1, box.x2, box.y1, box.y2, box.z1, box.z2)){
+			if (plane.collision === Plane.FALLTHROUGH && this.pressing_down)
+				continue;
+			
+			if (!this.played_land_sound){
+				//Utils.playSound("land");
+				this.played_land_sound = true;
+			}
+			this.vel.y = 0;
+			this.on_ground = true;
+			this.has_double_jumped = false;
+			this.y = plane.GetYPosition((box.x1+box.x2)/2, (box.z1+box.z2)/2);
+		}
+	}}
 }
 
 /******************RENDER AND ANIMATION FUNCTIONS***********************/

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>arcane frog</title>
+<style type="text/css">
+	body{
+		margin: 0;
+		background: #000000;
+		background: linear-gradient(#00ffff, #ff00ff); 
+		
+		color: #ff00ff;
+		font-family: monospace;
+		overflow-x: hidden;
+		overflow-y: hidden;
+	}
+	table,tr,td{
+		margin: 0;
+		padding: 0;
+		border-collapse: collapse;
+	}
+	textarea, pre { 
+		-moz-tab-size:4; 
+		-o-tab-size:4; 
+		tab-size:4; 
+		background-color: #000000;
+		color: #00ffff;
+	}
+</style>
+
+<script id="vertex-shader" type="x-shader/x-vertex">
+	attribute vec4 vPosition;
+	attribute vec4 vColor;
+	varying vec4 fColor;
+		
+	uniform mat4 uMVMatrix;
+	uniform mat4 uPMatrix;
+
+	void main(){
+		gl_Position = uPMatrix*uMVMatrix*vPosition;
+		fColor = vColor;
+	}
+</script>
+
+<script id="fragment-shader" type="x-shader/x-fragment">
+	precision mediump float;
+
+	varying vec4 fColor;
+
+	void main(){
+		gl_FragColor = fColor;
+	}
+</script>
+
+<!--libraries and utils-->
+	<!--webgl utils-->
+	<script type="text/javascript" src="scripts3d/lib/Common/webgl-utils.js"></script>
+	<script type="text/javascript" src="scripts3d/lib/Common/initShaders.js"></script>
+	<script type="text/javascript" src="scripts3d/lib/Common/MV.js"></script>
+<script src="scripts3d/lib/colorflow.min.js"></script>
+<script src="scripts3d/utils.js"></script>
+<!--init game-->
+<script src="scripts3d/init_game.js"></script>
+<!--managers-->
+<script src="scripts3d/managers/KeyManager.js"></script>
+<script src="scripts3d/managers/InputManager.js"></script>
+<script src="scripts3d/managers/ResourceManager.js"></script>
+<script src="scripts3d/managers/CorruptionManager.js"></script>
+<!--room managers-->
+<script src="scripts3d/managers/rooms/PlaneManager.js"></script>
+<script src="scripts3d/managers/rooms/Camera.js"></script>
+<script src="scripts3d/managers/rooms/Room.js"></script>
+<!--entities-->
+<script src="scripts3d/entities/abstract/Animation.js"></script>
+<script src="scripts3d/entities/abstract/GameObject.js"></script>
+<script src="scripts3d/entities/abstract/GameSprite.js"></script>
+<script src="scripts3d/entities/abstract/GameMover.js"></script>
+<script src="scripts3d/entities/Player.js"></script>
+<!--game & main-->
+<script src="scripts3d/game.js"></script>
+<script src="scripts3d/main.js"></script>
+
+</head>
+<body>
+	<table><tr>
+	<td>
+		<canvas id="glitch_canvas" style="width:640px;height:480px;" width="640" height="480" oncontextmenu="return false;"></canvas>
+	</td>
+	<td>
+	  <div style="height:480px;">
+		<u>Level Editor:</u>
+		<div style="padding-left:10px;">
+			Category: <select id="level_category_menu"></select>
+			<br/>
+			Object: <select id="level_object_menu"></select>
+		</div>
+		<br/>
+		<u>Modify instance code:</u>
+		<div style="padding-left:10px;">
+			Instance: <select id="corruption_object_menu"></select>
+			<br/>
+			Methods: <select id="corruption_method_menu"></select>
+		</div>
+		<br/>
+		<input type="submit" id="zoom_test_button" value="Zoom Test Start" style="margin-left: 10px;"/>
+		<script type="text/javascript">
+			var add = 0.01;
+			var zoomTest = function (){
+			  GlitchDungeon.game.room.camera.zoom += add;
+			  if (GlitchDungeon.game.room.camera.zoom >= 6.0){
+				add = -0.01;
+			  }
+			  if (GlitchDungeon.game.room.camera.zoom <= 1){
+				add = 0.01;
+			  }
+			}
+			var zoom_test_id = null;
+			
+			document.getElementById("zoom_test_button").addEventListener('click', function(e){
+				if (zoom_test_id === null){
+					zoom_test_id = window.setInterval(zoomTest, 50);
+					document.getElementById("zoom_test_button").value = "Stop Zoom Test";
+				}else{
+					window.clearInterval(zoom_test_id);
+					zoom_test_id = null;
+					document.getElementById("zoom_test_button").value = "Zoom Test Start";
+				}
+			});
+		</script>
+		<br/><br/>
+		<input type="submit" value="eye" style="margin-left:10px;"/>
+		<input type="text" id="eyex" style="width:40px;" value="0.0"/>
+		<input type="text" id="eyey" style="width:40px;" value="1.0"/>
+		<input type="text" id="eyez" style="width:40px;" value="1.0"/>
+		<br/><br/>
+		<input type="submit" value="at" style="margin-left:10px;"/>
+		<input type="text" id="atx" style="width:40px;" value="0.0"/>
+		<input type="text" id="aty" style="width:40px;" value="0.0"/>
+		<input type="text" id="atz" style="width:40px;" value="0.0"/>
+		<br/><br/>
+		<input type="submit" value="Reset player" id="resetPlayer"/>
+		<script type="text/javascript">
+			document.getElementById("resetPlayer").onclick = function(){
+				GlitchDungeon.game.room.player.y = 1.0;
+				GlitchDungeon.game.room.player.vel.y = 0.0;
+			}
+		</script>
+	  </div>
+	</td>
+	</tr></table>
+	<br/>
+	<span style="color: #ffffff;">Edit Code:</span><br/>
+	<textarea id="glitch_textarea" style="width:920px;height:360px;"></textarea>
+</tr>
+</table>
+<input id="glitch_button" type="submit" value="Edit Code for Object's Method (CTRL + S)" />
+<span id="glitch_save_text" style="color:#00ffff;font-weight:bold;"></span>
+</body>
+</html>

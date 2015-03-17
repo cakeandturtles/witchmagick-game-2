@@ -81,6 +81,13 @@ TileManager.prototype.AddTile = function(x_coord, y_coord, collision, x_graph, y
 	this.tiles[key] = new Tile(x_coord, y_coord, collision, x_graph, y_graph);
 }
 
+TileManager.prototype.RemoveTile = function(x_coord, y_coord){
+	var key = x_coord + "_" + y_coord;
+	if (key in this.tiles){
+		delete this.tiles[key];
+	}
+}
+
 TileManager.prototype.initDefaultTileLayout = function(room_width, room_height){	
 	for (var i = 0; i < this.width; i++){
 		for (var j = 0; j < this.height; j++){
