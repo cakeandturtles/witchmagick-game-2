@@ -19,24 +19,45 @@ Camera.prototype.Update = function(delta, room_width, room_height){
 	
 	if (this.tracking_target !== null){
 		var target = this.tracking_target;
-		if (target.x < this.x+this.x_buffer)
-			this.x = target.x-this.x_buffer;
-		if (target.x+target.animation.frame_width > this.x+width-this.x_buffer)
-			this.x = target.x+target.animation.frame_width-width+this.x_buffer;
+
+		var x = target.x; var y = target.y; var z = target.z;
+		var x1 = target.x1, x2 = target.x2;
+		var xlen = (x2 - x1) / 2;
+		var y1 = target.y1, y2 = target.y2;
+		var ylen = (y2 - y1) / 2;
+		var z1 = target.z1, z2 = target.z2;
+		var zlen = (z2 - z1) / 2;
 		
-		if (target.y < this.y+this.y_buffer)
-			this.y = target.y-this.y_buffer;
-		if (target.y+target.animation.frame_height > this.y+height-this.y_buffer)
-			this.y = target.y+target.animation.frame_height-height+this.y_buffer;
+		//start eye at center of player
+		var eye = vec4.fromValues(x + xlen, y + ylen, z+zlen, 1.0); 
+		var at = vec4.fromValues(x + xlen, y + ylen, z+zlen, 1.0);
+		
+		//translate to the origin so rotation will happen correctly!
+		var T0 = mat4.translate([], mat4.create(), [-(x + xlen), -(y + ylen), -(z + zlen)]);
+		eye = matrixTimesVector(T0, eye);
+		at = matrixTimesVector(T0, at);
+		
+		//translate behind the player before rotating
+		var T1e = mat4.translate([], mat4.create(), [0, 0.5, 1.0]);
+		eye = matrixTimesVector(T1e, eye);
+		
+		//or in front of player for at
+		var T1a = mat4.translate([], mat4.create(), [0, 0.4, -1.0]);
+		at = matrixTimesVector(T1a, at);
+		
+		//rotate bounding box by the facing
+		var R = mat4.rotateY([], mat4.identity([]), degToRad(target.facing-90));
+		eye = matrixTimesVector(R, eye);
+		at = matrixTimesVector(R, at);
+		
+		//translate back
+		var T2 = mat4.translate([], mat4.create(), [x + xlen, y + ylen, z + zlen]);
+		eye = matrixTimesVector(T2, eye);
+		at = matrixTimesVector(T2, at);
+		
+		this.eye = eye;
+		this.at = at;
 	}
-	
-	//CORRECT IF YOU GET OFF THE EDGE OF THE ROOM
-	if (this.x < 0) this.x = 0;
-	if (this.x + width > room_width)
-		this.x = room_width - width;
-	if (this.y < 0) this.y = 0;
-	if (this.y + height > room_height)
-		this.y = room_height - height;
 }
 
 Camera.prototype.Render = function(){	
@@ -46,10 +67,10 @@ Camera.prototype.Render = function(){
 	var fovy = 45.0;  // Field-of-view in Y direction angle (in degrees)
 	var aspect = Game.CANVAS_WIDTH / Game.CANVAS_HEIGHT;       // Viewport aspect ratio
 	
-	var up = vec3(0.0, 1.0, 0.0);
-    var mvMatrix = lookAt(this.eye, this.at , up);
-    var pMatrix = perspective(fovy, aspect, near, far);
+	var up = vec3.fromValues(0.0, 1.0, 0.0);
+    var mvMatrix = mat4.lookAt([], this.eye, this.at, up);
+    var pMatrix = mat4.perspective([], fovy, aspect, near, far);
 
-    gl.uniformMatrix4fv(gl.getUniformLocation( program, "uMVMatrix" ), false, flatten(mvMatrix) );
-    gl.uniformMatrix4fv(gl.getUniformLocation( program, "uPMatrix" ), false, flatten(pMatrix) );
+    gl.uniformMatrix4fv(gl.getUniformLocation( program, "uMVMatrix" ), false, new Float32Array(flatten(mvMatrix)));
+    gl.uniformMatrix4fv(gl.getUniformLocation( program, "uPMatrix" ), false, new Float32Array(flatten(pMatrix)));
 }

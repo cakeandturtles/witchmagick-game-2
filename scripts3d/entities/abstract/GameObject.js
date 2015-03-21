@@ -77,36 +77,33 @@ GameObject.prototype.BoundingBoxToVertices = function(use_position){
 	
 	vertices = [
 		//bottom face
-		vec4(x+x1, y+y1, z+z1), vec4(x+x2, y+y1, z+z1), vec4(x+x2, y+y1, z+z2),	
-		vec4(x+x1, y+y1, z+z1), vec4(x+x1, y+y1, z+z2), vec4(x+x2, y+y1, z+z2),
+		vec4.fromValues(x+x1, y+y1, z+z1, 1.0), vec4.fromValues(x+x2, y+y1, z+z1, 1.0), vec4.fromValues(x+x2, y+y1, z+z2, 1.0),	
+		vec4.fromValues(x+x1, y+y1, z+z1, 1.0), vec4.fromValues(x+x1, y+y1, z+z2, 1.0), vec4.fromValues(x+x2, y+y1, z+z2, 1.0),
 		//top face
-		vec4(x+x1, y+y2, z+z1), vec4(x+x2, y+y2, z+z1), vec4(x+x2, y+y2, z+z2),	
-		vec4(x+x1, y+y2, z+z1), vec4(x+x1, y+y2, z+z2), vec4(x+x2, y+y2, z+z2),
+		vec4.fromValues(x+x1, y+y2, z+z1, 1.0), vec4.fromValues(x+x2, y+y2, z+z1, 1.0), vec4.fromValues(x+x2, y+y2, z+z2, 1.0),	
+		vec4.fromValues(x+x1, y+y2, z+z1, 1.0), vec4.fromValues(x+x1, y+y2, z+z2, 1.0), vec4.fromValues(x+x2, y+y2, z+z2, 1.0),
 		//back face
-		vec4(x+x1, y+y1, z+z1), vec4(x+x1, y+y2, z+z1), vec4(x+x2, y+y2, z+z1),
-		vec4(x+x1, y+y1, z+z1), vec4(x+x2, y+y2, z+z1), vec4(x+x2, y+y1, z+z1),
+		vec4.fromValues(x+x1, y+y1, z+z1, 1.0), vec4.fromValues(x+x1, y+y2, z+z1, 1.0), vec4.fromValues(x+x2, y+y2, z+z1, 1.0),
+		vec4.fromValues(x+x1, y+y1, z+z1, 1.0), vec4.fromValues(x+x2, y+y2, z+z1, 1.0), vec4.fromValues(x+x2, y+y1, z+z1, 1.0),
 		//front face
-		vec4(x+x1, y+y1, z+z2), vec4(x+x1, y+y2, z+z2), vec4(x+x2, y+y2, z+z2),
-		vec4(x+x1, y+y1, z+z2), vec4(x+x2, y+y2, z+z2), vec4(x+x2, y+y1, z+z2),
+		vec4.fromValues(x+x1, y+y1, z+z2, 1.0), vec4.fromValues(x+x1, y+y2, z+z2, 1.0), vec4.fromValues(x+x2, y+y2, z+z2, 1.0),
+		vec4.fromValues(x+x1, y+y1, z+z2, 1.0), vec4.fromValues(x+x2, y+y2, z+z2, 1.0), vec4.fromValues(x+x2, y+y1, z+z2, 1.0),
 		//left face
-		vec4(x+x1, y+y1, z+z1), vec4(x+x1, y+y2, z+z1), vec4(x+x1, y+y1, z+z2),
-		vec4(x+x1, y+y1, z+z2), vec4(x+x1, y+y2, z+z2), vec4(x+x1, y+y2, z+z1),
+		vec4.fromValues(x+x1, y+y1, z+z1, 1.0), vec4.fromValues(x+x1, y+y2, z+z1, 1.0), vec4.fromValues(x+x1, y+y1, z+z2, 1.0),
+		vec4.fromValues(x+x1, y+y1, z+z2, 1.0), vec4.fromValues(x+x1, y+y2, z+z2, 1.0), vec4.fromValues(x+x1, y+y2, z+z1, 1.0),
 		//right face
-		vec4(x+x2, y+y1, z+z1), vec4(x+x2, y+y2, z+z1), vec4(x+x2, y+y1, z+z2),
-		vec4(x+x2, y+y1, z+z2), vec4(x+x2, y+y2, z+z2), vec4(x+x2, y+y2, z+z1)
+		vec4.fromValues(x+x2, y+y1, z+z1, 1.0), vec4.fromValues(x+x2, y+y2, z+z1, 1.0), vec4.fromValues(x+x2, y+y1, z+z2, 1.0),
+		vec4.fromValues(x+x2, y+y1, z+z2, 1.0), vec4.fromValues(x+x2, y+y2, z+z2, 1.0), vec4.fromValues(x+x2, y+y2, z+z1, 1.0)
 	];
 	
 	//translate to the origin so rotation will happen correctly!
-	var T1 = translate(-(x + xlen), -(y + ylen), -(z + zlen));
-	
+	var T1 = mat4.translate([], mat4.create(), [-(x + xlen), -(y + ylen), -(z + zlen)]);
 	//rotate bounding box by the facing
-	//rotate MV.js method already converts deg to rad
-	var R = rotate(this.facing, [0, 1, 0]);
-	
+	var R = mat4.rotateY([], mat4.identity([]), degToRad(this.facing));
 	//translate back
-	var T2 = translate(x + xlen, y + ylen, z + zlen);
+	var T2 = mat4.translate([], mat4.create(), [x + xlen, y + ylen, z + zlen]);
 	
-	for (var i = 0; i < vertices.length; i++){
+	for (var i = 0; i < vertices.length; i++){	
 		vertices[i] = matrixTimesVector(T1, vertices[i]);
 		vertices[i] = matrixTimesVector(R, vertices[i]);
 		vertices[i] = matrixTimesVector(T2, vertices[i]);
@@ -114,7 +111,6 @@ GameObject.prototype.BoundingBoxToVertices = function(use_position){
 	
 	return vertices;
 }
-
 
 GameObject.SetBoundingBox = function(bounding_box){
 	this.x1 = bounding_box[0];
@@ -155,14 +151,14 @@ GameObject.prototype.IsPlaneColliding = function(plane, x1,x2, y1,y2, z1,z2){
 	//assuming non rotating bodies (plane may be at any rotation)
 	var plane_y = plane.GetYPosition(x, z);
 	if (plane_y <= y1 && plane_y >= y2){
-		var vertices = plane.vertices;
+		var vertices = flatten(plane.vertices);
 		for (var i = 0; i < 3; i++){
-			vertices[i][1] = plane_y;
+			vertices[i*4+1] = plane_y;
 		}
 		return pointInTriangle([x, z], 
-			[vertices[0][0], vertices[0][2]],
-			[vertices[1][0], vertices[1][2]],
-			[vertices[2][0], vertices[2][2]]
+			[vertices[0], vertices[2]],
+			[vertices[4], vertices[6]],
+			[vertices[8], vertices[10]]
 		);
 	}
 	return false;

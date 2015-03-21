@@ -1,3 +1,9 @@
+Game.debug_obj = {};
+Game.Debug = function(x){
+	console.log("SETTING DEBUG OBJ TO: " + x);
+	Game.debug_obj = x;
+};
+
 Game.prototype.start = function(){
 	this.canvas.width = Game.CANVAS_WIDTH;
 	this.canvas.height = Game.CANVAS_HEIGHT;
@@ -42,6 +48,7 @@ Game.prototype.update = function(){
 Game.prototype.render = function(){	
 	//draw the game
 	gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+	gl.enable(gl.DEPTH_TEST);
 	
 	this.room.Render();
 }

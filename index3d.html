@@ -55,8 +55,11 @@
 	<!--webgl utils-->
 	<script type="text/javascript" src="scripts3d/lib/Common/webgl-utils.js"></script>
 	<script type="text/javascript" src="scripts3d/lib/Common/initShaders.js"></script>
-	<script type="text/javascript" src="scripts3d/lib/Common/MV.js"></script>
+	<!--<script type="text/javascript" src="scripts3d/lib/Common/MV.js"></script>-->
+	<script type="text/javascript" src="scripts3d/lib/gl-matrix.js"></script>
+	<script type="text/javascript" src="scripts3d/lib/gl-matrix-extension.js"></script>
 <script src="scripts3d/lib/colorflow.min.js"></script>
+<!--<script src="scripts3d/lib/underscore.min.js"></script>-->
 <script src="scripts3d/utils.js"></script>
 <!--init game-->
 <script src="scripts3d/init_game.js"></script>
@@ -137,13 +140,27 @@
 		<input type="text" id="aty" style="width:40px;" value="0.0"/>
 		<input type="text" id="atz" style="width:40px;" value="0.0"/>
 		<br/><br/>
-		<input type="submit" value="Reset player" id="resetPlayer"/>
+		<input type="submit" value="Reset player" id="resetPlayer"/><br/>
+		<input type="submit" value="Player Perspective" id="playerPerspective"/>
+		<input type="submit" value="Bird's Eye View" id="birdsEye"/>
 		<script type="text/javascript">
 			document.getElementById("resetPlayer").onclick = function(){
 				GlitchDungeon.game.room.player.x = 0.0;
 				GlitchDungeon.game.room.player.y = 1.0;
 				GlitchDungeon.game.room.player.vel.y = 0.0;
 				GlitchDungeon.game.room.player.z = 0.0;
+			}
+			
+			document.getElementById("playerPerspective").onclick = function(){
+				var camera = GlitchDungeon.game.room.camera;
+				var player = GlitchDungeon.game.room.player;
+				camera.Track(player);
+			}
+			
+			document.getElementById("birdsEye").onclick = function(){
+				GlitchDungeon.game.room.camera.eye = [0.0, 2.0, 2.0];
+				GlitchDungeon.game.room.camera.at = [0.0, 0.0, 0.0];
+				GlitchDungeon.game.room.camera.StopTracking();
 			}
 		</script>
 	  </div>

@@ -9,7 +9,7 @@ function GameMover(x, y, z, bounding_box, img_name, max_run_vel, jump_vel, termi
 	this.type = "GameMover";
 	
 	this.prev_coordinates = [this.x, this.y, this.z];
-	this.max_run_vel = defaultValue(max_run_vel, 0.002); //pixels/second
+	this.max_run_vel = defaultValue(max_run_vel, 0.001); //pixels/second
 	this.gnd_run_acc = this.max_run_vel*2;
 	this.gnd_run_dec = this.max_run_vel;
 	this.air_run_acc = this.max_run_vel*2;
@@ -314,7 +314,7 @@ GameMover.prototype.HandleVerticalCollisions = function(plane_manager, entity_ma
 			this.vel.y = 0;
 			this.on_ground = true;
 			this.has_double_jumped = false;
-			this.y = plane.GetYPosition((box.x1+box.x2)/2, (box.z1+box.z2)/2);
+			this.y = plane.GetYPosition((box.x1+box.x2)/2, (box.z1+box.z2)/2) + 0.00001;
 		}
 	}}
 }
@@ -370,10 +370,14 @@ GameMover.prototype.MoveBackward = function(delta){
 }
 
 GameMover.prototype.FaceLeft = function(delta){
-	this.facing += delta*1;
+	this.facing += delta*3;
+	if (this.facing < 0) this.facing += 360;
+	this.facing %= 360;
 }
 GameMover.prototype.FaceRight = function(delta){
-	this.facing -= delta*1;
+	this.facing -= delta*3;
+	if (this.facing < 0) this.facing += 360;
+	this.facing %= 360;
 }
 
 GameMover.prototype.MoveLeft = function(delta){

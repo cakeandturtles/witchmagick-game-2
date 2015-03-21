@@ -262,11 +262,15 @@ function determinant(a, b, c, d, e, f, g, h, i){
 	return (a*e*i + b*f*g + c*d*h) - (c*e*g + b*d*i + a*f*h);
 }
 
-//will return [a, b, c], given that the plane's equation is of the form ax + by + cz = 0;
+//will return [a, b, c, m], given that the plane's equation is of the form ax + by + cz = m;
 function planeEquation(P, Q, R){
-	var PQ = vec3(Q[0] - P[0], Q[1] - P[1], Q[2] - P[2]);
-	var PR = vec3(R[0] - P[0], R[1] - P[1], R[2] - P[2]);
-	return cross(PQ, PR);
+	var PQ = vec3.fromValues(Q[0] - P[0], Q[1] - P[1], Q[2] - P[2]);
+	var PR = vec3.fromValues(R[0] - P[0], R[1] - P[1], R[2] - P[2]);
+	var abc = vec3.cross([], PQ, PR);
+	abc[1] = Math.abs(abc[1]);
+	abc[2] = Math.abs(abc[2]);
+	abc.push(abc[0]*P[0] + abc[1]*P[1] + abc[2]*P[2]);
+	return abc; //now abcm
 }
 
 function sign(p1, p2, p3){
@@ -282,22 +286,41 @@ function pointInTriangle(p, v1, v2, v3){
 	return ((b1 === b2) && (b2 === b3));
 }
 
-//treating a row vector [v1, v2, v3] like a column vector
+//treating a row vector [v1, v2, v3, 1] like a column vector
 //returns a column vector
 function matrixTimesVector(mat, vec){
-	if (vec.length !== mat[0].length){
+	if (vec.length !== Math.sqrt(mat.length)){
 		throw "INVALID DIMENSIONS ON MATRIX VECTOR MULTIPLICATION";
 	}
-	var result = vec.slice(0);
-	for (var i = 0; i < result.length; i++){
-		result[i] = 0;
-	}
+	var result = vec4.create();
 	
 	//now multiply them together
-	for (var i = 0; i < mat.length; i++){
+	for (var i = 0; i < Math.sqrt(mat.length); i++){
 		for (var j = 0; j < vec.length; j++){
-			result[i] += mat[i][j] * vec[j];
+			result[i] += mat[(j*4)+i] * vec[j];
 		}
 	}
 	return result;
+}
+
+function flatten(input){
+	//return _.flatten(input);
+	var flattened = [];
+	var done = false;
+	while (!done){
+		done = true;
+		flattened=[];
+		for (var i=0; i<input.length; ++i) {
+			var current = input[i];
+			if (current.length !== undefined){
+				done = false;
+				for (var j=0; j<current.length; ++j)
+					flattened.push(current[j]);
+			}else{
+				flattened.push(current);
+			}
+		}
+		input = flattened;
+	}
+	return flattened;
 }

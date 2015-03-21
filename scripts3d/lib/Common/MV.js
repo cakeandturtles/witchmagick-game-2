@@ -351,9 +351,9 @@ function rotate( angle, axis )
     var y = v[1];
     var z = v[2];
 
-    var c = Math.cos( radians(angle) );
+    var c = Math.cos( angle );
     var omc = 1.0 - c;
-    var s = Math.sin( radians(angle) );
+    var s = Math.sin( angle );
 
     var result = mat4(
         vec4( x*x*omc + c,   x*y*omc - z*s, x*z*omc + y*s, 0.0 ),
