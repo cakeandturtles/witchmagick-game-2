@@ -5,6 +5,10 @@ function GameObject(x, y, z, bounding_box){
 	this.z = z;
 	this.original_coords = [x, y, z];
 	
+	//facing is on an angle (degreees), with 0.0 being positive x, moving counterclockwise
+	this.facing = 90.0; 
+	this.original_facing = this.facing;
+	
 	/*SET UP BouNDING BOX*/ //BOUNDING BOX COORDINATES RELATIVE FROM object's x, y, z
 	this.x1 = bounding_box[0];
 	this.x2 = bounding_box[1];
@@ -39,14 +43,79 @@ GameObject.prototype.Export = function(){
 		x: this.x,
 		y: this.y,
 		z: this.z,
-		bounding_box: this.GetBoundingBox(),
+		bounding_box: this._getBoundingBox(),
 		kill_player: this.kill_player
 	};
 }
 
-GameObject.prototype.GetBoundingBox = function(){
+GameObject.prototype._getBoundingBox = function(){
 	return [this.x1, this.x2, this.y1, this.y2, this.z1, this.z2];
 }
+
+GameObject.prototype.GetRotatedBoundingBox = function(use_position){
+	var v = this.BoundingBoxToVertices(use_position);
+	return [v[0][0], v[1][0],
+			v[0][1], v[6][1],
+			v[0][2], v[6][2]];
+}
+
+GameObject.prototype.BoundingBoxToVertices = function(use_position){
+	var vertices = [];
+	if (use_position === undefined) use_position = true;
+	
+	var x = this.x, y = this.y, z = this.z;
+	if (!use_position){
+		x = 0; y = 0; z = 0;
+	}
+	
+	var x1 = this.x1, x2 = this.x2;
+	var xlen = (x2 - x1) / 2;
+	var y1 = this.y1, y2 = this.y2;
+	var ylen = (y2 - y1) / 2;
+	var z1 = this.z1, z2 = this.z2;
+	var zlen = (z2 - z1) / 2;
+	
+	vertices = [
+		//bottom face
+		vec4(x+x1, y+y1, z+z1), vec4(x+x2, y+y1, z+z1), vec4(x+x2, y+y1, z+z2),	
+		vec4(x+x1, y+y1, z+z1), vec4(x+x1, y+y1, z+z2), vec4(x+x2, y+y1, z+z2),
+		//top face
+		vec4(x+x1, y+y2, z+z1), vec4(x+x2, y+y2, z+z1), vec4(x+x2, y+y2, z+z2),	
+		vec4(x+x1, y+y2, z+z1), vec4(x+x1, y+y2, z+z2), vec4(x+x2, y+y2, z+z2),
+		//back face
+		vec4(x+x1, y+y1, z+z1), vec4(x+x1, y+y2, z+z1), vec4(x+x2, y+y2, z+z1),
+		vec4(x+x1, y+y1, z+z1), vec4(x+x2, y+y2, z+z1), vec4(x+x2, y+y1, z+z1),
+		//front face
+		vec4(x+x1, y+y1, z+z2), vec4(x+x1, y+y2, z+z2), vec4(x+x2, y+y2, z+z2),
+		vec4(x+x1, y+y1, z+z2), vec4(x+x2, y+y2, z+z2), vec4(x+x2, y+y1, z+z2),
+		//left face
+		vec4(x+x1, y+y1, z+z1), vec4(x+x1, y+y2, z+z1), vec4(x+x1, y+y1, z+z2),
+		vec4(x+x1, y+y1, z+z2), vec4(x+x1, y+y2, z+z2), vec4(x+x1, y+y2, z+z1),
+		//right face
+		vec4(x+x2, y+y1, z+z1), vec4(x+x2, y+y2, z+z1), vec4(x+x2, y+y1, z+z2),
+		vec4(x+x2, y+y1, z+z2), vec4(x+x2, y+y2, z+z2), vec4(x+x2, y+y2, z+z1)
+	];
+	
+	//translate to the origin so rotation will happen correctly!
+	var T1 = translate(-(x + xlen), -(y + ylen), -(z + zlen));
+	
+	//rotate bounding box by the facing
+	//rotate MV.js method already converts deg to rad
+	var R = rotate(this.facing, [0, 1, 0]);
+	
+	//translate back
+	var T2 = translate(x + xlen, y + ylen, z + zlen);
+	
+	for (var i = 0; i < vertices.length; i++){
+		vertices[i] = matrixTimesVector(T1, vertices[i]);
+		vertices[i] = matrixTimesVector(R, vertices[i]);
+		vertices[i] = matrixTimesVector(T2, vertices[i]);
+	}
+	
+	return vertices;
+}
+
+
 GameObject.SetBoundingBox = function(bounding_box){
 	this.x1 = bounding_box[0];
 	this.x2 = bounding_box[1];

@@ -10,11 +10,13 @@ function Room(width, height, depth){
 	};
 	
 	this.player = new Player(-0.05, 0.1, -0.05);
-	this.camera = new Camera([0.0, 0.1, 1.0], [0, 0, 0]);
+	this.camera = new Camera([0.0, 2.0, 1.0], [0, 0, 0]);
 	this.camera.Track(this.player);
 }
 
-Room.prototype.Update = function(delta){
+Room.prototype.Update = function(delta, input_manager){
+	input_manager.Update(delta, this.player, this.camera);
+	
 	this.player.Update(delta, this.plane_manager, this.entity_manager);
 	//this.camera.Update(delta, this.width, this.height);
 }

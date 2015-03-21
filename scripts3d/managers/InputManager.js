@@ -1,9 +1,10 @@
 function InputManager(){
 	this.key_manager = new KeyManager();
 
+	this.P1_FORWARD = KeyManager.UP;
 	this.P1_RIGHT = KeyManager.RIGHT;
 	this.P1_LEFT = KeyManager.LEFT;
-	this.P1_JUMP = KeyManager.UP;
+	this.P1_JUMP = KeyManager.X;
 	this.P1_DOWN = KeyManager.DOWN;
 }
 
@@ -20,11 +21,18 @@ InputManager.prototype.KeyPressed = function(key){
 }
 
 InputManager.prototype.Update = function(delta, player){
-	if (this.KeyDown(this.P1_RIGHT)){
-		player.MoveRight(delta);
+	if (this.KeyDown(this.P1_FORWARD)){
+		player.MoveForward(delta);
 	}
-	else if (this.KeyDown(this.P1_LEFT)){
-		player.MoveLeft(delta);
+	else if (this.KeyDown(this.P1_DOWN)){
+		player.MoveBackward(delta);
+	}
+	
+	if (this.KeyDown(this.P1_LEFT)){
+		player.FaceLeft(delta);
+	}
+	if (this.KeyDown(this.P1_RIGHT)){
+		player.FaceRight(delta);
 	}
 	
 	if (this.KeyPressed(this.P1_JUMP)){
@@ -35,13 +43,6 @@ InputManager.prototype.Update = function(delta, player){
 	}
 	if (this.KeyUp(this.P1_JUMP)){
 		player.StopJump(delta);
-	}
-	
-	if (this.KeyPressed(this.P1_DOWN)){
-		player.PressDown(delta);
-	}
-	else if(this.KeyUp(this.P1_DOWN)){
-		player.StopPressingDown(delta);
 	}
 	
 	this.key_manager.ForgetKeysPressed();

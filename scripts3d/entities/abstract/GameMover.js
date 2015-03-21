@@ -9,11 +9,11 @@ function GameMover(x, y, z, bounding_box, img_name, max_run_vel, jump_vel, termi
 	this.type = "GameMover";
 	
 	this.prev_coordinates = [this.x, this.y, this.z];
-	this.max_run_vel = defaultValue(max_run_vel, 2.0); //pixels/second
-	this.gnd_run_acc = this.max_run_vel/3.0;
-	this.gnd_run_dec = this.max_run_vel/3.0;
-	this.air_run_acc = this.max_run_vel/3.0;
-	this.air_run_dec = this.max_run_vel/3.0;
+	this.max_run_vel = defaultValue(max_run_vel, 0.002); //pixels/second
+	this.gnd_run_acc = this.max_run_vel*2;
+	this.gnd_run_dec = this.max_run_vel;
+	this.air_run_acc = this.max_run_vel*2;
+	this.air_run_dec = this.max_run_vel;
 	this.horizontal_input = false;
 	this.mult = 0;
 	
@@ -28,12 +28,12 @@ function GameMover(x, y, z, bounding_box, img_name, max_run_vel, jump_vel, termi
 	this.vel = {x: 0, y: 0, z:0};
 	
 	this.grav_acc = -0.0025;//pixels/second
-	this.jump_vel = defaultValue(jump_vel, 4.5);
+	this.jump_vel = defaultValue(jump_vel, 0.0282);
 	this.is_jumping = false;
 	this.jump_timer = 0;
-	this.jump_time_limit = 15;
+	this.jump_time_limit = 20;
 	this.terminal_vel = defaultValue(terminal_vel, -0.022);
-	this.jump_acc = 35.0; 
+	this.jump_acc = 0.109; 
 	this.was_on_ground = true;
 	this.on_ground = true;
 	this.played_land_sound = true;
@@ -41,9 +41,6 @@ function GameMover(x, y, z, bounding_box, img_name, max_run_vel, jump_vel, termi
 	
 	this.move_state = MoveState.STANDING;
 	this.prev_move_state = this.move_state;
-	//facing is on an angle (degreees), with 0.0 being positive x, moving counterclockwise
-	this.facing = 90.0; 
-	this.original_facing = this.facing;
 	
 	this.die_to_suffocation = false;
 }
@@ -171,9 +168,9 @@ GameMover.prototype.ApplyPhysics = function(delta, plane_manager, entity_manager
 	
 	this.ApplyGravity(delta);
 	
-	//if (!this.horizontal_input) this.MoveStop(delta);
+	if (!this.horizontal_input) this.MoveStop(delta);
 	this.HandleCollisionsAndMove(delta, plane_manager, entity_manager);
-	//this.horizontal_input = false;
+	this.horizontal_input = false;
 	
 	/*if (this.x === prev_pos.x) this.vel.x = 0;
 	if (this.y === prev_pos.y) this.vel.y = 0;
@@ -215,10 +212,10 @@ GameMover.prototype.HandleCollisionsAndMove = function(delta, plane_manager, ent
 	var floor_tile = null;
 	
 	//floor_tile = this.HandleHorizontalCollisions(tile_manager, entity_manager, left_tile, right_tile, top_tile, bottom_tile, q_horz, floor_tile);
-	//this.x += this.vel.x;
+	this.x += this.vel.x;
+	this.z += this.vel.z;
 	this.HandleVerticalCollisions(plane_manager, entity_manager, q_vert);
 	this.y += this.vel.y;
-	if (this.vel.y != 0) this.played_land_sound = false;
 	
 	this.vel.x /= (delta);
 	this.vel.y /= (delta);
@@ -269,7 +266,6 @@ GameMover.prototype.HandleHorizontalCollisions = function(tile_manager, entity_m
 }
 
 GameMover.prototype.HandleVerticalCollisions = function(plane_manager, entity_manager, q){
-	//console.log(left_tile + ", " + right_tile + ", " + top_tile + ", " + bottom_tile);
 	//Check all potentially colliding planes
 	//an efficiency filter should be applied at some point
 	for (var plane_key in plane_manager.planes){ if (plane_manager.planes.hasOwnProperty(plane_key)){
@@ -281,14 +277,16 @@ GameMover.prototype.HandleVerticalCollisions = function(plane_manager, entity_ma
 				
 		//check for top collision (this is assuming non rotating bodies)
 		//apply the velocity to the bounding box!!!
+		var bounding_box = this.GetRotatedBoundingBox(true);
 		var box = {
-			x1: this.x + this.x1 + q,
-			x2: this.x + this.x2 - q,
-			y1: this.y + this.y2 + this.vel.y + 0.003,
-			y2: this.y + this.y2,
-			z1:	this.z + this.z1 + q,
-			z2: this.z + this.z2 - q
+			x1: bounding_box[0] + q,
+			x2: bounding_box[1] - q,
+			y1: bounding_box[3] + this.vel.y + 0.003,
+			y2: bounding_box[3],
+			z1:	bounding_box[4] + q,
+			z2: bounding_box[5] - q
 		};
+		//console.log(box);
 		
 		if (this.vel.y >= 0 && this.IsPlaneColliding(plane, box.x1, box.x2, box.y1, box.y2, box.z1, box.z2)){
 			this.vel.y = 0;
@@ -298,12 +296,12 @@ GameMover.prototype.HandleVerticalCollisions = function(plane_manager, entity_ma
 		//check for bottom collision (also assuming non rotating bodies)
 		//apply the velocity to the bounding box
 		box = {
-			x1: this.x + this.x1 + q,
-			x2: this.x + this.x2 - q,
-			y1: this.y + this.y1,
-			y2: this.y + this.y1 + this.vel.y - 0.003,
-			z1:	this.z + this.z1 + q,
-			z2: this.z + this.z2 - q
+			x1: bounding_box[0] + q,
+			x2: bounding_box[1] - q,
+			y1: bounding_box[2],
+			y2: bounding_box[2] + this.vel.y - 0.003,
+			z1:	bounding_box[4] + q,
+			z2: bounding_box[5] - q
 		};
 		if (this.vel.y <= 0 && this.IsPlaneColliding(plane, box.x1, box.x2, box.y1, box.y2, box.z1, box.z2)){
 			if (plane.collision === Plane.FALLTHROUGH && this.pressing_down)
@@ -340,24 +338,50 @@ GameMover.prototype.UpdateAnimationFromState = function(){
 			break;
 		default: break;
 	}
-	
-	if (this.facing == Facing.LEFT){
-		this.animation.abs_ani_y = 2 * this.animation.frame_height;
-	}else if (this.facing == Facing.RIGHT){
-		this.animation.abs_ani_y = 0;
-	}
+
 	this.prev_move_state = this.move_state;
 }
 
 /*******************FUNCTIONS FOR MOVEMENT INPUT BY OBJECT*****************/
+GameMover.prototype.MoveForward = function(delta){
+	var acc;
+	this.horizontal_input = true;
+	if (this.on_ground){
+		acc = this.gnd_run_acc;
+		this.move_state = MoveState.RUNNING;
+	}
+	else{ acc = this.air_run_acc; }
+	
+	this.vel.x += acc * Math.cos(degToRad(-this.facing));
+	this.vel.z += acc * Math.sin(degToRad(-this.facing));
+}
+
+GameMover.prototype.MoveBackward = function(delta){
+	var acc;
+	this.horizontal_input = true;
+	if (this.on_ground){
+		acc = this.gnd_run_acc;
+		this.move_state = MoveState.RUNNING;
+	}
+	else{ acc = this.air_run_acc; }
+	
+	this.vel.x -= acc * Math.cos(degToRad(-this.facing));
+	this.vel.z -= acc * Math.sin(degToRad(-this.facing));
+}
+
+GameMover.prototype.FaceLeft = function(delta){
+	this.facing += delta*1;
+}
+GameMover.prototype.FaceRight = function(delta){
+	this.facing -= delta*1;
+}
+
 GameMover.prototype.MoveLeft = function(delta){
-	this.facing = Facing.LEFT;
 	//if (this.vel.x > 0) this.vel.x = 0;
 	this.Move(delta, -1);
 }
 
 GameMover.prototype.MoveRight = function(delta){
-	this.facing = Facing.RIGHT;
 	//if (this.vel.x < 0) this.vel.x = 0;
 	this.Move(delta, 1);
 }
@@ -391,23 +415,28 @@ GameMover.prototype.Move = function(delta, mult){
 
 GameMover.prototype.MoveStop = function(delta){
 	this.mult = 0;
+	var dec = this.gnd_run_dec;
 	if (this.on_ground){
-		if (this.vel.x > 0){
-			this.vel.x -= (this.gnd_run_dec) * (delta);
-			if (this.vel.x < 0) this.vel.x = 0;
-		}else if (this.vel.x < 0){
-			this.vel.x += (this.gnd_run_dec) * (delta);
-			if (this.vel.x > 0) this.vel.x = 0;
-		}
 		this.move_state = MoveState.STANDING;
 	}else{
-		if (this.vel.x > 0){
-			this.vel.x -= (this.air_run_dec) * (delta);
-			if (this.vel.x < 0) this.vel.x = 0;
-		}else if (this.vel.x < 0){
-			this.vel.x += (this.air_run_dec) * (delta);
-			if (this.vel.x > 0) this.vel.x = 0;
-		}
+		dec = this.air_run_dec;
+	}
+	
+	//decel x
+	if (this.vel.x > 0){
+		this.vel.x -= (dec) * (delta);
+		if (this.vel.x < 0) this.vel.x = 0;
+	}else if (this.vel.x < 0){
+		this.vel.x += (dec) * (delta);
+		if (this.vel.x > 0) this.vel.x = 0;
+	}
+	//decel z
+	if (this.vel.z > 0){
+		this.vel.z -= (dec) * (delta);
+		if (this.vel.z < 0) this.vel.x = 0;
+	}else if (this.vel.z < 0){
+		this.vel.z += (dec) * (delta);
+		if (this.vel.z > 0) this.vel.z = 0;
 	}
 }
 
@@ -417,9 +446,10 @@ GameMover.prototype.CorrectVelocity = function(mult){
 }
 
 GameMover.prototype.StartJump = function(delta){
+	this.played_land_sound = false;
 	if (this.on_ground){
 		//Utils.playSound("jump");
-		this.vel.y = -this.jump_vel;
+		this.vel.y = this.jump_vel;
 		this.is_jumping = true;
 		this.jump_timer = 0;
 		this.on_ground = false;
@@ -433,7 +463,7 @@ GameMover.prototype.Jump = function(delta){
 			this.jump_timer = 0;
 			this.is_jumping = false;
 		}else{
-			this.vel.y = -this.jump_vel *  (1 - (this.jump_timer / this.jump_time_limit));
+			this.vel.y = this.jump_vel *  (1 - (this.jump_timer / this.jump_time_limit));
 		}
 	}
 }

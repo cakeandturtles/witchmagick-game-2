@@ -270,7 +270,7 @@ function planeEquation(P, Q, R){
 }
 
 function sign(p1, p2, p3){
-	return (p1[0] - p3[0]) * (p2[1] - p3[1]) * (p2[0] - p3[0]) * (p1[1] - p3[1]);
+	return (p1[0] - p3[0]) * (p2[1] - p3[1]) - (p2[0] - p3[0]) * (p1[1] - p3[1]);
 }
 
 function pointInTriangle(p, v1, v2, v3){
@@ -280,4 +280,24 @@ function pointInTriangle(p, v1, v2, v3){
 	b3 = sign(p, v3, v1) < 0.0;
 	
 	return ((b1 === b2) && (b2 === b3));
+}
+
+//treating a row vector [v1, v2, v3] like a column vector
+//returns a column vector
+function matrixTimesVector(mat, vec){
+	if (vec.length !== mat[0].length){
+		throw "INVALID DIMENSIONS ON MATRIX VECTOR MULTIPLICATION";
+	}
+	var result = vec.slice(0);
+	for (var i = 0; i < result.length; i++){
+		result[i] = 0;
+	}
+	
+	//now multiply them together
+	for (var i = 0; i < mat.length; i++){
+		for (var j = 0; j < vec.length; j++){
+			result[i] += mat[i][j] * vec[j];
+		}
+	}
+	return result;
 }

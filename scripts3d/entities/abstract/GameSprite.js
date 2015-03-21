@@ -46,34 +46,6 @@ GameSprite.prototype.Export = function(){
 
 /** FUNCTION DEFINITIONS****************************************/
 /**????????????????????????????????????????????????????????????*/
-GameSprite.prototype.BoundingBoxToVertices = function(){
-	var vertices = [];
-	var x = this.x, y = this.y, z = this.z;
-	var x1 = this.x1, x2 = this.x2, y1 = this.y1, y2 = this.y2, z1 = this.z1, z2 = this.z2;
-	
-	vertices = [
-		//bottom face
-		vec4(x+x1, y+y1, z+z1), vec4(x+x2, y+y1, z+z1), vec4(x+x2, y+y1, z+z2),	
-		vec4(x+x1, y+y1, z+z1), vec4(x+x1, y+y1, z+z2), vec4(x+x2, y+y1, z+z2),
-		//top face
-		vec4(x+x1, y+y2, z+z1), vec4(x+x2, y+y2, z+z1), vec4(x+x2, y+y2, z+z2),	
-		vec4(x+x1, y+y2, z+z1), vec4(x+x1, y+y2, z+z2), vec4(x+x2, y+y2, z+z2),
-		//back face
-		vec4(x+x1, y+y1, z+z1), vec4(x+x1, y+y2, z+z1), vec4(x+x2, y+y2, z+z1),
-		vec4(x+x1, y+y1, z+z1), vec4(x+x2, y+y2, z+z1), vec4(x+x2, y+y1, z+z1),
-		//front face
-		vec4(x+x1, y+y1, z+z2), vec4(x+x1, y+y2, z+z2), vec4(x+x2, y+y2, z+z2),
-		vec4(x+x1, y+y1, z+z2), vec4(x+x2, y+y2, z+z2), vec4(x+x2, y+y1, z+z2),
-		//left face
-		vec4(x+x1, y+y1, z+z1), vec4(x+x1, y+y2, z+z1), vec4(x+x1, y+y1, z+z2),
-		vec4(x+x1, y+y1, z+z2), vec4(x+x1, y+y2, z+z2), vec4(x+x1, y+y2, z+z1),
-		//right face
-		vec4(x+x2, y+y1, z+z1), vec4(x+x2, y+y2, z+z1), vec4(x+x2, y+y1, z+z2),
-		vec4(x+x2, y+y1, z+z2), vec4(x+x2, y+y2, z+z2), vec4(x+x2, y+y2, z+z1)
-	];
-	
-	return vertices;
-}
 
 GameSprite.prototype.Update = function(delta, plane_manager, entity_manager){
 	//this.animation.Update(delta);
