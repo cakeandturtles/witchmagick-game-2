@@ -286,6 +286,12 @@ function pointInTriangle(p, v1, v2, v3){
 	return ((b1 === b2) && (b2 === b3));
 }
 
+function getCenterOfSquare(coordinates){
+	var x = (coordinates[0][0] + coordinates[2][0]) / 2;
+	var z = (coordinates[0][1] + coordinates[2][1]) / 2;
+	return [x,z];
+}
+
 //treating a row vector [v1, v2, v3, 1] like a column vector
 //returns a column vector
 function matrixTimesVector(mat, vec){

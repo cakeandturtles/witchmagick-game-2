@@ -1,6 +1,8 @@
-function Player(x, y, z){
-	GameMover.call(this, x, y, z, [0.0, 0.1, 0.0, 0.1, 0.0, 0.1], "player_grey_sheet");
+function Player(x, y, z, facing){
+	GameMover.call(this, x, y, z, [0.0, 0.5, 0.0, 0.5, 0.0, 0.5], "player_grey_sheet");
 	this.type = "Player";
+	
+	this.facing = facing;
 }
 
 Player.prototype.Import = function(obj){

@@ -4,6 +4,8 @@ function InputManager(){
 	this.P1_FORWARD = KeyManager.UP;
 	this.P1_RIGHT = KeyManager.RIGHT;
 	this.P1_LEFT = KeyManager.LEFT;
+	this.P1_STRAFE_LEFT = KeyManager.PGUP;
+	this.P1_STRAFE_RIGHT = KeyManager.PGDOWN;
 	this.P1_JUMP = KeyManager.X;
 	this.P1_DOWN = KeyManager.DOWN;
 }
@@ -27,12 +29,17 @@ InputManager.prototype.Update = function(delta, player){
 	else if (this.KeyDown(this.P1_DOWN)){
 		player.MoveBackward(delta);
 	}
-	
 	if (this.KeyDown(this.P1_LEFT)){
 		player.FaceLeft(delta);
 	}
 	if (this.KeyDown(this.P1_RIGHT)){
 		player.FaceRight(delta);
+	}
+	if (this.KeyDown(this.P1_STRAFE_LEFT)){
+		player.StrafeLeft(delta);
+	}
+	if (this.KeyDown(this.P1_STRAFE_RIGHT)){
+		player.StrafeRight(delta);
 	}
 	
 	if (this.KeyPressed(this.P1_JUMP)){

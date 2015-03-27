@@ -140,7 +140,9 @@
 		<input type="text" id="aty" style="width:40px;" value="0.0"/>
 		<input type="text" id="atz" style="width:40px;" value="0.0"/>
 		<br/><br/>
-		<input type="submit" value="Reset player" id="resetPlayer"/><br/>
+		<input type="submit" value="Reset player" id="resetPlayer"/>
+		<input type="submit" value="reset player y" id="resetPlayerY"/>
+		<br/>
 		<input type="submit" value="Player Perspective" id="playerPerspective"/>
 		<input type="submit" value="Bird's Eye View" id="birdsEye"/>
 		<script type="text/javascript">
@@ -149,6 +151,10 @@
 				GlitchDungeon.game.room.player.y = 1.0;
 				GlitchDungeon.game.room.player.vel.y = 0.0;
 				GlitchDungeon.game.room.player.z = 0.0;
+			}
+			document.getElementById("resetPlayerY").onclick = function(){
+				GlitchDungeon.game.room.player.y = 1.0;
+				GlitchDungeon.game.room.player.vel.y = 0.0;
 			}
 			
 			document.getElementById("playerPerspective").onclick = function(){

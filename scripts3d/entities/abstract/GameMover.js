@@ -277,33 +277,17 @@ GameMover.prototype.HandleVerticalCollisions = function(plane_manager, entity_ma
 				
 		//check for top collision (this is assuming non rotating bodies)
 		//apply the velocity to the bounding box!!!
-		var bounding_box = this.GetRotatedBoundingBox(true);
-		var box = {
-			x1: bounding_box[0] + q,
-			x2: bounding_box[1] - q,
-			y1: bounding_box[3] + this.vel.y + 0.003,
-			y2: bounding_box[3],
-			z1:	bounding_box[4] + q,
-			z2: bounding_box[5] - q
-		};
-		//console.log(box);
-		
-		if (this.vel.y >= 0 && this.IsPlaneColliding(plane, box.x1, box.x2, box.y1, box.y2, box.z1, box.z2)){
+		var box = this.GetRotatedBoundingBox(true);
+		if (this.vel.y >= 0 && this.IsPlaneColliding(plane, box.coordinates, box.y_top + this.vel.y + 0.003, box.y_top)){
 			this.vel.y = 0;
-			this.y = plane.GetYPosition((box.x1+box.x2)/2, (box.z1+box.z2)/2);
+			//TODO GET CENTER COORDINATES (BELOW) AND CHANGE ISPLANECOLLIDING FUNCTION
+			var center = getCenterOfSquare(box.coordinates);
+			this.y = plane.GetYPosition(center[0], center[1]);
 		}
 		
 		//check for bottom collision (also assuming non rotating bodies)
 		//apply the velocity to the bounding box
-		box = {
-			x1: bounding_box[0] + q,
-			x2: bounding_box[1] - q,
-			y1: bounding_box[2],
-			y2: bounding_box[2] + this.vel.y - 0.003,
-			z1:	bounding_box[4] + q,
-			z2: bounding_box[5] - q
-		};
-		if (this.vel.y <= 0 && this.IsPlaneColliding(plane, box.x1, box.x2, box.y1, box.y2, box.z1, box.z2)){
+		if (this.vel.y <= 0 && this.IsPlaneColliding(plane, box.coordinates, box.y_bot, box.y_bot + this.vel.y - 0.003)){
 			if (plane.collision === Plane.FALLTHROUGH && this.pressing_down)
 				continue;
 			
@@ -314,7 +298,8 @@ GameMover.prototype.HandleVerticalCollisions = function(plane_manager, entity_ma
 			this.vel.y = 0;
 			this.on_ground = true;
 			this.has_double_jumped = false;
-			this.y = plane.GetYPosition((box.x1+box.x2)/2, (box.z1+box.z2)/2) + 0.00001;
+			var center = getCenterOfSquare(box.coordinates);
+			this.y = plane.GetYPosition(center[0], center[1]) + 0.00001;
 		}
 	}}
 }
@@ -355,7 +340,6 @@ GameMover.prototype.MoveForward = function(delta){
 	this.vel.x += acc * Math.cos(degToRad(-this.facing));
 	this.vel.z += acc * Math.sin(degToRad(-this.facing));
 }
-
 GameMover.prototype.MoveBackward = function(delta){
 	var acc;
 	this.horizontal_input = true;
@@ -367,6 +351,30 @@ GameMover.prototype.MoveBackward = function(delta){
 	
 	this.vel.x -= acc * Math.cos(degToRad(-this.facing));
 	this.vel.z -= acc * Math.sin(degToRad(-this.facing));
+}
+GameMover.prototype.StrafeLeft = function(delta){
+	var acc;
+	this.horizontal_input = true;
+	if (this.on_ground){
+		acc = this.gnd_run_acc;
+		this.move_state = MoveState.RUNNING;
+	}
+	else{ acc = this.air_run_acc; }
+	
+	this.vel.x += acc * Math.cos(degToRad(-(this.facing+90)));
+	this.vel.z += acc * Math.sin(degToRad(-(this.facing+90)));
+}
+GameMover.prototype.StrafeRight = function(delta){
+	var acc;
+	this.horizontal_input = true;
+	if (this.on_ground){
+		acc = this.gnd_run_acc;
+		this.move_state = MoveState.RUNNING;
+	}
+	else{ acc = this.air_run_acc; }
+	
+	this.vel.x += acc * Math.cos(degToRad(-(this.facing-90)));
+	this.vel.z += acc * Math.sin(degToRad(-(this.facing-90)));
 }
 
 GameMover.prototype.FaceLeft = function(delta){

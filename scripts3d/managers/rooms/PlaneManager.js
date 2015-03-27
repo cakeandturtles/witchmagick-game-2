@@ -127,9 +127,12 @@ PlaneManager.prototype.initDefaultPlaneLayout = function(room_width, room_height
 			}
 		}
 	}*/
-	this.planes['0'] = new Plane([
-		vec4.fromValues(-1.0, 0.0, -0.5, 1.0),
-		vec4.fromValues(1.0, 0.0, -0.5, 1.0),
+	var planes = [];
+	planes.push(new Plane([
+		vec4.fromValues(-1.0, 0.0, -1.0, 1.0),
+		vec4.fromValues(1.0, 0.0, -1.0, 1.0),
 		vec4.fromValues(0.0, 0.0, 1.0, 1.0)
-	], Plane.SOLID, null);
+	], Plane.SOLID, null));
+	this.planes = {};
+	this.planes[0] = planes[0];
 }

@@ -1,5 +1,7 @@
 function Camera(eye, at){
 	this.eye = eye;
+	this.zoom_z = 3.0;
+	this.zoom_y = 1.0;
 	this.at = at;
 	
 	this.tracking_target = null;
@@ -38,7 +40,7 @@ Camera.prototype.Update = function(delta, room_width, room_height){
 		at = matrixTimesVector(T0, at);
 		
 		//translate behind the player before rotating
-		var T1e = mat4.translate([], mat4.create(), [0, 0.5, 1.0]);
+		var T1e = mat4.translate([], mat4.create(), [0, this.zoom_y, this.zoom_z]);
 		eye = matrixTimesVector(T1e, eye);
 		
 		//or in front of player for at

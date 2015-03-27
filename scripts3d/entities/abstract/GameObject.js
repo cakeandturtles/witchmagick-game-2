@@ -54,9 +54,22 @@ GameObject.prototype._getBoundingBox = function(){
 
 GameObject.prototype.GetRotatedBoundingBox = function(use_position){
 	var v = this.BoundingBoxToVertices(use_position);
-	return [v[0][0], v[1][0],
-			v[0][1], v[6][1],
-			v[0][2], v[6][2]];
+	return {
+		coordinates: [
+			//coordinates for the bottom face
+			[v[0][0], v[0][2]], 
+			[v[1][0], v[1][2]], 
+			[v[2][0], v[2][2]], 
+			[v[4][0], v[4][2]],
+			//coordinates for the top face
+			[v[6][0], v[6][1], v[6][2]], 
+			[v[7][0], v[7][1], v[7][2]], 
+			[v[8][0], v[8][1], v[8][2]], 
+			[v[10][0], v[10][1], v[10][2]]
+		],
+		y_bot: v[0][1],
+		y_top: v[6][1]
+	};
 }
 
 GameObject.prototype.BoundingBoxToVertices = function(use_position){
@@ -144,11 +157,13 @@ GameObject.prototype.IsColliding = function(object){
 	);
 }
 
-GameObject.prototype.IsPlaneColliding = function(plane, x1,x2, y1,y2, z1,z2){
-	var x = (x1+x2)/2;
-	var z = (z1+z2)/2;
+GameObject.prototype.IsPlaneColliding = function(plane, coordinates, y1, y2){
+	var center = getCenterOfSquare(coordinates);
+	var x = center[0];
+	var z = center[1];
 	//here i'm gonna cheat and just treat the center of the bottom of the object the only thing i need to check
-	//assuming non rotating bodies (plane may be at any rotation)
+	//assuming non rotating bodies 
+	//(plane may be at any rotation)
 	var plane_y = plane.GetYPosition(x, z);
 	if (plane_y <= y1 && plane_y >= y2){
 		var vertices = flatten(plane.vertices);
