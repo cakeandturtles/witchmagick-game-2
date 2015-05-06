@@ -73,6 +73,11 @@ Camera.prototype.Render = function(){
     var mvMatrix = mat4.lookAt([], this.eye, this.at, up);
     var pMatrix = mat4.perspective([], fovy, aspect, near, far);
 
-    gl.uniformMatrix4fv(gl.getUniformLocation( program, "uMVMatrix" ), false, new Float32Array(flatten(mvMatrix)));
-    gl.uniformMatrix4fv(gl.getUniformLocation( program, "uPMatrix" ), false, new Float32Array(flatten(pMatrix)));
+    gl.uniformMatrix4fv(gl.getUniformLocation(program, "uMVMatrix"), false, new Float32Array(flatten(mvMatrix)));
+    gl.uniformMatrix4fv(gl.getUniformLocation(program, "uPMatrix"), false, new Float32Array(flatten(pMatrix)));
+
+	var normalMatrix = mat3.create();
+	mat4.toInverseMat3(mvMatrix, normalMatrix);
+	mat3.transpose(normalMatrix, normalMatrix);
+	gl.uniformMatrix3fv(gl.getUniformLocation(program, "uNMatrix"), false, normalMatrix);
 }

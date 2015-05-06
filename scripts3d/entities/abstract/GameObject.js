@@ -5,8 +5,8 @@ function GameObject(x, y, z, bounding_box){
 	this.z = z;
 	this.original_coords = [x, y, z];
 	
-	//facing is on an angle (degreees), with 0.0 being positive x, moving counterclockwise
-	this.facing = 90.0; 
+	//facing is on an angle (degreees), with 0.0 being positive z, moving counterclockwise
+	this.facing = 0.0; 
 	this.original_facing = this.facing;
 	
 	/*SET UP BouNDING BOX*/ //BOUNDING BOX COORDINATES RELATIVE FROM object's x, y, z
@@ -43,6 +43,7 @@ GameObject.prototype.Export = function(){
 		x: this.x,
 		y: this.y,
 		z: this.z,
+		original_coords: this.original_coords,
 		bounding_box: this._getBoundingBox(),
 		kill_player: this.kill_player
 	};
@@ -52,8 +53,8 @@ GameObject.prototype._getBoundingBox = function(){
 	return [this.x1, this.x2, this.y1, this.y2, this.z1, this.z2];
 }
 
-GameObject.prototype.GetRotatedBoundingBox = function(use_position){
-	var v = this.BoundingBoxToVertices(use_position);
+GameObject.prototype.GetRotatedBoundingBox = function(use_position, use_velocity){
+	var v = this.BoundingBoxToVertices(use_position, use_velocity);
 	return {
 		coordinates: [
 			//coordinates for the bottom face
@@ -72,7 +73,29 @@ GameObject.prototype.GetRotatedBoundingBox = function(use_position){
 	};
 }
 
-GameObject.prototype.BoundingBoxToVertices = function(use_position){
+GameObject.prototype.CubeNormals = function(){
+	var normals = [];
+	normals.push([0.0, 1.0, 0.0]);
+	normals.push([0.0, -1.0, 0.0]);
+	normals.push([0.0, 0.0, 1.0]);
+	normals.push([0.0, 0.0, -1.0]);
+	normals.push([1.0, 0.0, 0.0]);
+	normals.push([-1.0, 0.0, 0.0]);
+	
+	var R = mat4.rotateY([], mat4.identity([]), degToRad(this.facing));
+	
+	for (var i = 0; i < normals.length; i++){	
+		var normal4 = vec4.fromValues(normals[i][0], normals[i][1], normals[i][2], 1.0);
+		normal4 = matrixTimesVector(R, normal4);
+		normals[i] = [normal4[0], normal4[1], normal4[2]];
+	}
+	
+	normals.stretch(6);	//make it so the normals apply for every vertex on a given face
+	
+	return normals;
+}
+
+GameObject.prototype.BoundingBoxToVertices = function(use_position, use_velocity){
 	var vertices = [];
 	if (use_position === undefined) use_position = true;
 	
@@ -161,7 +184,7 @@ GameObject.prototype.IsPlaneColliding = function(plane, coordinates, y1, y2){
 	var center = getCenterOfSquare(coordinates);
 	var x = center[0];
 	var z = center[1];
-	//here i'm gonna cheat and just treat the center of the bottom of the object the only thing i need to check
+	//here i'm gonna cheat and just treat the center /*of the bottom*/ of the object the only thing i need to check
 	//assuming non rotating bodies 
 	//(plane may be at any rotation)
 	var plane_y = plane.GetYPosition(x, z);

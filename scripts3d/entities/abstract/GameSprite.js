@@ -16,18 +16,20 @@ function GameSprite(x, y, z, bounding_box, img_name){
 	for (var i = 0; i < this.vertices.length; i++){
 		color_array.push(vec4.fromValues(0.8, 0.1, 0.1, 1.0));
 	}
+	this.normal_vertices = this.CubeNormals();
 	
 	//color buffer
     this.color_buffer = gl.createBuffer();
     gl.bindBuffer( gl.ARRAY_BUFFER, this.color_buffer);
     gl.bufferData( gl.ARRAY_BUFFER, new Float32Array(flatten(color_array)), gl.STATIC_DRAW );
-    var vColor = gl.getAttribLocation( program, "vColor" );
-    gl.vertexAttribPointer( vColor, 4, gl.FLOAT, false, 0, 0 );
-    gl.enableVertexAttribArray( vColor);
 	//initialize the vertex buffer in webgl
 	this.vertex_buffer = gl.createBuffer();
 	gl.bindBuffer( gl.ARRAY_BUFFER, this.vertex_buffer);
 	gl.bufferData( gl.ARRAY_BUFFER, new Float32Array(flatten(this.vertices)), gl.STATIC_DRAW );
+	//intialize normal buffer
+	this.normal_buffer = gl.createBuffer();
+	gl.bindBuffer(gl.ARRAY_BUFFER, this.normal_buffer);
+	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(flatten(this.vertices)), gl.STATIC_DRAW);
 	
 	this.visible = true;
 }
@@ -54,17 +56,25 @@ GameSprite.prototype.Update = function(delta, plane_manager, entity_manager){
 
 GameSprite.prototype.Render = function(ctx, camera){
 	this.vertices = this.BoundingBoxToVertices();
+	this.normal_vertices = this.CubeNormals();
 	
 	//bind plane's vertex buffer to tell gpu to use it
 	gl.bindBuffer(gl.ARRAY_BUFFER, this.vertex_buffer);
-	//console.log(flatten(this.vertices));
 	gl.bufferData( gl.ARRAY_BUFFER, new Float32Array(flatten(this.vertices)), gl.STATIC_DRAW );
-	vPosition = gl.getAttribLocation( program, "vPosition" );
-    gl.vertexAttribPointer( vPosition, 4, gl.FLOAT, false, 0, 0 );
+	var aVertexPosition = gl.getAttribLocation( program, "aVertexPosition" );
+    gl.vertexAttribPointer( aVertexPosition, 4, gl.FLOAT, false, 0, 0 );
+	gl.enableVertexAttribArray( aVertexPosition);
+	//bind plane's normal buffer!!
+	gl.bindBuffer(gl.ARRAY_BUFFER, this.normal_buffer);
+	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(flatten(this.normal_vertices)), gl.STATIC_DRAW);
+	var aVertexNormal = gl.getAttribLocation(program, "aVertexNormal");
+	gl.vertexAttribPointer(aVertexNormal, 3, gl.FLOAT, false, 0, 0);
+	gl.enableVertexAttribArray(aVertexNormal);
 	//bind plane's color buffer to tell gpu to use it
 	gl.bindBuffer(gl.ARRAY_BUFFER, this.color_buffer);
-	vColor = gl.getAttribLocation( program, "vColor" );
-	gl.vertexAttribPointer(vColor, 4, gl.FLOAT, false, 0, 0);
+	var aVertexColor = gl.getAttribLocation( program, "aVertexColor" );
+	gl.vertexAttribPointer(aVertexColor, 4, gl.FLOAT, false, 0, 0);
+	gl.enableVertexAttribArray( aVertexColor);
 	
 	//draw the plane
     gl.drawArrays( gl.TRIANGLES, 0, this.vertices.length);

@@ -9,7 +9,7 @@ function Room(width, height, depth){
 		}
 	};
 	
-	this.player = new Player(-0.64, 0.4, -0.44, 54);
+	this.player = new Player(-0.06, 0.01, -0.7, 0);
 	this.camera = new Camera([0.0, 2.0, 2.0], [0, 0, 0]);
 	this.camera.Track(this.player);
 }

@@ -1,5 +1,13 @@
 function Plane(vertices, collision, texture){
 	this.vertices = vertices;
+	this.PQ = vectorFromPoints(this.vertices[0], this.vertices[1]);
+	this.PR = vectorFromPoints(this.vertices[0], this.vertices[2]);
+	this.abcd = planeEquation(this.PQ, this.PR);
+	this.normal_vertices = [
+		vec3.fromValues(this.abcd[0], this.abcd[1], this.abcd[2]),
+		vec3.fromValues(this.abcd[0], this.abcd[1], this.abcd[2]),
+		vec3.fromValues(this.abcd[0], this.abcd[1], this.abcd[2]),
+	];
 	
 	//one of the collision types defined below
 	this.collision = collision || Plane.GHOST;
@@ -32,16 +40,14 @@ function Plane(vertices, collision, texture){
     this.color_buffer = gl.createBuffer();
     gl.bindBuffer( gl.ARRAY_BUFFER, this.color_buffer);
     gl.bufferData( gl.ARRAY_BUFFER, new Float32Array(flatten(this.color_array)), gl.STATIC_DRAW );
-    var vColor = gl.getAttribLocation( program, "vColor" );
-    gl.vertexAttribPointer( vColor, 4, gl.FLOAT, false, 0, 0 );
-    gl.enableVertexAttribArray( vColor);
 	//vertex buffer
     this.vertex_buffer = gl.createBuffer();
     gl.bindBuffer( gl.ARRAY_BUFFER, this.vertex_buffer);
     gl.bufferData( gl.ARRAY_BUFFER, new Float32Array(flatten(this.vertices)), gl.STATIC_DRAW );
-	var vPosition = gl.getAttribLocation( program, "vPosition" );
-    gl.vertexAttribPointer( vPosition, 4, gl.FLOAT, false, 0, 0 );
-    gl.enableVertexAttribArray( vPosition );
+	//normal buffer
+	this.normal_buffer = gl.createBuffer();
+	gl.bindBuffer(gl.ARRAY_BUFFER, this.normal_buffer);
+	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(flatten(this.normal_vertices)), gl.STATIC_DRAW);
 }
 
 //Collision types
@@ -55,13 +61,15 @@ Plane.prototype.Render = function(){
 	//bind plane's vertex buffer to tell gpu to use it
 	gl.bindBuffer(gl.ARRAY_BUFFER, this.vertex_buffer);
 	gl.bufferData( gl.ARRAY_BUFFER, new Float32Array(flatten(this.vertices)), gl.STATIC_DRAW );
-	vPosition = gl.getAttribLocation( program, "vPosition" );
-    gl.vertexAttribPointer( vPosition, 4, gl.FLOAT, false, 0, 0 );
+    gl.vertexAttribPointer(gl.getAttribLocation(program, "aVertexPosition"), 4, gl.FLOAT, false, 0, 0 );
+	//bind plane's normal!!!
+	gl.bindBuffer(gl.ARRAY_BUFFER, this.normal_buffer);
+	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(flatten(this.normal_vertices)), gl.STATIC_DRAW);
+	gl.vertexAttribPointer(gl.getAttribLocation(program, "aVertexNormal"), 3, gl.FLOAT, false, 0, 0);
 	//bind plane's color buffer to tell gpu to use it
 	gl.bindBuffer(gl.ARRAY_BUFFER, this.color_buffer);
     gl.bufferData( gl.ARRAY_BUFFER, new Float32Array(flatten(this.color_array)), gl.STATIC_DRAW );
-	vColor = gl.getAttribLocation( program, "vColor" );
-	gl.vertexAttribPointer(vColor, 4, gl.FLOAT, false, 0, 0);
+	gl.vertexAttribPointer(gl.getAttribLocation(program, "aVertexColor"), 4, gl.FLOAT, false, 0, 0);
 	
 	//draw the plane
     gl.drawArrays( gl.TRIANGLES, 0, this.vertices.length);
@@ -69,16 +77,19 @@ Plane.prototype.Render = function(){
 
 //assuming a plane only has three vertices
 Plane.prototype.GetXPosition = function(y, z){
-	var abc = planeEquation(this.vertices[0], this.vertices[1], this.vertices[2]);
-	return -((abcm[1]*y + abcm[2]*z - abcm[3])/abcm[0]);
+	var abcd = this.abcd;
+	var a = abcd[0], b = abcd[1], c = abcd[2], d = abcd[3];
+	return (d - (b*y) - (c*z))/a;
 }
 Plane.prototype.GetYPosition = function(x, z){
-	var abcm = planeEquation(this.vertices[0], this.vertices[1], this.vertices[2]);
-	return -((abcm[0]*x + abcm[2]*z - abcm[3])/abcm[1]);
+	var abcd = this.abcd;
+	var a = abcd[0], b = abcd[1], c = abcd[2], d = abcd[3];
+	return (d - (a*x) - (c*z))/b;
 }
 Plane.prototype.GetZPosition = function(x, y){
-	var abcm = planeEquation(this.vertices[0], this.vertices[1], this.vertices[2]);
-	return -((abcm[0]*x + abcm[1]*y - abcm[3])/abcm[2]);
+	var abcd = this.abcd;
+	var a = abcd[0], b = abcd[1], c = abcd[2], d = abcd[3];
+	return (d - (a*x) - (b*y))/c;
 }
 
 //////////////////////////////////////////////////////////PLANE MANAGER
@@ -93,46 +104,81 @@ function PlaneManager(room_width, room_height, room_depth, default_layout){
 	}
 }
 
-//x_coord and y_coord are integers (0, 1, 2, 3) representing the position of
-//the requested tile in the room, (e.g. if x, y = (1, 1), then we will below
-//looking for the tile at pixel position Game.TILE_SIZE, Game.TILE_SIZE
-PlaneManager.prototype.GetTile = function(x_coord, y_coord){
-	if (x_coord < 0 || x_coord >= this.width || y_coord < 0 || y_coord >= this.height)
-		return null;
-	var key = x_coord + "_" + y_coord;
-	if (key in this.tiles){
-		return this.tiles[key];
-	}
-	return null;
-}
-
-PlaneManager.prototype.AddTile = function(x_coord, y_coord, collision, x_graph, y_graph){
-	var key = x_coord + "_" + y_coord;
-	this.tiles[key] = new Tile(x_coord, y_coord, collision, x_graph, y_graph);
-}
-
-PlaneManager.prototype.RemoveTile = function(x_coord, y_coord){
-	var key = x_coord + "_" + y_coord;
-	if (key in this.tiles){
-		delete this.tiles[key];
-	}
+PlaneManager.prototype.GetPlanesAsArray = function(){
+	return this.planes;
 }
 
 PlaneManager.prototype.initDefaultPlaneLayout = function(room_width, room_height, room_depth){	
-	/*for (var i = 0; i < this.width; i++){
-		for (var j = 0; j < this.height; j++){
-			//Add tiles around the edge of the room
-			if (i === 0 || i === this.width-1 || j === 0 || j === this.height-1){
-				this.AddTile(i, j, Tile.SOLID, 0, 0);
-			}
-		}
-	}*/
 	var planes = [];
+	//flat ground
 	planes.push(new Plane([
 		vec4.fromValues(-1.0, 0.0, -1.0, 1.0),
 		vec4.fromValues(1.0, 0.0, -1.0, 1.0),
-		vec4.fromValues(0.0, 0.0, 1.0, 1.0)
+		vec4.fromValues(0.0, 0.0, 0.5, 1.0)
+	], Plane.FALLTHROUGH, null));
+	//slope 1
+	planes.push(new Plane([
+		vec4.fromValues(-1.0, 0.0, -1.0, 1.0),
+		vec4.fromValues(-1.0, 0.5, -2.0, 1.0),
+		vec4.fromValues(1.0, 0.0, -1.0, 1.0),
 	], Plane.SOLID, null));
-	this.planes = {};
-	this.planes[0] = planes[0];
+	planes.push(new Plane([
+		vec4.fromValues(1.0, 0.5, -2.0, 1.0),
+		vec4.fromValues(1.0, 0.0, -1.0, 1.0),
+		vec4.fromValues(-1.0, 0.5, -2.0, 1.0)
+	], Plane.SOLID, null));	
+	//wall
+	planes.push(new Plane([
+		vec4.fromValues(-1.0, 0.5, -2.0, 1.0),
+		vec4.fromValues(1.0, 0.5, -2.0, 1.0),
+		vec4.fromValues(-1.0, 1.0, -2.0, 1.0)
+	], Plane.SOLID, null));
+	planes.push(new Plane([
+		vec4.fromValues(1.0, 1.0, -2.0, 1.0),
+		vec4.fromValues(1.0, 0.5, -2.0, 1.0),
+		vec4.fromValues(-1.0, 1.0, -2.0, 1.0)
+	], Plane.SOLID, null));
+	//slope 2
+	planes.push(new Plane([
+		vec4.fromValues(1.0, 0.0, -1.0, 1.0),
+		vec4.fromValues(2.0, 0.5, -1.0, 1.0),
+		vec4.fromValues(1.0, 0.5, -2.0, 1.0)
+	], Plane.SOLID, null));
+	//slope3
+	planes.push(new Plane([
+		vec4.fromValues(2.0, 0.5, -1.0, 1.0),
+		vec4.fromValues(1.0, 0.0, -1.0, 1.0),
+		vec4.fromValues(0.0, 0.0, 0.5, 1.0)
+	], Plane.SOLID, null));
+	planes.push(new Plane([
+		vec4.fromValues(0.0, 0.0, 0.5, 1.0),
+		vec4.fromValues(2.0, 0.5, -1.0, 1.0),
+		vec4.fromValues(1.0, 0.5, 1.5, 1.0)
+	], Plane.SOLID, null));
+	//slope 4 (mirror 2)
+	planes.push(new Plane([
+		vec4.fromValues(-1.0, 0.0, -1.0, 1.0),
+		vec4.fromValues(-2.0, 0.5, -1.0, 1.0),
+		vec4.fromValues(-1.0, 0.5, -2.0, 1.0)
+	], Plane.SOLID, null));
+	//slope5 (mirror 3)
+	planes.push(new Plane([
+		vec4.fromValues(-2.0, 0.5, -1.0, 1.0),
+		vec4.fromValues(-1.0, 0.0, -1.0, 1.0),
+		vec4.fromValues(0.0, 0.0, 0.5, 1.0)
+	], Plane.SOLID, null));
+	planes.push(new Plane([
+		vec4.fromValues(0.0, 0.0, 0.5, 1.0),
+		vec4.fromValues(-2.0, 0.5, -1.0, 1.0),
+		vec4.fromValues(-1.0, 0.5, 1.5, 1.0)
+	], Plane.SOLID, null));
+	//slope 6
+	planes.push(new Plane([
+		vec4.fromValues(0.0, 0.0, 0.5, 1.0),
+		vec4.fromValues(-1.0, 0.5, 1.5, 1.0),
+		vec4.fromValues(1.0, 0.5, 1.5, 1.0)
+	], Plane.SOLID, null));
+	
+	
+	this.planes = planes;
 }

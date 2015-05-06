@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>arcane frog</title>
+<title>summon</title>
 <style type="text/css">
 	body{
 		margin: 0;
@@ -28,26 +28,47 @@
 </style>
 
 <script id="vertex-shader" type="x-shader/x-vertex">
-	attribute vec4 vPosition;
-	attribute vec4 vColor;
-	varying vec4 fColor;
+	attribute vec4 aVertexPosition;
+    attribute vec3 aVertexNormal;
+	attribute vec4 aVertexColor;
 		
 	uniform mat4 uMVMatrix;
 	uniform mat4 uPMatrix;
+	uniform mat3 uNMatrix;
+
+	varying vec4 vPosition;
+	varying vec3 vTransformedNormal;
+	varying vec4 vColor;
+	varying mat4 mvMatrix;
 
 	void main(){
-		gl_Position = uPMatrix*uMVMatrix*vPosition;
-		fColor = vColor;
+		vPosition = uMVMatrix * aVertexPosition;
+		vTransformedNormal = uNMatrix * aVertexNormal;
+		vColor = aVertexColor;
+		mvMatrix = uMVMatrix;
+	
+		gl_Position = uPMatrix*uMVMatrix*aVertexPosition;
+		
 	}
 </script>
-
 <script id="fragment-shader" type="x-shader/x-fragment">
 	precision mediump float;
 
-	varying vec4 fColor;
+	varying vec4 vPosition;
+	varying vec3 vTransformedNormal;
+	varying vec4 vColor;
+	varying mat4 mvMatrix;
 
 	void main(){
-		gl_FragColor = fColor;
+		vec4 pointLightingAt = mvMatrix * vec4(0.0, 2.0, 0.0, 1.0);
+		vec3 lightDirection = normalize(vec3(0.0, -1.0, 0.0) - vPosition.xyz);
+
+		float directionalLightWeighting = max(dot(normalize(vTransformedNormal), lightDirection), 0.0);
+		//vec 3 lightWeighting = uAmbientColor + uPointLightingColor * directionalLightWeighting;
+		vec3 lightWeighting = vec3(1.0, 1.0, 1.0) * directionalLightWeighting;
+
+        //gl_FragColor = vec4(vColor.rgb * lightWeighting, vColor.a);
+		gl_FragColor = vColor;
 	}
 </script>
 

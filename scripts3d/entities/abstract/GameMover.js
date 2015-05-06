@@ -5,11 +5,12 @@ MoveState.JUMPING = 2;
 MoveState.FALLING = 3;
 
 function GameMover(x, y, z, bounding_box, img_name, max_run_vel, jump_vel, terminal_vel){
+	this.vel = { fwd: 0, side: 0, y: 0};
 	GameSprite.call(this, x, y, z, bounding_box, img_name);
 	this.type = "GameMover";
 	
 	this.prev_coordinates = [this.x, this.y, this.z];
-	this.max_run_vel = defaultValue(max_run_vel, 0.001); //pixels/second
+	this.max_run_vel = defaultValue(max_run_vel, 0.02); //pixels/second
 	this.gnd_run_acc = this.max_run_vel*2;
 	this.gnd_run_dec = this.max_run_vel;
 	this.air_run_acc = this.max_run_vel*2;
@@ -24,8 +25,6 @@ function GameMover(x, y, z, bounding_box, img_name, max_run_vel, jump_vel, termi
 	this.pressed_down = false;
 	this.has_double_jumped = false;
 	this.stuck_in_wall = false;
-	
-	this.vel = {x: 0, y: 0, z:0};
 	
 	this.grav_acc = -0.0025;//pixels/second
 	this.jump_vel = defaultValue(jump_vel, 0.0282);
@@ -162,8 +161,7 @@ GameMover.prototype.DieToSuffocation = function(tile_manager){
 
 GameMover.prototype.Die = function(){}
 
-GameMover.prototype.ApplyPhysics = function(delta, plane_manager, entity_manager)
-{
+GameMover.prototype.ApplyPhysics = function(delta, plane_manager, entity_manager){
 	//var prev_pos = {x: this.x, y: this.y, z: this.z};
 	
 	this.ApplyGravity(delta);
@@ -174,7 +172,7 @@ GameMover.prototype.ApplyPhysics = function(delta, plane_manager, entity_manager
 	
 	/*if (this.x === prev_pos.x) this.vel.x = 0;
 	if (this.y === prev_pos.y) this.vel.y = 0;
-	if (this.y === prev_pos.z) this.vel.z = 0;
+	if (this.z === prev_pos.z) this.vel.z = 0;
 	this.previous_bottom = this.y + this.y2;*/
 }
 
@@ -193,16 +191,9 @@ GameMover.prototype.ApplyGravity = function(delta){
 }
 
 GameMover.prototype.HandleCollisionsAndMove = function(delta, plane_manager, entity_manager){
-	this.vel.x *= (delta);
+	this.vel.fwd *= (delta);
 	this.vel.y *= (delta);
-	this.vel.z *= (delta);
-
-	//I don't know how we can initially filter planes like I did with tiles
-	/*var left_tile = Math.floor((this.x + this.lb + this.vel.x - 1) / Tile.WIDTH);
-	var right_tile = Math.ceil((this.x + this.rb + this.vel.x + 1) / Tile.WIDTH);
-	var top_tile = Math.floor((this.y + this.tb + this.vel.y - 1) / Tile.HEIGHT);
-	var bottom_tile = Math.ceil((this.y + this.bb + this.vel.y + 1) / Tile.HEIGHT);
-	*/
+	this.vel.side *= (delta);
 	
 	// Reset flag to search for ground collision.
 	this.was_on_ground = this.on_ground;
@@ -212,82 +203,50 @@ GameMover.prototype.HandleCollisionsAndMove = function(delta, plane_manager, ent
 	var floor_tile = null;
 	
 	//floor_tile = this.HandleHorizontalCollisions(tile_manager, entity_manager, left_tile, right_tile, top_tile, bottom_tile, q_horz, floor_tile);
-	this.x += this.vel.x;
-	this.z += this.vel.z;
+	this.z += this.vel.fwd * Math.cos(degToRad(this.facing+90)) + this.vel.side * Math.cos(degToRad(this.facing));
+	this.x += this.vel.fwd * Math.sin(degToRad(this.facing+90)) + this.vel.side * Math.sin(degToRad(this.facing));
 	this.HandleVerticalCollisions(plane_manager, entity_manager, q_vert);
 	this.y += this.vel.y;
 	
-	this.vel.x /= (delta);
+	this.vel.fwd /= (delta);
 	this.vel.y /= (delta);
-	this.vel.z /= (delta);
+	this.vel.side /= (delta);
 }
 
 GameMover.prototype.HandleHorizontalCollisions = function(tile_manager, entity_manager, left_tile, right_tile, top_tile, bottom_tile, q, floor_tile){
 	this.horizontal_collision = false;
-	//Check all potentially colliding tiles
-	/*for (var i = top_tile; i <= bottom_tile; i++){
-		for (var j = left_tile; j <= right_tile; j++){
-			var tile = tile_manager.GetTile(j, i);
-			if (tile === null) continue;
-			//don't check for collisions if potential tile is "out of bounds" or not solid
-			if (tile.collision != Tile.SOLID && tile.collision != Tile.SUPER_SOLID) continue;
-			
-			//Reset floor tile
-			if (floor_tile == null || (tile.y > this.y && Math.abs(tile.x-this.x) < Math.abs(floor_tile.x-this.x))){ 
-				floor_tile = tile;
-			}
-			
-			//Check for left collisions
-			if (this.vel.x < 0 && this.IsRectColliding(tile, this.x + this.lb + this.vel.x - 1, 
-			this.y + this.tb + q, this.x + this.lb, this.y + this.bb - q)){
-				//this is a negative slope (don't collide left)
-				if (tile.l_height < tile.r_height){}
-				//okay we're colliding with a solid to our left
-				else{
-					this.vel.x = 0;
-					this.horizontal_collision = true;
-					this.x = tile.x + Tile.WIDTH - this.lb;
-				}
-			}
-			
-			//Check for Right collisions
-			if (this.vel.x > 0 && this.IsRectColliding(tile, this.x + this.rb, this.y + this.tb + q, this.x + this.rb + this.vel.x + 1, this.y + this.bb - q)){
-				//this is a positive slope (don't collide right)
-				if (tile.r_height < tile.l_height){}
-				//okay we're colliding with a solid to our right
-				else{
-					this.vel.x = 0;
-					this.horizontal_collision = true;
-					this.x = tile.x - this.rb;
-				}
-			}
-		}
-	}*/
+	//Check all potentially colliding planes
+	//an efficiency filter should be applied at some point
+	var planes = plane_manager.GetPlanesAsArray();
+	for (var i = 0; i < planes.length; i++){
+		
+	}
 }
 
 GameMover.prototype.HandleVerticalCollisions = function(plane_manager, entity_manager, q){
 	//Check all potentially colliding planes
 	//an efficiency filter should be applied at some point
-	for (var plane_key in plane_manager.planes){ if (plane_manager.planes.hasOwnProperty(plane_key)){
-		var plane = plane_manager.planes[plane_key];
+	var planes = plane_manager.GetPlanesAsArray();
+	for (var i = 0; i < planes.length; i++){
+		var plane = planes[i];
 		if (plane === null) continue;
 		
 		//don't check collisions if plane is not solid
 		if (plane.collision === Plane.GHOST || plane.collision === Plane.KILL_PLAYER) continue;
-				
+			
+		var box = this.GetRotatedBoundingBox(true, true);			
 		//check for top collision (this is assuming non rotating bodies)
 		//apply the velocity to the bounding box!!!
-		var box = this.GetRotatedBoundingBox(true);
-		if (this.vel.y >= 0 && this.IsPlaneColliding(plane, box.coordinates, box.y_top + this.vel.y + 0.003, box.y_top)){
+		/*if (this.vel.y >= 0 && this.IsPlaneColliding(plane, box.coordinates, box.y_top + this.vel.y + 0.003, box.y_top)){
 			this.vel.y = 0;
 			//TODO GET CENTER COORDINATES (BELOW) AND CHANGE ISPLANECOLLIDING FUNCTION
 			var center = getCenterOfSquare(box.coordinates);
 			this.y = plane.GetYPosition(center[0], center[1]);
-		}
+		}*/
 		
 		//check for bottom collision (also assuming non rotating bodies)
 		//apply the velocity to the bounding box
-		if (this.vel.y <= 0 && this.IsPlaneColliding(plane, box.coordinates, box.y_bot, box.y_bot + this.vel.y - 0.003)){
+		if (this.vel.y <= 0 && this.IsPlaneColliding(plane, box.coordinates, box.y_top/2, box.y_bot + this.vel.y - 0.003)){
 			if (plane.collision === Plane.FALLTHROUGH && this.pressing_down)
 				continue;
 			
@@ -301,7 +260,7 @@ GameMover.prototype.HandleVerticalCollisions = function(plane_manager, entity_ma
 			var center = getCenterOfSquare(box.coordinates);
 			this.y = plane.GetYPosition(center[0], center[1]) + 0.00001;
 		}
-	}}
+	}
 }
 
 /******************RENDER AND ANIMATION FUNCTIONS***********************/
@@ -337,8 +296,10 @@ GameMover.prototype.MoveForward = function(delta){
 	}
 	else{ acc = this.air_run_acc; }
 	
-	this.vel.x += acc * Math.cos(degToRad(-this.facing));
-	this.vel.z += acc * Math.sin(degToRad(-this.facing));
+	//if (this.vel.fwd < 0) this.vel.fwd = 0;
+	this.vel.fwd += acc;
+	if (this.vel.fwd > this.max_run_vel)
+		this.vel.fwd = this.max_run_vel;
 }
 GameMover.prototype.MoveBackward = function(delta){
 	var acc;
@@ -349,8 +310,10 @@ GameMover.prototype.MoveBackward = function(delta){
 	}
 	else{ acc = this.air_run_acc; }
 	
-	this.vel.x -= acc * Math.cos(degToRad(-this.facing));
-	this.vel.z -= acc * Math.sin(degToRad(-this.facing));
+	if (this.vel.fwd > 0) this.vel.fwd = 0;
+	this.vel.fwd -= acc;
+	if (this.vel.fwd < -this.max_run_vel)
+		this.vel.fwd = -this.max_run_vel;
 }
 GameMover.prototype.StrafeLeft = function(delta){
 	var acc;
@@ -361,8 +324,10 @@ GameMover.prototype.StrafeLeft = function(delta){
 	}
 	else{ acc = this.air_run_acc; }
 	
-	this.vel.x += acc * Math.cos(degToRad(-(this.facing+90)));
-	this.vel.z += acc * Math.sin(degToRad(-(this.facing+90)));
+	if (this.vel.side > 0) this.vel.side = 0;
+	this.vel.side -= acc;
+	if (this.vel.side < -this.max_run_vel)
+		this.vel.side = -this.max_run_vel;
 }
 GameMover.prototype.StrafeRight = function(delta){
 	var acc;
@@ -373,8 +338,10 @@ GameMover.prototype.StrafeRight = function(delta){
 	}
 	else{ acc = this.air_run_acc; }
 	
-	this.vel.x += acc * Math.cos(degToRad(-(this.facing-90)));
-	this.vel.z += acc * Math.sin(degToRad(-(this.facing-90)));
+	if (this.vel.side < 0) this.vel.side = 0;
+	this.vel.side += acc;
+	if (this.vel.side > this.max_run_vel)
+		this.vel.side = this.max_run_vel;
 }
 
 GameMover.prototype.FaceLeft = function(delta){
@@ -388,43 +355,6 @@ GameMover.prototype.FaceRight = function(delta){
 	this.facing %= 360;
 }
 
-GameMover.prototype.MoveLeft = function(delta){
-	//if (this.vel.x > 0) this.vel.x = 0;
-	this.Move(delta, -1);
-}
-
-GameMover.prototype.MoveRight = function(delta){
-	//if (this.vel.x < 0) this.vel.x = 0;
-	this.Move(delta, 1);
-}
-
-GameMover.prototype.Move = function(delta, mult){
-	this.mult = mult;
-	this.pressed_down = false;
-
-	var acc;
-	this.horizontal_input = true;
-	if ((this.vel.x * mult) < 0) this.vel.x = 0;
-	if (this.on_ground){
-		acc = this.gnd_run_acc;
-		this.move_state = MoveState.RUNNING;
-	}
-	else{ acc = this.air_run_acc; }
-	
-	if (Math.abs(this.vel.x) < this.max_run_vel){
-		this.vel.x += (acc * mult) * (delta);
-		this.CorrectVelocity(mult);
-	}
-	else if (Math.abs(this.vel.x) > this.max_run_vel){
-		this.vel.x -= (acc * mult) * (delta);
-		if (Math.abs(this.vel.x) < this.max_run_vel)
-			this.vel.x = this.max_run_vel * mult;
-	}
-	else if (Math.abs(this.vel.x) == this.max_run_vel && this.vel.x != this.max_run_vel * mult){
-		this.vel.x += (acc * mult) * (delta);
-	}
-}
-
 GameMover.prototype.MoveStop = function(delta){
 	this.mult = 0;
 	var dec = this.gnd_run_dec;
@@ -434,27 +364,22 @@ GameMover.prototype.MoveStop = function(delta){
 		dec = this.air_run_dec;
 	}
 	
-	//decel x
-	if (this.vel.x > 0){
-		this.vel.x -= (dec) * (delta);
-		if (this.vel.x < 0) this.vel.x = 0;
-	}else if (this.vel.x < 0){
-		this.vel.x += (dec) * (delta);
-		if (this.vel.x > 0) this.vel.x = 0;
+	//decel fwd
+	if (this.vel.fwd > 0){
+		this.vel.fwd -= (dec) * (delta);
+		if (this.vel.fwd < 0) this.vel.fwd = 0;
+	}else if (this.vel.fwd < 0){
+		this.vel.fwd += (dec) * (delta);
+		if (this.vel.fwd > 0) this.vel.fwd = 0;
 	}
-	//decel z
-	if (this.vel.z > 0){
-		this.vel.z -= (dec) * (delta);
-		if (this.vel.z < 0) this.vel.x = 0;
-	}else if (this.vel.z < 0){
-		this.vel.z += (dec) * (delta);
-		if (this.vel.z > 0) this.vel.z = 0;
+	//decel side
+	if (this.vel.side > 0){
+		this.vel.side -= (dec) * (delta);
+		if (this.vel.side < 0) this.vel.side = 0;
+	}else if (this.vel.side < 0){
+		this.vel.side += (dec) * (delta);
+		if (this.vel.side > 0) this.vel.side = 0;
 	}
-}
-
-GameMover.prototype.CorrectVelocity = function(mult){
-	if (Math.abs(this.vel.x) > this.max_run_vel)
-		this.vel.x = this.max_run_vel * mult;
 }
 
 GameMover.prototype.StartJump = function(delta){
@@ -492,4 +417,84 @@ GameMover.prototype.PressDown = function(delta){
 
 GameMover.prototype.StopPressingDown = function(delta){
 	this.pressing_down = false;
+}
+
+//****REWRITES OF GET ROTATED BOUNDING BOX TO ALLOW VELOCITY TO FACTOR IN***/
+GameMover.prototype.GetRotatedBoundingBox = function(use_position, use_velocity){
+	var v = this.BoundingBoxToVertices(use_position, use_velocity);
+	return {
+		coordinates: [
+			//coordinates for the bottom face
+			[v[0][0], v[0][2]], 
+			[v[1][0], v[1][2]], 
+			[v[2][0], v[2][2]], 
+			[v[4][0], v[4][2]],
+			//coordinates for the top face
+			[v[6][0], v[6][1], v[6][2]], 
+			[v[7][0], v[7][1], v[7][2]], 
+			[v[8][0], v[8][1], v[8][2]], 
+			[v[10][0], v[10][1], v[10][2]]
+		],
+		y_bot: v[0][1],
+		y_top: v[6][1]
+	};
+}
+
+GameMover.prototype.BoundingBoxToVertices = function(use_position, use_velocity){
+	var vertices = [];
+	if (use_position === undefined) use_position = true;
+	if (use_velocity === undefined) use_velocity = false;
+	
+	var x = this.x + this.vel.side; 
+	var y = this.y + this.vel.y;
+	var z = this.z + this.vel.fwd;
+	if (!use_velocity){
+		x = this.x; y = this.y; z = this.z;
+	}
+	if (!use_position){
+		x = 0; y = 0; z = 0;
+	}
+	
+	var x1 = this.x1, x2 = this.x2;
+	var xlen = (x2 - x1) / 2;
+	var y1 = this.y1, y2 = this.y2;
+	var ylen = (y2 - y1) / 2;
+	var z1 = this.z1, z2 = this.z2;
+	var zlen = (z2 - z1) / 2;
+	
+	vertices = [
+		//bottom face
+		vec4.fromValues(x+x1, y+y1, z+z1, 1.0), vec4.fromValues(x+x2, y+y1, z+z1, 1.0), vec4.fromValues(x+x2, y+y1, z+z2, 1.0),	
+		vec4.fromValues(x+x1, y+y1, z+z1, 1.0), vec4.fromValues(x+x1, y+y1, z+z2, 1.0), vec4.fromValues(x+x2, y+y1, z+z2, 1.0),
+		//top face
+		vec4.fromValues(x+x1, y+y2, z+z1, 1.0), vec4.fromValues(x+x2, y+y2, z+z1, 1.0), vec4.fromValues(x+x2, y+y2, z+z2, 1.0),	
+		vec4.fromValues(x+x1, y+y2, z+z1, 1.0), vec4.fromValues(x+x1, y+y2, z+z2, 1.0), vec4.fromValues(x+x2, y+y2, z+z2, 1.0),
+		//back face
+		vec4.fromValues(x+x1, y+y1, z+z1, 1.0), vec4.fromValues(x+x1, y+y2, z+z1, 1.0), vec4.fromValues(x+x2, y+y2, z+z1, 1.0),
+		vec4.fromValues(x+x1, y+y1, z+z1, 1.0), vec4.fromValues(x+x2, y+y2, z+z1, 1.0), vec4.fromValues(x+x2, y+y1, z+z1, 1.0),
+		//front face
+		vec4.fromValues(x+x1, y+y1, z+z2, 1.0), vec4.fromValues(x+x1, y+y2, z+z2, 1.0), vec4.fromValues(x+x2, y+y2, z+z2, 1.0),
+		vec4.fromValues(x+x1, y+y1, z+z2, 1.0), vec4.fromValues(x+x2, y+y2, z+z2, 1.0), vec4.fromValues(x+x2, y+y1, z+z2, 1.0),
+		//left face
+		vec4.fromValues(x+x1, y+y1, z+z1, 1.0), vec4.fromValues(x+x1, y+y2, z+z1, 1.0), vec4.fromValues(x+x1, y+y1, z+z2, 1.0),
+		vec4.fromValues(x+x1, y+y1, z+z2, 1.0), vec4.fromValues(x+x1, y+y2, z+z2, 1.0), vec4.fromValues(x+x1, y+y2, z+z1, 1.0),
+		//right face
+		vec4.fromValues(x+x2, y+y1, z+z1, 1.0), vec4.fromValues(x+x2, y+y2, z+z1, 1.0), vec4.fromValues(x+x2, y+y1, z+z2, 1.0),
+		vec4.fromValues(x+x2, y+y1, z+z2, 1.0), vec4.fromValues(x+x2, y+y2, z+z2, 1.0), vec4.fromValues(x+x2, y+y2, z+z1, 1.0)
+	];
+	
+	//translate to the origin so rotation will happen correctly!
+	var T1 = mat4.translate([], mat4.create(), [-(x + xlen), -(y + ylen), -(z + zlen)]);
+	//rotate bounding box by the facing
+	var R = mat4.rotateY([], mat4.identity([]), degToRad(this.facing));
+	//translate back
+	var T2 = mat4.translate([], mat4.create(), [x + xlen, y + ylen, z + zlen]);
+	
+	for (var i = 0; i < vertices.length; i++){	
+		vertices[i] = matrixTimesVector(T1, vertices[i]);
+		vertices[i] = matrixTimesVector(R, vertices[i]);
+		vertices[i] = matrixTimesVector(T2, vertices[i]);
+	}
+	
+	return vertices;
 }

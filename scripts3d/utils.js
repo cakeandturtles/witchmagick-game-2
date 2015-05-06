@@ -254,6 +254,20 @@ function hexToRgb(hex) {
     } : null;
 }
 
+Array.prototype.multipush = function(val, times){
+	for (i = 0; i < times; i++){
+		this.push(val);
+	}
+}
+Array.prototype.stretch = function(s){
+	var len = this.length * s;
+	for (var i = 0; i < len; i+=s){
+		for (var k = 0; k < s; k+= 1){
+			this.splice(i, 0, this[i]);
+		}
+	}
+}
+
 function degToRad(degrees) {
 	return degrees * Math.PI / 180;
 }
@@ -262,15 +276,26 @@ function determinant(a, b, c, d, e, f, g, h, i){
 	return (a*e*i + b*f*g + c*d*h) - (c*e*g + b*d*i + a*f*h);
 }
 
-//will return [a, b, c, m], given that the plane's equation is of the form ax + by + cz = m;
-function planeEquation(P, Q, R){
+function vectorFromPoints(P, Q){
 	var PQ = vec3.fromValues(Q[0] - P[0], Q[1] - P[1], Q[2] - P[2]);
-	var PR = vec3.fromValues(R[0] - P[0], R[1] - P[1], R[2] - P[2]);
+	return PQ;
+}
+
+//will return [a, b, c, d], given that the plane's equation is of the form ax + by + cz = d;
+function planeEquation(P, Q, R){
+	var PQ, PR;
+	//if they pass PQ and PR rather than P, Q, R
+	if (R === undefined){	
+		PQ = P;
+		PR = Q;
+	}else{
+		PQ = vectorFromPoints(P, Q);
+		PR = vectorFromPoints(P, R);
+	}
 	var abc = vec3.cross([], PQ, PR);
-	abc[1] = Math.abs(abc[1]);
-	abc[2] = Math.abs(abc[2]);
-	abc.push(abc[0]*P[0] + abc[1]*P[1] + abc[2]*P[2]);
-	return abc; //now abcm
+	var d = abc[0]*P[0] + abc[1]*P[1] + abc[2]*P[2];
+	abc.push(d);
+	return abc; //now abcd
 }
 
 function sign(p1, p2, p3){
