@@ -1,5 +1,6 @@
 function Room(){
 	this.player = new GameObject("sprite.png", 0, 0, 0, 0, 16, 16);
+	this.triangle = new Triangle(32, 208, 0);
 	this.tiles = {};
 	
 	var y = 232;
@@ -37,15 +38,22 @@ Room.prototype.AddTile = function(y_index, x_index, tile){
 	this.tiles[y_index][x_index] = tile;
 }
 
-Room.prototype.update = function(){
-	this.player.update(1, this);
+Room.prototype.update = function(delta){
+	this.player.update(delta, this);
+	
+	this.triangle.update(delta, this);
 }
 
+var zoom = 0;
 Room.prototype.render = function(){
+	mat4.lookAt([0, 0, zoom], [0, 0, 0], [0, 1, 0]);
+	
 	this.player.render();
+
+	this.triangle.render();
+	
 	var tiles = this.GetAllTiles();
 	for (var i = 0; i < tiles.length; i++){
-		mat4.identity(mvMatrix);
 		tiles[i].render();
 	}
 }

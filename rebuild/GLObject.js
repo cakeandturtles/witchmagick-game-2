@@ -5,10 +5,12 @@ var GLObject = function(src, x, y, z, lb, tb, rb, bb, width, height){
 	this.z = defaultTo(z, 0);
 	this.original_coords = [this.x, this.y, this.z];
 	
-	this.lb = lb;
-	this.tb = tb;
-	this.rb = rb;
-	this.bb = bb;
+	this.rotations = [0, 0, 0];
+	
+	this.lb = defaultTo(lb, 0);
+	this.tb = defaultTo(tb, 0);
+	this.rb = defaultTo(rb, 16);
+	this.bb = defaultTo(bb, 16);
 	
 	this.width = defaultTo(width, 16);
 	this.height = defaultTo(height, 16);
@@ -19,7 +21,7 @@ var GLObject = function(src, x, y, z, lb, tb, rb, bb, width, height){
 	this.spritesheet_coords = {x: 0, y: 0};
 	
 	this.visible = true;
-	this.hazardous = true;
+	this.hazardous = false;
 }
 
 GLObject.prototype.initBuffers = function(){
@@ -32,10 +34,21 @@ GLObject.prototype.initBuffers = function(){
 		this.width,  this.height,  0.0,
 		0.0,  this.height,  0.0
 	];
-	console.log(vertices);
 	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
 	this.vertex_position_buffer.itemSize = 3;
 	this.vertex_position_buffer.numItems = 4;
+	
+	this.vertex_color_buffer = gl.createBuffer();
+	gl.bindBuffer(gl.ARRAY_BUFFER, this.vertex_color_buffer);
+	var colors = [
+		1.0, 1.0, 1.0,
+		1.0, 1.0, 1.0,
+		1.0, 1.0, 1.0,
+		1.0, 1.0, 1.0
+	];
+	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
+	this.vertex_color_buffer.itemSize = 3;
+	this.vertex_color_buffer.numItems = 4;
 
 	this.vertex_texture_coord_buffer = gl.createBuffer();
 	gl.bindBuffer(gl.ARRAY_BUFFER, this.vertex_texture_coord_buffer);
@@ -52,10 +65,10 @@ GLObject.prototype.initBuffers = function(){
 
 	this.vertex_index_buffer = gl.createBuffer();
 	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.vertex_index_buffer);
-	var cubeVertexIndices = [
+	var squareVertexIndices = [
 		0, 1, 2,      0, 2, 3,    // Front face
 	];
-	gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(cubeVertexIndices), gl.STATIC_DRAW);
+	gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(squareVertexIndices), gl.STATIC_DRAW);
 	this.vertex_index_buffer.itemSize = 1;
 	this.vertex_index_buffer.numItems = 6;
 }
@@ -84,10 +97,21 @@ GLObject.prototype.ResetPosition = function(){
 GLObject.prototype.update = function(delta, room){}
 
 GLObject.prototype.render = function(){
+	mvPushMatrix();
 	mat4.translate(mvMatrix, [this.x, -this.height-this.y, this.z]);
+	
+	mat4.translate(mvMatrix, [this.lb + this.rb / 2, 0, 0]);
+	mat4.rotateX(mvMatrix, degToRad(this.rotations[0]));
+	mat4.rotateY(mvMatrix, degToRad(this.rotations[1]));
+	mat4.rotateZ(mvMatrix, degToRad(this.rotations[2]));
+	mat4.translate(mvMatrix, [-(this.lb + this.rb / 2), 0, 0]);
 	
 	gl.bindBuffer(gl.ARRAY_BUFFER, this.vertex_position_buffer);
 	gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, this.vertex_position_buffer.itemSize, gl.FLOAT, false, 0, 0);
+	
+	gl.bindBuffer(gl.ARRAY_BUFFER, this.vertex_color_buffer);
+	gl.vertexAttribPointer(shaderProgram.vertexColorAttribute,
+	this.vertex_color_buffer.itemSize, gl.FLOAT, false, 0, 0);
 
 	gl.bindBuffer(gl.ARRAY_BUFFER, this.vertex_texture_coord_buffer);
 	gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, this.vertex_texture_coord_buffer.itemSize, gl.FLOAT, false, 0, 0);
@@ -99,4 +123,5 @@ GLObject.prototype.render = function(){
 	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.vertex_index_buffer);
 	setMatrixUniforms();
 	gl.drawElements(gl.TRIANGLES, this.vertex_index_buffer.numItems, gl.UNSIGNED_SHORT, 0);
+	mvPopMatrix();
 }

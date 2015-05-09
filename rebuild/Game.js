@@ -15,8 +15,8 @@ function Game(){
 }
 Game.TILE_SIZE = 8;
 
-Game.prototype.update = function(){
-	this.room.update();
+Game.prototype.update = function(delta){
+	this.room.update(delta);
 	
 	if (this.keys_down[39]){
 		this.room.player.MoveRight();
