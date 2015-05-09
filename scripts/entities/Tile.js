@@ -1,11 +1,11 @@
 function Slope(){}
 Slope.FLAT = 0;
-Slope.LOW_POS = (Math.PI / 6);
-Slope.MID_POS = (Math.PI / 4);
-Slope.HI_POS = (Math.PI / 3);
-Slope.LOW_NEG = -30;
-Slope.MID_NEG = -45;
-Slope.HI_NEG = -60;
+Slope.LOW_POS = 2;
+Slope.MID_POS = 4;
+Slope.HI_POS = 6;
+Slope.LOW_NEG = -2;
+Slope.MID_NEG = -4;
+Slope.HI_NEG = -6;
 
 
 Tile.WIDTH = 8;
