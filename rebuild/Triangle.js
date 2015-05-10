@@ -50,5 +50,5 @@ Triangle.prototype.initBuffers = function(){
 }
 
 Triangle.prototype.update = function(delta, room){
-	this.rotations[1] += (5 * delta);
+	this.rotations[1] += (3 * delta);
 }

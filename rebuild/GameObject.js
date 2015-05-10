@@ -4,12 +4,8 @@ MoveState.RUNNING = 1;
 MoveState.JUMPING = 2;
 MoveState.FALLING = 3;
 
-function Facing(){}
-Facing.LEFT = 0;
-Facing.RIGHT = 1;
-
 function GameObject(src, x, y, lb, tb, rb, bb){
-	GLObject.call(this, src, x, y, 0, lb, tb, rb, bb);
+	GLSprite.call(this, src, x, y, lb, tb, rb, bb);
 	this.type = "GameObject";
 	
 	this.prev_coords = {x: this.x, y: this.y, z: this.z};
@@ -34,7 +30,6 @@ function GameObject(src, x, y, lb, tb, rb, bb){
 	this.was_on_ground = this.on_ground;
 	this.previous_bottom = this.y = this.bb;
 	
-	
 	this.left_flip_offset = 0;
 	this.horizontal_collision = false;
 	this.vertical_collision = false;
@@ -44,14 +39,12 @@ function GameObject(src, x, y, lb, tb, rb, bb){
 	this.stuck_in_wall = false;
 	
 	this.move_state = MoveState.STANDING;
-	this.prev_move_state = this.move_state;
-	this.facing = Facing.RIGHT;
-	this.original_facing = this.facing;
+	this.prev_move_state = this.move_state;	
 }
-extend(GLObject, GameObject);
+extend(GLSprite, GameObject);
 
 GameObject.prototype.ResetPosition = function(){
-	GlObject.prototype.ResetPosition.call(this);
+	GlSprite.prototype.ResetPosition.call(this);
 	this.vel = {x: 0, y: 0};
 	this.move_state = MoveState.STANDING;
 	this.facing = this.original_facing;
@@ -68,15 +61,17 @@ GameObject.prototype.update = function(delta, room){
 			this.move_state = MoveState.JUMPING;
 		else this.move_state = MoveState.FALLING;
 	}
+	this.updateAnimationFromMoveState();
 	
-	GLObject.prototype.update.call(this, delta, room);
+	GLSprite.prototype.update.call(this, delta, room);
 }
 
 GameObject.prototype.applyPhysics = function(delta, room){
 	var prev_pos = { x: this.x, y: this.y, z: this.z };
-	this.applyGravity(delta);
 	
 	if (!this.horizontal_input) this.stopMoving(delta);
+	
+	this.applyGravity(delta);
 	this.handleCollisionsAndMove(delta, room);
 	this.horizontal_input = false;
 	
@@ -107,6 +102,29 @@ GameObject.prototype.applyGravity = function(delta){
 	this.on_ground = false;
 }
 
+GameObject.prototype.StartJump = function(delta){
+	if (this.on_ground){
+		this.vel.y = -this.jump_vel;
+		this.is_jumping = true;
+		this.jump_timer = 0;
+		this.on_ground = false;
+	}
+}
+GameObject.prototype.Jump = function(delta){
+	if (this.is_jumping){
+		this.jump_timer += delta;
+		if (this.jump_timer >= this.jump_time_limit){
+			this.jump_timer = 0;
+			this.is_jumping = false;
+		}else{
+			this.vel.y = -this.jump_vel * (1 - (this.jump_timer / this.jump_time_limit));
+		}
+	}
+}
+GameObject.prototype.StopJump = function(delta){
+	this.is_jumping = false;
+}
+
 GameObject.prototype.MoveRight = function(delta){
 	this.facing = Facing.RIGHT;
 	this.horizontal_input = true;
@@ -131,7 +149,7 @@ GameObject.prototype.MoveRight = function(delta){
 	}
 }
 GameObject.prototype.MoveLeft = function(delta){
-	this.facing = Facing.RIGHT;
+	this.facing = Facing.LEFT;
 	this.horizontal_input = true;
 	
 	if (this.vel.x > 0) this.vel.x = 0;
@@ -247,6 +265,7 @@ GameObject.prototype.handleVerticalCollisions = function(delta, room, left_tile,
 				//don't count bottom collision for fallthrough platformes if we're not at the top of it or we are pressing down
 				if (tile.isPartiallySolid() && (tile.y < this.y + this.bb || this.pressing_down))
 					continue;
+				//console.log("BOTTOM COLLISION");
 				
 				this.vel.y = 0;
 				this.on_ground = true;
@@ -254,6 +273,28 @@ GameObject.prototype.handleVerticalCollisions = function(delta, room, left_tile,
 				this.y = tile.y + tile.tb - this.bb;
 			}
 		}
+	}
+}
+
+GameObject.prototype.updateAnimationFromMoveState = function(){
+	switch (this.move_state){
+		case MoveState.STANDING:
+		default:
+			//arguments: 
+			//animation start index x, 
+			//animation start index y,
+			//animation number of frames
+			this.animation.Change(0, 0, 2);
+			break;
+		case MoveState.RUNNING:
+			this.animation.Change(0, 1, 4);
+			break;
+		case MoveState.JUMPING:
+			this.animation.Change(0, 2, 2);
+			break;
+		case MoveState.FALLING:
+			this.animation.Change(0, 3, 2);
+			break;
 	}
 }
 

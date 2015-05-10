@@ -1,5 +1,9 @@
-function Room(){
-	this.player = new GameObject("sprite.png", 0, 0, 0, 0, 16, 16);
+function Room(width, height, zoom){	
+	this.width = defaultTo(width, 320);
+	this.height = defaultTo(height, 240);
+	this.zoom = defaultTo(zoom, 2);
+
+	this.player = new GameObject("sprite_sheet.png", 0, 0, 0, 0, 16, 16);
 	this.triangle = new Triangle(32, 208, 0);
 	this.tiles = {};
 	
@@ -44,9 +48,8 @@ Room.prototype.update = function(delta){
 	this.triangle.update(delta, this);
 }
 
-var zoom = 0;
-Room.prototype.render = function(){
-	mat4.lookAt([0, 0, zoom], [0, 0, 0], [0, 1, 0]);
+Room.prototype.render = function(camera){
+	camera.render_trackObject(this.zoom, this.player, this);
 	
 	this.player.render();
 

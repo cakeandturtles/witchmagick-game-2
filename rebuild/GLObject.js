@@ -121,6 +121,7 @@ GLObject.prototype.render = function(){
 	gl.uniform1i(shaderProgram.samplerUniform, 0);
 
 	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.vertex_index_buffer);
+	
 	setMatrixUniforms();
 	gl.drawElements(gl.TRIANGLES, this.vertex_index_buffer.numItems, gl.UNSIGNED_SHORT, 0);
 	mvPopMatrix();

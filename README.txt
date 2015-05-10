@@ -1,4 +1,5 @@
 olivia the witch wanderer
+	Work to advance from witch to goddess mythological
 
 sequel to glitch dungeon!!!
 html5 & javascript & webgl :O
