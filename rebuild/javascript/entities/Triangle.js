@@ -1,6 +1,8 @@
 var Triangle = function(x, y, z, lb, tb, rb, bb){	
 	GLObject.call(this, "blank.png", x, y, -16, 0, 0, 16, 16, 16, 16);
 	
+	this.rotations[0] = -10;
+	
 	this.type = "Triangle";
 }
 extend(GLObject, Triangle);

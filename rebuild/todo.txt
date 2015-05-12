@@ -1,0 +1,7 @@
+1. Add Level Editor/Saver/Loader (Json)
+	Level has own class containing the player and entities (each having interfaces or dictionaries keeping track of which room they're in), and each room having it's dimensions, tile mana, and glitch rotation. Is it possible to only have one level loaded into memory at a time and load another upon warp gate or dungeon door
+	
+	
+	
+	
+-planes of indeterminate form (nymph npcs blend together there is no individual seperation of self)

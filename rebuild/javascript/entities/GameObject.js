@@ -195,10 +195,8 @@ GameObject.prototype.handleCollisionsAndMove = function(delta, room){
 	var right_tile = Math.ceil((this.x + this.rb + this.vel.x + 1) / Game.TILE_SIZE);
 	var bottom_tile = Math.ceil((this.y + this.bb + this.vel.y + 1) / Game.TILE_SIZE);
 	
-	this.was_on_ground = this.on_ground;
-	this.on_ground = false;
-	var q_horz = 0;
-	var q_vert = 0;
+	var q_horz = 2;
+	var q_vert = 2;
 	var floor_tile = null;
 	floor_tile = this.handleHorizontalCollisions(delta, room, left_tile, top_tile, right_tile, bottom_tile, q_horz);
 	this.x += this.vel.x;

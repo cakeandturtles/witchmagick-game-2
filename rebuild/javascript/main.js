@@ -74,6 +74,8 @@ function initShaders() {
 
 	shaderProgram.textureCoordAttribute = gl.getAttribLocation(shaderProgram, "aTextureCoord");
 	gl.enableVertexAttribArray(shaderProgram.textureCoordAttribute);
+	
+	shaderProgram.alpha = gl.getUniformLocation(shaderProgram, "uAlpha");
 
 	shaderProgram.pMatrixUniform = gl.getUniformLocation(shaderProgram, "uPMatrix");
 	shaderProgram.mvMatrixUniform = gl.getUniformLocation(shaderProgram, "uMVMatrix");
@@ -138,13 +140,20 @@ var game;
 
 function webGLStart() {
 	var canvas = document.getElementById("enchanted-canvas");
+	canvas.oncontextmenu = function(e){
+		e.preventDefault();
+		return false;
+	}
 	initGL(canvas);
 	initShaders();
 
 	gl.clearColor(0.0, 0.0, 0.0, 1.0);
-	gl.enable(gl.DEPTH_TEST);
+	gl.disable(gl.DEPTH_TEST);
 	
-	game = new Game();
+	gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
+	gl.enable(gl.BLEND);
+	
+	game = new Game(canvas);
 	tick();
 }
 

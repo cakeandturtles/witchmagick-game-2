@@ -4,23 +4,29 @@
 <title>rebuild 2.22</title>
 <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 
-<script type="text/javascript" src="glMatrix-0.9.5.min.js"></script>
-<script type="text/javascript" src="webgl-utils.js"></script>
+<script src="javascript/lib/glMatrix-0.9.5.min.js"></script>
+<script src="javascript/lib/webgl-utils.js"></script>
 
-<script type="text/javascript" src="utils.js"></script>
-
-<script type="text/javascript" src="Game.js"></script>
+<script src="javascript/utils.js"></script>
+<script src="javascript/Game.js"></script>
 
 <!--entities-->
-<script type="text/javascript" src="GLObject.js"></script>
-<script type="text/javascript" src="GLSprite.js"></script>
-<script type="text/javascript" src="GLAnimation.js"></script>
-<script type="text/javascript" src="GameObject.js"></script>
-<script type="text/javascript" src="Tile.js"></script>
-<script type="text/javascript" src="Triangle.js"></script>
+<script src="javascript/entities/GLObject.js"></script>
+<script src="javascript/entities/GLSprite.js"></script>
+<script src="javascript/entities/GLAnimation.js"></script>
+<script src="javascript/entities/GameObject.js"></script>
+<script src="javascript/entities/Triangle.js"></script>
 
-<!--managers-->
-<script type="text/javascript" src="Room.js"></script>
+<!--level managers-->
+<script src="javascript/levels/level_programmer.js"></script>
+<script src="javascript/levels/Tile.js"></script>
+<script src="javascript/levels/TileHydra.js"></script>
+<script src="javascript/levels/Camera.js"></script>
+<script src="javascript/levels/Room.js"></script>
+
+<!--glitches-->
+<script src="javascript/glitches/Glitch.js"></script>
+<script src="javascript/glitches/FloorGlitch.js"></script>
 
 <script id="shader-vs" type="x-shader/x-vertex">
     attribute vec3 aVertexPosition;
@@ -47,13 +53,16 @@
 	varying vec3 vVertexColor;
 
     uniform sampler2D uSampler;
+	uniform float uAlpha;
 
     void main(void) {
-        gl_FragColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t)) * vec4(vVertexColor.rgb, 1.0);
+        vec4 fragColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t)) * vec4(vVertexColor.rgb, 1.0);
+		
+		gl_FragColor = vec4(fragColor.rgb, fragColor.a * uAlpha);
     }
 </script>
 
-<script type="text/javascript" src="main.js"></script>
+<script src="javascript/main.js"></script>
 
 </head>
 

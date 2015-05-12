@@ -15,12 +15,14 @@ var GLObject = function(src, x, y, z, lb, tb, rb, bb, width, height){
 	this.width = defaultTo(width, 16);
 	this.height = defaultTo(height, 16);
 	
+	src = "assets/images/" + src;
 	this.initBuffers();
 	this.initTexture(src);
 	
 	this.spritesheet_coords = {x: 0, y: 0};
 	
 	this.visible = true;
+	this.alpha = 1.0;
 	this.hazardous = false;
 }
 
@@ -31,8 +33,8 @@ GLObject.prototype.initBuffers = function(){
 		// Front face
 		0.0, 0.0,  0.0,
 		this.width, 0.0,  0.0,
+		0.0,  this.height,  0.0,
 		this.width,  this.height,  0.0,
-		0.0,  this.height,  0.0
 	];
 	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
 	this.vertex_position_buffer.itemSize = 3;
@@ -56,21 +58,12 @@ GLObject.prototype.initBuffers = function(){
 	  // Front face
 	  0.0, 0.0,
 	  1.0, 0.0,
-	  1.0, 1.0,
-	  0.0, 1.0
+	  0.0, 1.0,
+	  1.0, 1.0
 	];
 	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(textureCoords), gl.STATIC_DRAW);
 	this.vertex_texture_coord_buffer.itemSize = 2;
 	this.vertex_texture_coord_buffer.numItems = 4;
-
-	this.vertex_index_buffer = gl.createBuffer();
-	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.vertex_index_buffer);
-	var squareVertexIndices = [
-		0, 1, 2,      0, 2, 3,    // Front face
-	];
-	gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(squareVertexIndices), gl.STATIC_DRAW);
-	this.vertex_index_buffer.itemSize = 1;
-	this.vertex_index_buffer.numItems = 6;
 }
 
 GLObject.prototype.initTexture = function(src){
@@ -119,10 +112,12 @@ GLObject.prototype.render = function(){
 	gl.activeTexture(gl.TEXTURE0);
 	gl.bindTexture(gl.TEXTURE_2D, this.texture);
 	gl.uniform1i(shaderProgram.samplerUniform, 0);
+	
+	gl.uniform1f(shaderProgram.alpha, this.alpha);
 
-	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.vertex_index_buffer);
+	//gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.vertex_index_buffer);
 	
 	setMatrixUniforms();
-	gl.drawElements(gl.TRIANGLES, this.vertex_index_buffer.numItems, gl.UNSIGNED_SHORT, 0);
+	gl.drawArrays(gl.TRIANGLE_STRIP, 0, this.vertex_position_buffer.numItems);
 	mvPopMatrix();
 }

@@ -65,8 +65,8 @@ GLAnimation.prototype.getTextureCoords = function(facing){
 	  // Front face
 	  ax, ay,
 	  ax+this.x_offset, ay,
+	  ax, ay+this.y_offset,
 	  ax+this.x_offset, ay+this.y_offset,
-	  ax, ay+this.y_offset
 	];
 	//need to flip the coordinates!!
 	if (facing === Facing.LEFT){
@@ -74,8 +74,8 @@ GLAnimation.prototype.getTextureCoords = function(facing){
 		  // Front face
 		  ax+this.x_offset, ay,
 		  ax, ay,
+		  ax+this.x_offset, ay+this.y_offset,
 		  ax, ay+this.y_offset,
-		  ax+this.x_offset, ay+this.y_offset
 		];
 	}
 	return textureCoords;
