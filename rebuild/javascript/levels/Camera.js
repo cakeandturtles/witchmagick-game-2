@@ -1,9 +1,11 @@
 function Camera(x, y){
 	this.x = defaultTo(x, 0);
 	this.y = defaultTo(y, 0);
+	this.zoom = 1;
 }
 
 Camera.prototype.render_trackObject = function(zoom, object, room){
+	this.zoom = zoom;
 	var x_offset = 24;
 	var y_offset = 16;
 	

@@ -223,7 +223,7 @@ GameObject.prototype.handleHorizontalCollisions = function(delta, room, left_til
 			//Check for left collisions
 			if (this.vel.x < 0 && this.isCollidingLeft(tile, q)){
 				//only collide left if the slope is not negative?
-				if (tile.slope > 0){
+				if (tile.slope >= 0){
 					this.vel.x = 0;
 					this.horizontal_collision = true;
 					this.x = tile.x + tile.rb - this.lb;
@@ -233,7 +233,7 @@ GameObject.prototype.handleHorizontalCollisions = function(delta, room, left_til
 			//Check for right collisions
 			if (this.vel.x > 0 && this.isCollidingRight(tile, q)){
 				//only collide right if the slope is not positive?
-				if (tile.slope < 0){
+				if (tile.slope <= 0){
 					this.vel.x = 0;
 					this.horizontal_collision = true;
 					this.x = tile.x + tile.lb - this.rb;

@@ -118,6 +118,8 @@ GLObject.prototype.render = function(){
 	//gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.vertex_index_buffer);
 	
 	setMatrixUniforms();
+	gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+	
 	gl.drawArrays(gl.TRIANGLE_STRIP, 0, this.vertex_position_buffer.numItems);
 	mvPopMatrix();
 }

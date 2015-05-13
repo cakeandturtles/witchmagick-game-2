@@ -27,8 +27,8 @@ Room.prototype.update = function(delta){
 Room.prototype.render = function(camera){
 	camera.render_trackObject(this.zoom, this.player, this);
 	
+	this.tile_hydra.render();
+	
 	this.player.render();
 	this.triangle.render();
-	
-	this.tile_hydra.render();
 }
