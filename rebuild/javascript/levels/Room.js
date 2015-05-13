@@ -5,6 +5,7 @@ function Room(width, height, zoom){
 
 	this.player = new GameObject("sprite_sheet.png", 0, 0, 0, 0, 16, 16);
 	this.triangle = new Triangle(32, 208, 0);
+	this.cube = new GL3dObject("tile.png", 64, 200, 0);
 	this.tile_hydra = new TileHydra(this);
 }
 
@@ -22,6 +23,8 @@ Room.prototype.update = function(delta){
 	this.player.update(delta, this);
 	
 	this.triangle.update(delta, this);
+	
+	this.cube.update(delta, this);
 }
 
 Room.prototype.render = function(camera){
@@ -31,4 +34,5 @@ Room.prototype.render = function(camera){
 	
 	this.player.render();
 	this.triangle.render();
+	this.cube.render();
 }
