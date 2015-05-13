@@ -49,7 +49,7 @@ Input.prototype.IsKeyPressed = function(){
 	return false;
 }
 
-Input.prototype.getKeyCode = function(ascii){
+Input.prototype.getKeyCode = function(ascii){	
 	switch (ascii){
 		case "<": return 37;
 		case ">": return 39;
@@ -60,6 +60,9 @@ Input.prototype.getKeyCode = function(ascii){
 		case "w": return 87;
 		case "s": return 83;
 		case "z": return 90;
+		case " ": return 32;
+		case "q": return 81;
+		case "e": return 69;
 		default: return 0;
 	}
 }

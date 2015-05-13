@@ -24,13 +24,13 @@ Level.prototype.detectInput = function(delta, input){
 		this.room.player.MoveLeft();
 	}
 	
-	if (input.IsKeyPressed("^", "w")){
+	if (input.IsKeyPressed(" ")){
 		this.room.player.StartJump(delta);
 	}
-	else if (input.IsKeyDown("^", "w")){
+	else if (input.IsKeyDown(" ")){
 		this.room.player.Jump(delta);
 	}
-	else if (input.IsKeyUp("^", "w")){
+	else if (input.IsKeyUp(" ")){
 		this.room.player.StopJump(delta);
 	}
 

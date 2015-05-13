@@ -111,9 +111,8 @@ function drawScene() {
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
 	mat4.identity(pMatrix);
-	mat4.ortho(0, 320, -240, 0, -100, 100, pMatrix);
-
 	mat4.identity(mvMatrix);
+	
 	game.render();
 }
 

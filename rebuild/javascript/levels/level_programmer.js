@@ -15,6 +15,8 @@ function LevelArchitect(canvas, input, level){
 	canvas.onmousemove = this.mouseMove.bind(this);
 	canvas.onmousewheel = this.mouseScroll.bind(this);
 	canvas.onmouseout = this.mouseOut.bind(this);
+	
+	this.mouseOut();
 }
 extend(GLObject, LevelArchitect);
 

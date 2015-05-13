@@ -13,6 +13,12 @@ function TileHydra(room){
 		var x_index = i;
 		this.AddTile(y_index, x_index, new Tile("tile.png", i*Game.TILE_SIZE, y, Game.TILE_SIZE, Game.TILE_SIZE, Collision.SOLID), true);
 	}
+	y = 32;
+	for (var i = 0 ; i < 64/Game.TILE_SIZE/2; i++){
+		var y_index = y / Game.TILE_SIZE;
+		var x_index = i;
+		this.AddTile(y_index, x_index, new Tile("tile.png", i*Game.TILE_SIZE, y, Game.TILE_SIZE, Game.TILE_SIZE, Collision.SOLID), true);
+	}
 }
 
 TileHydra.prototype.GetTile = function(y_index, x_index){

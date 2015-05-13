@@ -1,7 +1,10 @@
 function Camera(x, y){
 	this.x = defaultTo(x, 0);
 	this.y = defaultTo(y, 0);
+	this.z = -100;
 	this.zoom = 1;
+	
+	this.view = "";
 }
 
 Camera.prototype.render_trackObject = function(zoom, object, room){
@@ -51,7 +54,30 @@ Camera.prototype.render_trackObject = function(zoom, object, room){
 	
 	y *= -1;
 	
-	mat4.identity(pMatrix);
+	this.CalculateMatrices(x, y, width, height, zoom);
+}
+
+Camera.prototype.CalculateMatrices_orthogonal = function(x, y, width, height, zoom){	
+	this.view = "orthogonal";
+
 	//left, right, bottom, top, near, far, dest
-	mat4.ortho(x, x+width, y-height, y, -100, 100, pMatrix);
+	mat4.ortho(x, x+width, y-height, y, this.z-100, this.z+200, pMatrix);
+}
+Camera.prototype.CalculateMatrices_perspective = function(x, y, width, height, zoom){
+	this.view = "perspective";
+	
+	mat4.translate(mvMatrix, [(-320/this.zoom)-x, (240/this.zoom)-y, this.z]);
+	
+	mat4.identity(pMatrix);
+	//fovy, aspect, near, far, dest
+	mat4.perspective(200 / this.zoom, gl.viewportWidth / gl.viewportHeight, 0.1, 500, pMatrix);
+}
+
+Camera.prototype.CalculateMatrices = Camera.prototype.CalculateMatrices_orthogonal;
+
+Camera.prototype.ToggleProjectionView = function(){
+	if (this.view === "orthogonal")
+		this.CalculateMatrices = this.CalculateMatrices_perspective;
+	else
+		this.CalculateMatrices = this.CalculateMatrices_orthogonal;
 }
