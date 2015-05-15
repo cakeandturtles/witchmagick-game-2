@@ -41,10 +41,10 @@ Triangle.prototype.initBuffers = function(){
 }
 
 Triangle.prototype.update = function(delta, room){
-	this.rotations[1] += (3 * delta);
+	this.rotations[1] += (5 * delta);
 }
 
-Triangle.prototype.render = function(){
+Triangle.prototype.render = function(camera){
 	mvPushMatrix();
 	mat4.translate(mvMatrix, [this.x, -this.height-this.y, this.z]);
 	

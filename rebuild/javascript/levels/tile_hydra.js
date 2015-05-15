@@ -11,13 +11,13 @@ function TileHydra(room){
 	for (var i = 0 ; i < 320/Game.TILE_SIZE/2; i++){
 		var y_index = y / Game.TILE_SIZE;
 		var x_index = i;
-		this.AddTile(y_index, x_index, new Tile("tile.png", i*Game.TILE_SIZE, y, Game.TILE_SIZE, Game.TILE_SIZE, Collision.SOLID), true);
+		this.AddTile(y_index, x_index, new Tile("tile.png", i*Game.TILE_SIZE, y, 0, Game.TILE_SIZE, Game.TILE_SIZE, Game.TILE_SIZE, Collision.SOLID), true);
 	}
 	y = 32;
 	for (var i = 0 ; i < 64/Game.TILE_SIZE/2; i++){
 		var y_index = y / Game.TILE_SIZE;
 		var x_index = i;
-		this.AddTile(y_index, x_index, new Tile("tile.png", i*Game.TILE_SIZE, y, Game.TILE_SIZE, Game.TILE_SIZE, Collision.SOLID), true);
+		this.AddTile(y_index, x_index, new Tile("tile.png", i*Game.TILE_SIZE, y, 0, Game.TILE_SIZE, Game.TILE_SIZE, Game.TILE_SIZE, Collision.SOLID), true);
 	}
 }
 
@@ -126,7 +126,7 @@ TileHydra.prototype.aggregateTiles = function(){
 					}
 				}
 				//finally, create the aggregate visual tile and add it to the array
-				var agg_tile = new Tile(this.src, j * Game.TILE_SIZE, i * Game.TILE_SIZE, (j2 - j + 1) * Game.TILE_SIZE, (i2 - i + 1) * Game.TILE_SIZE);
+				var agg_tile = new Tile(this.src, j * Game.TILE_SIZE, i * Game.TILE_SIZE, 0, (j2 - j + 1) * Game.TILE_SIZE, (i2 - i + 1) * Game.TILE_SIZE, Game.TILE_SIZE);
 				this.aggregated_tiles.push(agg_tile);
 			}
 		}

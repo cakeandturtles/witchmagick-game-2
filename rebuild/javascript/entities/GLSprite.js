@@ -17,10 +17,10 @@ GLSprite.prototype.update = function(delta, room){
 	GLObject.prototype.update.call(this, delta, room);
 }
 
-GLSprite.prototype.render = function(){
+GLSprite.prototype.render = function(camera){
 	gl.bindBuffer(gl.ARRAY_BUFFER, this.vertex_texture_coord_buffer);
 	var textureCoords = this.animation.getTextureCoords(this.facing);
 	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(textureCoords), gl.STATIC_DRAW);
 		
-	GLObject.prototype.render.call(this);
+	GLObject.prototype.render.call(this, camera);
 }

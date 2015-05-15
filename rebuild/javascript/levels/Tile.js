@@ -14,8 +14,8 @@ Collision.SUPER_SOLID = 1;
 Collision.FALLTHROUGH = 2;
 Collision.KILL_PLAYER = 3;
 
-function Tile(src, x, y, width, height, collision, slope, slope_index){
-	GLObject.call(this, src, x, y, 0, 0, 0, width, height, width, height);
+function Tile(src, x, y, z, width, height, depth, collision, slope, slope_index){
+	GL3dObject.call(this, src, x, y, z, 0, 0, 0, width, height, depth, width, height, depth);
 	this.type = "Tile";
 	this.collision = defaultTo(collision, Collision.GHOST);
 	this.slope = defaultTo(slope, Slope.FLAT);
@@ -36,7 +36,47 @@ function Tile(src, x, y, width, height, collision, slope, slope_index){
 	
 	this.setSideHeights();
 }
-extend(GLObject, Tile);
+extend(GL3dObject, Tile);
+
+Tile.prototype.initTextureCoords = function(){
+	this.vertex_texture_coord_buffer = gl.createBuffer();
+	gl.bindBuffer(gl.ARRAY_BUFFER, this.vertex_texture_coord_buffer);
+	var textureCoords = [
+	  // front face
+		0.0, 0.0,
+		1.0 / (Game.TILE_SIZE / this.width), 0.0,
+		1.0 / (Game.TILE_SIZE / this.width), 1.0 / (Game.TILE_SIZE / this.height),  
+		0.0, 1.0 / (Game.TILE_SIZE / this.height), 
+		// back face
+		0.0, 0.0,
+		1.0 / (Game.TILE_SIZE / this.width), 0.0,
+		1.0 / (Game.TILE_SIZE / this.width), 1.0 / (Game.TILE_SIZE / this.height),  
+		0.0, 1.0 / (Game.TILE_SIZE / this.height), 
+		// top face
+		0.0, 0.0,
+		1.0 / (Game.TILE_SIZE / this.width), 0.0,
+		1.0 / (Game.TILE_SIZE / this.width), 1.0 / (Game.TILE_SIZE / this.depth),  
+		0.0, 1.0 / (Game.TILE_SIZE / this.depth), 
+		// bottom face
+		0.0, 0.0,
+		1.0 / (Game.TILE_SIZE / this.width), 0.0,
+		1.0 / (Game.TILE_SIZE / this.width), 1.0 / (Game.TILE_SIZE / this.depth),  
+		0.0, 1.0 / (Game.TILE_SIZE / this.depth), 
+		// right face
+		0.0, 0.0,
+		1.0 / (Game.TILE_SIZE / this.depth), 0.0,
+		1.0 / (Game.TILE_SIZE / this.depth), 1.0 / (Game.TILE_SIZE / this.height),  
+		0.0, 1.0 / (Game.TILE_SIZE / this.height), 
+		// left face
+		0.0, 0.0,
+		1.0 / (Game.TILE_SIZE / this.depth), 0.0,
+		1.0 / (Game.TILE_SIZE / this.depth), 1.0 / (Game.TILE_SIZE / this.height),  
+		0.0, 1.0 / (Game.TILE_SIZE / this.height), 
+	];
+	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(textureCoords), gl.STATIC_DRAW);
+	this.vertex_texture_coord_buffer.itemSize = 2;
+	this.vertex_texture_coord_buffer.numItems = 24;
+}
 
 Tile.prototype.isSolid = function(){
 	return (this.collision === Collision.SOLID || this.collision === Collision.SUPER_SOLID);
@@ -66,30 +106,4 @@ Tile.prototype.setSideHeights = function(){
 			this.height_offsets = { left: 0, right: 0};
 			break;
 	}
-}
-
-Tile.prototype.render = function(){
-	//adjust vertex positions
-	gl.bindBuffer(gl.ARRAY_BUFFER, this.vertex_position_buffer);
-	var vertices = [
-		// Front face
-		0.0, 0.0,  0.0,
-		this.width, 0.0,  0.0,
-		0.0,  this.height,  0.0,
-		this.width,  this.height,  0.0,
-	];
-	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
-	
-	//adjust texture coords
-	gl.bindBuffer(gl.ARRAY_BUFFER, this.vertex_texture_coord_buffer);
-	var textureCoords = [
-	  // Front face
-	  0.0, 0.0,
-	  1.0 / (Game.TILE_SIZE / this.width), 0.0,
-	  0.0, 1.0 / (Game.TILE_SIZE / this.height),
-	  1.0 / (Game.TILE_SIZE / this.width), 1.0 / (Game.TILE_SIZE / this.height),
-	];
-	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(textureCoords), gl.STATIC_DRAW);
-	
-	GLObject.prototype.render.call(this);
 }

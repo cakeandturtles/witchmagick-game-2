@@ -63,6 +63,7 @@ Input.prototype.getKeyCode = function(ascii){
 		case " ": return 32;
 		case "q": return 81;
 		case "e": return 69;
+		case "x": return 88;
 		default: return 0;
 	}
 }

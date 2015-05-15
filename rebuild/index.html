@@ -72,6 +72,29 @@
 
 <body onload="webGLStart();">
     <canvas id="enchanted-canvas" style="border: none;" width="640" height="480"></canvas>
+	<br>
+	<input id="perspective-checkbox" type="checkbox" onchange="
+		var camera = game.level.camera;
+		if (this.checked){
+			camera.CalculateMatrices = camera.CalculateMatrices_perspective;
+		}else{
+			camera.CalculateMatrices = camera.CalculateMatrices_orthogonal;
+		}
+	"/> Turn on Perspective
+	<br>
+	<input id="lightsOut-checkbox" type="checkbox" onchange="
+		var tile_hydra = game.level.room.tile_hydra;
+		if (this.checked){
+			tile_hydra.render = tile_hydra.render_lightsOut;
+		}else{
+			tile_hydra.render = tile_hydra.render_allTiles;
+		}
+	"/> Turn off lights
+	<br>
+	<input id="z-index-camera" type="number" value="0" onchange="
+		var number = Number(this.value);
+		game.level.camera.z = number;
+	"/> Z-Index (of camera and tile editor) (player z index will not change)
 </body>
 
 </html>

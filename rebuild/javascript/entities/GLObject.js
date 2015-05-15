@@ -2,7 +2,7 @@ var GLObject = function(src, x, y, z, lb, tb, rb, bb, width, height){
 	this.type = "GLObject";
 	this.x = x;
 	this.y = y;
-	this.z = defaultTo(z, 0);
+	this.z = defaultTo(z, -0.5);
 	this.original_coords = [this.x, this.y, this.z];
 	
 	this.rotations = [0, 0, 0];
@@ -15,9 +15,9 @@ var GLObject = function(src, x, y, z, lb, tb, rb, bb, width, height){
 	this.width = defaultTo(width, 16);
 	this.height = defaultTo(height, 16);
 	
-	src = "assets/images/" + src;
+	this.src = src;
 	this.initBuffers();
-	this.initTexture(src);
+	this.initTexture("assets/images/" + this.src);
 	
 	this.spritesheet_coords = {x: 0, y: 0};
 	
@@ -89,7 +89,7 @@ GLObject.prototype.ResetPosition = function(){
 
 GLObject.prototype.update = function(delta, room){}
 
-GLObject.prototype.render = function(){
+GLObject.prototype.render = function(camera){
 	mvPushMatrix();
 	mat4.translate(mvMatrix, [this.x, -this.height-this.y, this.z]);
 	
