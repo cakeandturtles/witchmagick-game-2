@@ -10,7 +10,7 @@ function GameObject(src, x, y, lb, tb, rb, bb){
 	
 	this.prev_coords = {x: this.x, y: this.y, z: this.z};
 	
-	this.vel = {x: 0, y: 0};
+	this.vel = {x: 0, y: 0, z: 0};
 	
 	this.max_run_vel = 2.0;
 	this.gnd_run_acc = this.max_run_vel / 3.0;
@@ -192,83 +192,89 @@ GameObject.prototype.stopMoving = function(delta){
 GameObject.prototype.handleCollisionsAndMove = function(delta, room){
 	var left_tile = Math.floor((this.x + this.lb + this.vel.x - 1) / Game.TILE_SIZE);
 	var top_tile = Math.floor((this.y + this.tb + this.vel.y - 1) / Game.TILE_SIZE);
+	var front_tile = Math.floor((this.z + this.fb + this.vel.z - 1) / Game.TILE_SIZE);
 	var right_tile = Math.ceil((this.x + this.rb + this.vel.x + 1) / Game.TILE_SIZE);
 	var bottom_tile = Math.ceil((this.y + this.bb + this.vel.y + 1) / Game.TILE_SIZE);
+	var zback_tile = Math.ceil((this.z + this.zb + this.vel.z + 1) / Game.TILE_SIZE);
 	
 	var q_horz = 2;
 	var q_vert = 2;
 	var floor_tile = null;
-	floor_tile = this.handleHorizontalCollisions(delta, room, left_tile, top_tile, right_tile, bottom_tile, q_horz);
+	floor_tile = this.handleHorizontalCollisions(delta, room, left_tile, top_tile, front_tile, right_tile, bottom_tile, zback_tile, q_horz);
 	this.x += this.vel.x;
-	this.handleVerticalCollisions(delta, room, left_tile, top_tile, right_tile, bottom_tile, q_vert);
+	this.handleVerticalCollisions(delta, room, left_tile, top_tile, front_tile, right_tile, bottom_tile, zback_tile, q_vert);
 	this.y += this.vel.y;
 }
 
-GameObject.prototype.handleHorizontalCollisions = function(delta, room, left_tile, top_tile, right_tile, bottom_tile, q){
+GameObject.prototype.handleHorizontalCollisions = function(delta, room, left_tile, top_tile, front_tile, right_tile, bottom_tile, zback_tile, q){
 	this.horizontal_collision = false;
 	var floor_tile = null;
 	
 	for (var i = top_tile; i <= bottom_tile; i++){
 		for (var j = left_tile; j <= right_tile; j++){
-			var tile = room.GetTile(i, j);
-			if (tile === null) continue;
-			
-			if (!tile.isSolid()) continue;
-			
-			//Reset floor tile (choose the tile (below the player) that is closer to the player horizontally)
-			if (floor_tile === null || (tile.y > this.y && Math.abs(tile.x-this.x) < Math.abs(floor_tile.x-this.x))){
-				floor_tile = tile;
-			}
-			
-			//Check for left collisions
-			if (this.vel.x < 0 && this.isCollidingLeft(tile, q)){
-				//only collide left if the slope is not negative?
-				if (tile.slope >= 0){
-					this.vel.x = 0;
-					this.horizontal_collision = true;
-					this.x = tile.x + tile.rb - this.lb;
+			for (var k = front_tile; k <= zback_tile; k++){
+				var tile = room.GetTile(i, j, k);
+				if (tile === null) continue;
+				
+				if (!tile.isSolid()) continue;
+				
+				//Reset floor tile (choose the tile (below the player) that is closer to the player horizontally)
+				if (floor_tile === null || (tile.y > this.y && Math.abs(tile.x-this.x) < Math.abs(floor_tile.x-this.x))){
+					floor_tile = tile;
 				}
-			}
-			
-			//Check for right collisions
-			if (this.vel.x > 0 && this.isCollidingRight(tile, q)){
-				//only collide right if the slope is not positive?
-				if (tile.slope <= 0){
-					this.vel.x = 0;
-					this.horizontal_collision = true;
-					this.x = tile.x + tile.lb - this.rb;
+				
+				//Check for left collisions
+				if (this.vel.x < 0 && this.isCollidingLeft(tile, q)){
+					//only collide left if the slope is not negative?
+					if (tile.slope >= 0){
+						this.vel.x = 0;
+						this.horizontal_collision = true;
+						this.x = tile.x + tile.rb - this.lb;
+					}
+				}
+				
+				//Check for right collisions
+				if (this.vel.x > 0 && this.isCollidingRight(tile, q)){
+					//only collide right if the slope is not positive?
+					if (tile.slope <= 0){
+						this.vel.x = 0;
+						this.horizontal_collision = true;
+						this.x = tile.x + tile.lb - this.rb;
+					}
 				}
 			}
 		}
 	}
 }
 
-GameObject.prototype.handleVerticalCollisions = function(delta, room, left_tile, top_tile, right_tile, bottom_tile, q){
+GameObject.prototype.handleVerticalCollisions = function(delta, room, left_tile, top_tile, front_tile, right_tile, bottom_tile, zback_tile, q){
 	for (var i = top_tile; i <= bottom_tile; i++){
 		for (var j = left_tile; j <= right_tile; j++){
-			var tile = room.GetTile(i, j);
-			if (tile === null) continue;
-			
-			if (!tile.isSolid() && !tile.isPartiallySolid())
-				continue;
-
-			//check for top collisions
-			if (this.vel.y < 0 && !tile.isPartiallySolid() && this.isCollidingTop(tile, q)){
-				this.vel.y = 0;
-				this.y = tile.y + tile.bb - this.tb;
-			}
-			
-			//check for bottom collisions
-			if (this.vel.y >= 0 && this.isCollidingBottom(tile, q)){
-				//don't count bottom collision for fallthrough platformes if we're not at the top of it or we are pressing down
-				if (tile.isPartiallySolid() && (tile.y < this.y + this.bb || this.pressing_down))
-					continue;
-				//console.log("BOTTOM COLLISION");
+			for (var k = front_tile; k <= zback_tile; k++){
+				var tile = room.GetTile(i, j, k);
+				if (tile === null) continue;
 				
-				this.vel.y = 0;
-				this.on_ground = true;
-				this.has_double_jumped = false;
-				this.y = tile.y + tile.tb - this.bb;
+				if (!tile.isSolid() && !tile.isPartiallySolid())
+					continue;
+
+				//check for top collisions
+				if (this.vel.y < 0 && !tile.isPartiallySolid() && this.isCollidingTop(tile, q)){
+					this.vel.y = 0;
+					this.y = tile.y + tile.bb - this.tb;
+				}
+				
+				//check for bottom collisions
+				if (this.vel.y >= 0 && this.isCollidingBottom(tile, q)){
+					//don't count bottom collision for fallthrough platformes if we're not at the top of it or we are pressing down
+					if (tile.isPartiallySolid() && (tile.y < this.y + this.bb || this.pressing_down))
+						continue;
+					//console.log("BOTTOM COLLISION");
+					
+					this.vel.y = 0;
+					this.on_ground = true;
+					this.has_double_jumped = false;
+					this.y = tile.y + tile.tb - this.bb;
+				}
 			}
 		}
 	}

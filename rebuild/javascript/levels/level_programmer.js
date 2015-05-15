@@ -26,9 +26,9 @@ LevelArchitect.prototype.PlaceTiles = function(){
 	for (var i = 0; i < this.height / Game.TILE_SIZE; i++){
 		for (var j = 0; j < this.width / Game.TILE_SIZE; j++){
 			if (!this.deleting){
-				this.room.AddTile(y_index + i, x_index + j, new Tile("tile.png", this.x + j*Game.TILE_SIZE, this.y + i*Game.TILE_SIZE, 0, Game.TILE_SIZE, Game.TILE_SIZE, Game.TILE_SIZE, Collision.SOLID), true);
+				this.room.AddTile(y_index + i, x_index + j, this.camera.z, new Tile("tile.png", this.x + j*Game.TILE_SIZE, this.y + i*Game.TILE_SIZE, 0, Game.TILE_SIZE, Game.TILE_SIZE, Game.TILE_SIZE, Collision.SOLID), true);
 			}else{
-				this.room.RemoveTile(y_index + i, x_index + j, true);
+				this.room.RemoveTile(y_index + i, x_index + j, this.camera.z, true);
 			}
 		}
 	}

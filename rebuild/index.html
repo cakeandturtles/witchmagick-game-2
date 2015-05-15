@@ -94,6 +94,7 @@
 	<input id="z-index-camera" type="number" value="0" onchange="
 		var number = Number(this.value);
 		game.level.camera.z = number;
+		game.level.camera.eye_z = number - 100;
 	"/> Z-Index (of camera and tile editor) (player z index will not change)
 </body>
 

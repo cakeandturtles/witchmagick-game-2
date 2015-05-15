@@ -8,7 +8,7 @@ function GLSprite(src, x, y, lb, tb, rb, bb){
 	this.facing = Facing.RIGHT;
 	this.original_facing = this.facing;
 	
-	this.animation = new GLAnimation(1, 8);
+	this.animation = new GLAnimation(1, 7);
 }
 extend(GLObject, GLSprite);
 

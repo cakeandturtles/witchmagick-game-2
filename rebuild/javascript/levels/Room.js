@@ -9,14 +9,14 @@ function Room(width, height, zoom){
 	this.tile_hydra = new TileHydra(this);
 }
 
-Room.prototype.GetTile = function(y_index, x_index){
-	return this.tile_hydra.GetTile(y_index, x_index);
+Room.prototype.GetTile = function(y_index, x_index, z_index){
+	return this.tile_hydra.GetTile(y_index, x_index, z_index);
 }
-Room.prototype.AddTile = function(y_index, x_index, tile, suppress_aggregation){
-	this.tile_hydra.AddTile(y_index, x_index, tile, suppress_aggregation);
+Room.prototype.AddTile = function(y_index, x_index, z_index, tile, suppress_aggregation){
+	this.tile_hydra.AddTile(y_index, x_index, z_index, tile, suppress_aggregation);
 }
-Room.prototype.RemoveTile = function(y_index, x_index, suppress_aggregation){
-	this.tile_hydra.RemoveTile(y_index, x_index, suppress_aggregation);
+Room.prototype.RemoveTile = function(y_index, x_index, z_index, suppress_aggregation){
+	this.tile_hydra.RemoveTile(y_index, x_index, z_index, suppress_aggregation);
 }
 
 Room.prototype.update = function(delta){
