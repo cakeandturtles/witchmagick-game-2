@@ -1,5 +1,9 @@
 1. Add Level Editor/Saver/Loader (Json)
 	Level has own class containing the player and entities (each having interfaces or dictionaries keeping track of which room they're in), and each room having it's dimensions, tile mana, and glitch rotation. Is it possible to only have one level loaded into memory at a time and load another upon warp gate or dungeon door
 	
-2. Add key remapper for JUMP/LEFt/RIGHT/DOWN keys
+2. Start playing around making levels/mechanics/glitches
+	
+3. Add key remapper for JUMP/LEFt/RIGHT/DOWN keys
 	-input manager should treat keys and mouse keys as the same (for ease of remapping input)
+	
+4. Can fix tile faces thingy by having a sorter or something in the render function of room. (painter's algorith,?) (so player isn't rendered in front of tiles she is behind)

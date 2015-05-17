@@ -1,0 +1,27 @@
+body{
+	margin: 0;
+	padding: 0;
+}
+#enchanted-canvas{
+	position:absolute;
+	top: 0px;
+	left: 0px;
+	width: 640px;
+	height: 480px;
+}
+#level-architect-menu{
+	position:absolute;
+	top:0px;
+	left:0px;
+	width: 640px;
+	height: 32px;
+	z-index: 10;
+	background-color:rgb(128, 128, 128);
+	opacity: 0.5;
+}
+.level-architect-option{
+	margin-left: 4px;
+	margin-top: 4px;
+	cursor: pointer;
+	opacity: 0.3;
+}

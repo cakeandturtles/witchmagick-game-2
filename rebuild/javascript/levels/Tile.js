@@ -48,25 +48,25 @@ Tile.prototype.initTextureCoords = function(){
 		1.0 / (Game.TILE_SIZE / this.width), 1.0 / (Game.TILE_SIZE / this.height),  
 		0.0, 1.0 / (Game.TILE_SIZE / this.height), 
 		// back face
-		0.0, 0.0,
 		1.0 / (Game.TILE_SIZE / this.width), 0.0,
 		1.0 / (Game.TILE_SIZE / this.width), 1.0 / (Game.TILE_SIZE / this.height),  
 		0.0, 1.0 / (Game.TILE_SIZE / this.height), 
-		// top face
+		0.0, 0.0,
+		// top face  
+		0.0, 1.0 / (Game.TILE_SIZE / this.depth), 
 		0.0, 0.0,
 		1.0 / (Game.TILE_SIZE / this.width), 0.0,
-		1.0 / (Game.TILE_SIZE / this.width), 1.0 / (Game.TILE_SIZE / this.depth),  
-		0.0, 1.0 / (Game.TILE_SIZE / this.depth), 
+		1.0 / (Game.TILE_SIZE / this.width), 1.0 / (Game.TILE_SIZE / this.depth),
 		// bottom face
-		0.0, 0.0,
-		1.0 / (Game.TILE_SIZE / this.width), 0.0,
 		1.0 / (Game.TILE_SIZE / this.width), 1.0 / (Game.TILE_SIZE / this.depth),  
 		0.0, 1.0 / (Game.TILE_SIZE / this.depth), 
-		// right face
 		0.0, 0.0,
+		1.0 / (Game.TILE_SIZE / this.width), 0.0,
+		// right face
 		1.0 / (Game.TILE_SIZE / this.depth), 0.0,
-		1.0 / (Game.TILE_SIZE / this.depth), 1.0 / (Game.TILE_SIZE / this.height),  
+		1.0 / (Game.TILE_SIZE / this.depth), 1.0 / (Game.TILE_SIZE / this.height),
 		0.0, 1.0 / (Game.TILE_SIZE / this.height), 
+		0.0, 0.0,  
 		// left face
 		0.0, 0.0,
 		1.0 / (Game.TILE_SIZE / this.depth), 0.0,

@@ -1,10 +1,9 @@
-function GL3dObject(src, x, y, z, lb, tb, fb, rb, bb, zb, width, height, depth){	
-	this.fb = defaultTo(fb, 0);
-	this.zb = defaultTo(zb, -16);
-	
+function GL3dObject(src, x, y, z, lb, tb, fb, rb, bb, zb, width, height, depth){		
 	this.depth = defaultTo(depth, 16);
 	
 	GLObject.call(this, src, x, y, z, lb, tb, rb, bb, width, height);
+	this.fb = defaultTo(fb, 0);
+	this.zb = defaultTo(zb, -16);
 }
 extend(GLObject, GL3dObject);
 
@@ -47,16 +46,60 @@ GL3dObject.prototype.initBuffers = function(){
 	this.vertex_position_buffer.itemSize = 3;
 	this.vertex_position_buffer.numItems = 24;
 	
+	//create normal buffer for CUBE!
+	this.vertex_normal_buffer = gl.createBuffer();
+	gl.bindBuffer(gl.ARRAY_BUFFER, this.vertex_normal_buffer);
+	var vertexNormals = [
+		// Front face
+		 0.0,  0.0,  1.0,
+		 0.0,  0.0,  1.0,
+		 0.0,  0.0,  1.0,
+		 0.0,  0.0,  1.0,
+
+		// Back face
+		 0.0,  0.0, -1.0,
+		 0.0,  0.0, -1.0,
+		 0.0,  0.0, -1.0,
+		 0.0,  0.0, -1.0,
+
+		// Top face
+		 0.0,  1.0,  0.0,
+		 0.0,  1.0,  0.0,
+		 0.0,  1.0,  0.0,
+		 0.0,  1.0,  0.0,
+
+		// Bottom face
+		 0.0, -1.0,  0.0,
+		 0.0, -1.0,  0.0,
+		 0.0, -1.0,  0.0,
+		 0.0, -1.0,  0.0,
+
+		// Right face
+		 1.0,  0.0,  0.0,
+		 1.0,  0.0,  0.0,
+		 1.0,  0.0,  0.0,
+		 1.0,  0.0,  0.0,
+
+		// Left face
+		-1.0,  0.0,  0.0,
+		-1.0,  0.0,  0.0,
+		-1.0,  0.0,  0.0,
+		-1.0,  0.0,  0.0
+	];
+	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertexNormals), gl.STATIC_DRAW);
+	this.vertex_normal_buffer.itemSize = 3;
+	this.vertex_normal_buffer.numItems = 24;
+	
 	//create color buffer for CUBE!
 	this.vertex_color_buffer = gl.createBuffer();
 	gl.bindBuffer(gl.ARRAY_BUFFER, this.vertex_color_buffer);
 	var colors = [
-		[1.0, 1.0, 1.0],	//front face
-		[1.0, 1.0, 1.0],	//back face
-		[1.0, 1.0, 1.0],	//top face
-		[1.0, 1.0, 1.0],	//bottom face
-		[1.0, 1.0, 1.0],	//right face
-		[1.0, 1.0, 1.0]		//left face
+		[1.0, 1.0, 1.0],	//front face	(white)
+		[0.0, 0.0, 1.0],	//back face		(blue)
+		[0.0, 1.0, 0.0],	//top face		(green)
+		[1.0, 1.0, 0.0],	//bottom face	(yellow)
+		[1.0, 0.0, 1.0],	//right face	(magenta)
+		[1.0, 0.0, 0.0]		//left face		(red)
 	];
 	var unpackedColors = [];
 	for (var i in colors){
@@ -98,30 +141,30 @@ GL3dObject.prototype.initTextureCoords = function(){
 		1.0, 1.0,  
 		0.0, 1.0, 
 		// back face
-		0.0, 0.0,
+		1.0, 0.0,
+		1.0, 1.0,  
 		0.0, 1.0, 
-		1.0, 1.0, 
-		1.0, 0.0, 
-		// top face
-		0.0,  0.0,
-		0.0,  1.0,  
-		1.0,  1.0, 
-		1.0,  0.0, 
+		0.0, 0.0,
+		// top face  
+		0.0, 1.0, 
+		0.0, 0.0,
+		1.0, 0.0,
+		1.0, 1.0,
 		// bottom face
-		0.0, 0.0,
+		1.0, 1.0,  
 		0.0, 1.0, 
-		1.0, 1.0, 
-		1.0, 0.0, 
+		0.0, 0.0,
+		1.0, 0.0,
 		// right face
-		0.0, 0.0,
+		1.0, 0.0,
+		1.0, 1.0,
 		0.0, 1.0, 
-		1.0, 1.0, 
-		1.0, 0.0, 
+		0.0, 0.0,  
 		// left face
 		0.0, 0.0,
+		1.0, 0.0,
+		1.0, 1.0,  
 		0.0, 1.0, 
-		1.0, 1.0, 
-		1.0, 0.0
 	];
 	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(textureCoords), gl.STATIC_DRAW);
 	this.vertex_texture_coord_buffer.itemSize = 2;
@@ -131,6 +174,7 @@ GL3dObject.prototype.initTextureCoords = function(){
 GL3dObject.prototype.update = function(delta, room){
 	this.rotations[0] += (1 * delta);
 	this.rotations[1] += (2 * delta);
+	//this.rotations[2] += (2 * delta);
 }
 
 GL3dObject.prototype.render = function(camera){
@@ -143,8 +187,12 @@ GL3dObject.prototype.render = function(camera){
 	mat4.rotateZ(mvMatrix, degToRad(this.rotations[2]));
 	mat4.translate(mvMatrix, [-(this.lb + this.rb / 2), -(this.tb + this.bb / 2), -(this.fb + this.zb / 2)]);
 	
+	
 	gl.bindBuffer(gl.ARRAY_BUFFER, this.vertex_position_buffer);
 	gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, this.vertex_position_buffer.itemSize, gl.FLOAT, false, 0, 0);
+	
+	gl.bindBuffer(gl.ARRAY_BUFFER, this.vertex_normal_buffer);
+	gl.vertexAttribPointer(shaderProgram.vertexNormalAttribute, this.vertex_normal_buffer.itemSize, gl.FLOAT, false, 0, 0);
 	
 	gl.bindBuffer(gl.ARRAY_BUFFER, this.vertex_color_buffer);
 	gl.vertexAttribPointer(shaderProgram.vertexColorAttribute,
@@ -158,7 +206,9 @@ GL3dObject.prototype.render = function(camera){
 	gl.uniform1i(shaderProgram.samplerUniform, 0);
 	
 	gl.uniform1f(shaderProgram.alpha, this.alpha);
-	gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+	//gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+	gl.disable(gl.BLEND);
+	gl.enable(gl.DEPTH_TEST);
 
 	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.vertex_index_buffer);
 	setMatrixUniforms();

@@ -17,6 +17,17 @@ Triangle.prototype.initBuffers = function(){
 	this.vertex_position_buffer.itemSize = 3;
 	this.vertex_position_buffer.numItems = 3;
 	
+	this.vertex_normal_buffer = gl.createBuffer();
+	gl.bindBuffer(gl.ARRAY_BUFFER, this.vertex_normal_buffer);
+	var normals = [
+		0.0, 0.0, 1.0,
+		0.0, 0.0, 1.0,
+		0.0, 0.0, 1.0
+	];
+	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(normals), gl.STATIC_DRAW);
+	this.vertex_normal_buffer.itemSize = 3;
+	this.vertex_normal_buffer.numItems = 3;
+	
 	this.vertex_color_buffer = gl.createBuffer();
 	gl.bindBuffer(gl.ARRAY_BUFFER, this.vertex_color_buffer);
 	var colors = [
@@ -56,6 +67,9 @@ Triangle.prototype.render = function(camera){
 	
 	gl.bindBuffer(gl.ARRAY_BUFFER, this.vertex_position_buffer);
 	gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, this.vertex_position_buffer.itemSize, gl.FLOAT, false, 0, 0);
+	
+	gl.bindBuffer(gl.ARRAY_BUFFER, this.vertex_normal_buffer);
+	gl.vertexAttribPointer(shaderProgram.vertexNormalAttribute, this.vertex_normal_buffer.itemSize, gl.FLOAT, false, 0, 0);
 	
 	gl.bindBuffer(gl.ARRAY_BUFFER, this.vertex_color_buffer);
 	gl.vertexAttribPointer(shaderProgram.vertexColorAttribute,

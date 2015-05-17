@@ -4,9 +4,13 @@ function TileHydra(room){
 	
 	this.room = room;
 	this.tiles = {};
+	//use the following two for rendering tiles !!!
+	//placed tiles for rendering tiles not yet aggregated but 
+	//being placed by the level editor (to prevent lag during placement)
+	this.placed_tiles = [];
+	//use this to aggregate tiles into fewer visual objects so performance is slightly more efficient (less vertices to render)
 	this.aggregated_tiles = [];
 	
-	this.tiles_changed = false;
 	var y = 232;
 	for (var i = 0 ; i < 320/Game.TILE_SIZE/2; i++){
 		var y_index = y / Game.TILE_SIZE;
@@ -19,6 +23,8 @@ function TileHydra(room){
 		var x_index = i;
 		this.AddTile(y_index, x_index, 0, new Tile("tile.png", i*Game.TILE_SIZE, y, 0, Game.TILE_SIZE, Game.TILE_SIZE, Game.TILE_SIZE, Collision.SOLID), true);
 	}
+	
+	this.AggregateTiles();
 }
 
 TileHydra.prototype.GetTile = function(y_index, x_index, z_index){
@@ -38,22 +44,34 @@ TileHydra.prototype.AddTile = function(y_index, x_index, z_index, tile, suppress
 		this.tiles[y_index][x_index] = {};
 	this.tiles[y_index][x_index][z_index] = tile;
 	
+	this.placed_tiles.push(tile);
+	
 	this.TrySuppressAggregation(suppress_aggregation);
 }
 TileHydra.prototype.RemoveTile = function(y_index, x_index, z_index, suppress_aggregation){
 	if (this.tiles[y_index] !== undefined && this.tiles[y_index][x_index] !== undefined){
-		delete this.tiles[y_index][x_index];
-		this.tiles_changed = true;
-	}
+		var tile_to_remove = this.tiles[y_index][x_index];
+		delete this.tiles[y_index][x_index][z_index];
+		
+		if (isEmpty(this.tiles[y_index][x_index])){
+			//TODO REMOVE REMOVE
+			delete this.tiles[y_index][x_index];
+			if (isEmpty(this.tiles[y_index])){
+				delete this.tiles[y_index];
+			}
+		}
+		
+		var index = this.placed_tiles.indexOf(tile_to_remove);
+		if (index >= 0)
+			this.placed_tiles.splice(index, 1);
+	}	
+	
 	
 	this.TrySuppressAggregation(suppress_aggregation);
 }
 TileHydra.prototype.TrySuppressAggregation = function(suppress_aggregation){
 	if (suppress_aggregation === undefined || !suppress_aggregation){
 		this.aggregateTiles();
-		this.tile_changed = false;
-	}else{
-		this.tiles_changed = true;
 	}
 }
 
@@ -68,7 +86,7 @@ TileHydra.prototype.deaggregateTiles = function(){
 	}
 }
 
-TileHydra.prototype.aggregateTiles = function(){
+TileHydra.prototype.AggregateTiles = function(){
 	//iterate from top to bottom first
 	//left to right next
 	//upon finding a tile that is not already part of an aggregate
@@ -85,20 +103,25 @@ TileHydra.prototype.aggregateTiles = function(){
 	this.deaggregateTiles();
 	var i2, j2, k2;
 	
-	for (var i in this.tiles){
-		i = Number(i);
-		for (var j in this.tiles[i]){
-			j = Number(j);
-			for (var k in this.tiles[i][j]){
+	var numerically = function(a,b){return a-b;};
+	var i_keys = Object.keys(this.tiles).map(Number).sort(numerically);
+	for (var i in i_keys){
+		i = i_keys[i];
+		var j_keys = Object.keys(this.tiles[i]).map(Number).sort(numerically);
+		for (var j in j_keys){
+			j = j_keys[j];
+			var k_keys = Object.keys(this.tiles[i][j]).map(Number).sort(numerically).reverse();
+			for (var k in k_keys){
+				k = k_keys[k];
 				//if we already haven't been aggregated!
-				if (!this.tiles[i][j].has_been_aggregated){
+				if (!this.tiles[i][j][k].has_been_aggregated){
 					i2 = i;
 					j2 = j;
 					k2 = k;
 					
 					var prev_i2 = i2;
 					var min_j2 = 9999;
-					var min_k2 = 999;
+					var min_k2 = 9999;
 					//find the longest unbroken rectangle down
 					while (true){
 						j2 = j;
@@ -109,28 +132,28 @@ TileHydra.prototype.aggregateTiles = function(){
 							var prev_k2 = k2;
 							//find the longest unbroken rectangle back (that is less than minimum
 							while (true){
-								if (k2 >= min_k2) break;
-								k2++;
+								if (Math.abs(k2-k)+1 >= min_k2) break;
+								k2--;
 								if (this.tiles[i2][j2][k2] === undefined){
-									k2--;
+									k2++;
 								}
 								if (k2 === prev_k2){
-									if (k2 < min_k2){
-										min_k2 = k2;
+									if (Math.abs(k2-k)+1 < min_k2){
+										min_k2 = Math.abs(k2-k)+1;
 									}
 									break;
 								}
 								prev_k2 = k2;
 							}
 							
-							if (j2 >= min_j2) break;
+							if (Math.abs(j2-j)+1 >= min_j2) break;
 							j2++;
 							if (this.tiles[i2][j2] === undefined || this.tiles[i2][j2][k] === undefined){
 								j2--;
 							}
 							if (j2 === prev_j2){
-								if (j2 < min_j2){
-									min_j2 = j2;
+								if (Math.abs(j2-j)+1 < min_j2){
+									min_j2 = Math.abs(j2-j)+1;
 								}
 								break;
 							}
@@ -144,34 +167,34 @@ TileHydra.prototype.aggregateTiles = function(){
 						if (i2 === prev_i2) break;
 						prev_i2 = i2;
 					}
-					j2 = min_j2;
+					k2 = k - (min_k2-1);
+					j2 = j + (min_j2-1);
 					//once width and height have been calculated, iterate through the tiles and tell them they've been aggregated
 					for (var y = i; y <= i2; y++){
 						for (var x = j; x <= j2; x++){
-							for (var z = k; z <= k2; z++){
+							for (var z = k; z >= k2; z--){
 								this.tiles[y][x][z].has_been_aggregated = true;
 							}
 						}
 					}
 					//finally, create the aggregate visual tile and add it to the array
-					var agg_tile = new Tile(this.src, j * Game.TILE_SIZE, i * Game.TILE_SIZE, k * Game.TILE_SIZE, (j2 - j + 1) * Game.TILE_SIZE, (i2 - i + 1) * Game.TILE_SIZE, (k2 - k + 1)*Game.TILE_SIZE);
+					var agg_tile = new Tile(this.src, j * Game.TILE_SIZE, i * Game.TILE_SIZE, k * Game.TILE_SIZE, (j2 - j + 1) * Game.TILE_SIZE, (i2 - i + 1) * Game.TILE_SIZE, (k - k2 + 1)*Game.TILE_SIZE);
 					this.aggregated_tiles.push(agg_tile);
 				}
 			}
 		}
 	}
-	
-	this.tiles_changed = false;
+	this.placed_tiles = [];
 }
 
 TileHydra.prototype.render_allTiles = function(camera){
-	if (this.tiles_changed){
-		this.aggregateTiles();
-	}
-	
 	for (var i = 0; i < this.aggregated_tiles.length; i++){
-		if (!camera.IsOrthogonal() || this.aggregated_tiles[i].z === camera.z * Game.TILE_SIZE)
+		if (!camera.IsOrthogonal() || this.aggregated_tiles[i].z === camera.z)
 			this.aggregated_tiles[i].render();
+	}
+	for (var i = 0; i < this.placed_tiles.length; i++){
+		if (!camera.IsOrthogonal() || this.placed_tiles[i].z === camera.z)
+			this.placed_tiles[i].render();
 	}
 }
 TileHydra.prototype.render_lightsOut = function(camera){

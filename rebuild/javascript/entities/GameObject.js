@@ -192,10 +192,10 @@ GameObject.prototype.stopMoving = function(delta){
 GameObject.prototype.handleCollisionsAndMove = function(delta, room){
 	var left_tile = Math.floor((this.x + this.lb + this.vel.x - 1) / Game.TILE_SIZE);
 	var top_tile = Math.floor((this.y + this.tb + this.vel.y - 1) / Game.TILE_SIZE);
-	var front_tile = Math.floor((this.z + this.fb + this.vel.z - 1) / Game.TILE_SIZE);
+	var front_tile = Math.ceil((this.z + this.fb + this.vel.z + 1) / Game.TILE_SIZE);
 	var right_tile = Math.ceil((this.x + this.rb + this.vel.x + 1) / Game.TILE_SIZE);
 	var bottom_tile = Math.ceil((this.y + this.bb + this.vel.y + 1) / Game.TILE_SIZE);
-	var zback_tile = Math.ceil((this.z + this.zb + this.vel.z + 1) / Game.TILE_SIZE);
+	var zback_tile = Math.floor((this.z + this.zb + this.vel.z - 1) / Game.TILE_SIZE);
 	
 	var q_horz = 2;
 	var q_vert = 2;
@@ -212,7 +212,7 @@ GameObject.prototype.handleHorizontalCollisions = function(delta, room, left_til
 	
 	for (var i = top_tile; i <= bottom_tile; i++){
 		for (var j = left_tile; j <= right_tile; j++){
-			for (var k = front_tile; k <= zback_tile; k++){
+			for (var k = front_tile; k >= zback_tile; k--){
 				var tile = room.GetTile(i, j, k);
 				if (tile === null) continue;
 				
@@ -250,7 +250,7 @@ GameObject.prototype.handleHorizontalCollisions = function(delta, room, left_til
 GameObject.prototype.handleVerticalCollisions = function(delta, room, left_tile, top_tile, front_tile, right_tile, bottom_tile, zback_tile, q){
 	for (var i = top_tile; i <= bottom_tile; i++){
 		for (var j = left_tile; j <= right_tile; j++){
-			for (var k = front_tile; k <= zback_tile; k++){
+			for (var k = front_tile; k >= zback_tile; k--){
 				var tile = room.GetTile(i, j, k);
 				if (tile === null) continue;
 				

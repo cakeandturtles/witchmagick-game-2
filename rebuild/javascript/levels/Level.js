@@ -1,6 +1,7 @@
 function Level(canvas, input){
 	this.room_names = [];
 	
+	this.player = new GameObject("sprite_sheet.png", 0, 0, 0, 0, 16, 16);
 	this.camera = new Camera();
 	this.room = new Room();
 	this.architect = new LevelArchitect(canvas, input, this);
@@ -8,33 +9,41 @@ function Level(canvas, input){
 
 Level.prototype.update = function(delta, input){
 	this.detectInput(delta, input);
+	this.player.update(delta, this.room);
 	this.room.update(delta);
 }
 
 Level.prototype.render = function(){
-	this.room.render(this.camera);
+	this.room.render(this.camera, this.player);
 	this.architect.render();
 }
 
 Level.prototype.detectInput = function(delta, input){
 	if (input.IsKeyDown(">", "d")){
-		this.room.player.MoveRight();
+		this.player.MoveRight();
 	}
 	else if (input.IsKeyDown("<", "a")){
-		this.room.player.MoveLeft();
+		this.player.MoveLeft();
 	}
 	
 	if (input.IsKeyPressed("x")){
-		this.room.player.StartJump(delta);
+		this.player.StartJump(delta);
 	}
 	else if (input.IsKeyDown("x")){
-		this.room.player.Jump(delta);
+		this.player.Jump(delta);
 	}
 	else if (input.IsKeyUp("x")){
-		this.room.player.StopJump(delta);
+		this.player.StopJump(delta);
 	}
 
-	/*if (e.keyCode === 40 || 83){
-		//this.room.player.y++;
-	}*/
+	if (input.IsKeyDown("^")){
+		this.player.z--;
+		this.camera.z--;
+		this.camera.eye_z--;
+	}
+	else if (input.IsKeyDown("V")){
+		this.player.z++;
+		this.camera.z++;
+		this.camera.eye_z++;
+	}
 }

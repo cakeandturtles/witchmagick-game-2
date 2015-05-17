@@ -3,12 +3,14 @@ function LevelArchitect(canvas, input, level){
 	this.type = "LevelArchitect";
 	this.alpha = 0.5;
 	
+	this.InitMenu();
 	this.input = input;
 	this.level = level;
 	this.room = level.room;
 	this.camera = level.camera;
 	this.is_mouse_down = false;
 	this.deleting = false;
+	this.tile_placement_depth = 1;
 	
 	canvas.onmousedown = this.mouseDown.bind(this);
 	canvas.onmouseup = this.mouseUp.bind(this);
@@ -20,15 +22,50 @@ function LevelArchitect(canvas, input, level){
 }
 extend(GLObject, LevelArchitect);
 
+LevelArchitect.prototype.InitMenu = function(){
+	this.menu = {};
+	this.menu.dom = document.getElementById("level-architect-menu");
+	
+	//CAMERA OPTION
+	this.menu.camera_option = document.getElementById("level-architect-camera");
+	this.menu.camera_option.onclick = function(e){
+		Dialog.Alert("", "game camera");
+	}
+	
+	//TILE OPTION
+	this.menu.tile_option = document.getElementById("level-architect-tile");
+	this.menu.tile_option.onclick = function(e){
+		var content = "tile placement depth: <input id='tile_placement_depth' type='number' value='1' oninput='" + 
+		"var number = Number(this.value);" + 
+		"if (number < 1) number = 1;" + 
+		"game.level.architect.tile_placement_depth = number;" + 
+		"this.value = number;" + 
+		"'/>";
+		Dialog.Alert(content, "tile placement");
+	}
+	
+	var doms = Object.keys(this.menu);
+	for (var i = 0; i < doms.length; i++){
+		this.menu[doms[i]].onmouseover = function(e){
+			this.style.opacity = "1.0";
+		}
+		this.menu[doms[i]].onmouseout = function(e){
+			this.style.opacity = "0.3";
+		}
+	}
+}
+
 LevelArchitect.prototype.PlaceTiles = function(){
 	var y_index = this.y / Game.TILE_SIZE;
 	var x_index = this.x / Game.TILE_SIZE;
 	for (var i = 0; i < this.height / Game.TILE_SIZE; i++){
 		for (var j = 0; j < this.width / Game.TILE_SIZE; j++){
-			if (!this.deleting){
-				this.room.AddTile(y_index + i, x_index + j, this.camera.z, new Tile("tile.png", this.x + j*Game.TILE_SIZE, this.y + i*Game.TILE_SIZE, 0, Game.TILE_SIZE, Game.TILE_SIZE, Game.TILE_SIZE, Collision.SOLID), true);
-			}else{
-				this.room.RemoveTile(y_index + i, x_index + j, this.camera.z, true);
+			for (var k = this.camera.z; k > this.camera.z - this.tile_placement_depth*Game.TILE_SIZE; k-=Game.TILE_SIZE){
+				if (!this.deleting){
+					this.room.AddTile(y_index + i, x_index + j, k/Game.TILE_SIZE, new Tile("tile.png", this.x + j*Game.TILE_SIZE, this.y + i*Game.TILE_SIZE, k, Game.TILE_SIZE, Game.TILE_SIZE, Game.TILE_SIZE, Collision.SOLID), true);
+				}else{
+					this.room.RemoveTile(y_index + i, x_index + j, k/Game.TILE_SIZE, true);
+				}
 			}
 		}
 	}
@@ -43,10 +80,11 @@ LevelArchitect.prototype.mouseDown = function(e){
 }
 LevelArchitect.prototype.mouseUp = function(e){
 	this.is_mouse_down = false;
+	this.room.AggregateTiles();
 }
 LevelArchitect.prototype.mouseMove = function(e){
-	var mouseX = e.clientX + document.body.scrollLeft - 8;
-	var mouseY = e.clientY + document.body.scrollTop - 8;
+	var mouseX = e.clientX + document.body.scrollLeft;
+	var mouseY = e.clientY + document.body.scrollTop;
 	var gridX = ~~((mouseX + this.camera.x*this.room.zoom) / (Game.TILE_SIZE * this.room.zoom));
 	var gridY = ~~((mouseY + this.camera.y*this.room.zoom) / (Game.TILE_SIZE * this.room.zoom));
 	

@@ -3,7 +3,7 @@ Facing.LEFT = 0;
 Facing.RIGHT = 1;
 
 function GLSprite(src, x, y, lb, tb, rb, bb){
-	GLObject.call(this, src, x, y, 0, lb, tb, rb, bb);
+	GLObject.call(this, src, x, y, -4.0, lb, tb, rb, bb);
 	
 	this.facing = Facing.RIGHT;
 	this.original_facing = this.facing;

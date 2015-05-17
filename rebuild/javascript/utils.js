@@ -1,3 +1,7 @@
+function isEmpty(obj){
+	return Object.keys(obj).length === 0;
+}
+
 //http://stackoverflow.com/questions/4152931/javascript-inheritance-call-super-constructor-or-use-prototype-chain
 function extend(base, sub){
 	// Avoid instantiating the base class just to setup inheritance
