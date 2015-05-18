@@ -52,6 +52,7 @@ Camera.prototype.render_trackObject = function(zoom, object, room){
 	
 	this.x = x;
 	this.y = y;
+	this.eye_z = object.z + 100;
 	
 	y *= -1;
 	

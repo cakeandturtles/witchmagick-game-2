@@ -36,14 +36,12 @@ Level.prototype.detectInput = function(delta, input){
 		this.player.StopJump(delta);
 	}
 
-	if (input.IsKeyDown("^")){
-		this.player.z--;
-		this.camera.z--;
-		this.camera.eye_z--;
-	}
-	else if (input.IsKeyDown("V")){
-		this.player.z++;
-		this.camera.z++;
-		this.camera.eye_z++;
+	if (this.camera.view === "perspective"){
+		if (input.IsKeyDown("^", "w")){
+			this.player.MoveBack();
+		}
+		else if (input.IsKeyDown("V", "s")){
+			this.player.MoveForward();
+		}
 	}
 }

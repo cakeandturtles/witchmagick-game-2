@@ -1,6 +1,8 @@
 function Facing(){}
 Facing.LEFT = 0;
 Facing.RIGHT = 1;
+Facing.FORWARD = 2;
+Facing.BACK = 3;
 
 function GLSprite(src, x, y, lb, tb, rb, bb){
 	GLObject.call(this, src, x, y, -4.0, lb, tb, rb, bb);

@@ -171,6 +171,52 @@ GameObject.prototype.MoveLeft = function(delta){
 			this.vel.x = -this.max_run_vel;
 	}
 }
+GameObject.prototype.MoveForward = function(delta){
+	this.facing = Facing.FORWARD;
+	this.horizontal_input = true;
+	
+	if (this.vel.z < 0) this.vel.z = 0;
+	
+	var acc = this.air_run_acc;
+	if (this.on_ground){
+		acc = this.gnd_run_acc;
+		this.move_state = MoveState.RUNNING;
+	}
+	
+	if (this.vel.z < this.max_run_vel){
+		this.vel.z += acc;
+		if (this.vel.z > this.max_run_vel)
+			this.vel.z = this.max_run_vel;
+	}
+	else if (this.vel.z > this.max_run_vel){
+		this.vel.z -= acc;
+		if (this.vel.z < this.max_run_vel)
+			this.vel.z = this.max_run_vel;
+	}
+}
+GameObject.prototype.MoveBack = function(delta){
+	this.facing = Facing.BACK;
+	this.horizontal_input = true;
+	
+	if (this.vel.z > 0) this.vel.z = 0;
+	
+	var acc = this.air_run_acc;
+	if (this.on_ground){
+		acc = this.gnd_run_acc;
+		this.move_state = MoveState.RUNNING;
+	}
+	
+	if (this.vel.z > -this.max_run_vel){
+		this.vel.z -= acc;
+		if (this.vel.z < -this.max_run_vel)
+			this.vel.z = -this.max_run_vel;
+	}
+	else if (this.vel.z < -this.max_run_vel){
+		this.vel.z += acc;
+		if (this.vel.z > -this.max_run_vel)
+			this.vel.z = -this.max_run_vel;
+	}
+}
 
 GameObject.prototype.stopMoving = function(delta){
 	var dec = this.air_run_dec;
@@ -187,6 +233,15 @@ GameObject.prototype.stopMoving = function(delta){
 		this.vel.x += dec;
 		if (this.vel.x > 0) this.vel.x = 0;
 	}
+	
+	if (this.vel.z > 0){
+		this.vel.z -= dec;
+		if (this.vel.z < 0) this.vel.z = 0;
+	}
+	else if (this.vel.z < 0){
+		this.vel.z += dec;
+		if (this.vel.z > 0) this.vel.z = 0;
+	}
 }
 
 GameObject.prototype.handleCollisionsAndMove = function(delta, room){
@@ -202,6 +257,7 @@ GameObject.prototype.handleCollisionsAndMove = function(delta, room){
 	var floor_tile = null;
 	floor_tile = this.handleHorizontalCollisions(delta, room, left_tile, top_tile, front_tile, right_tile, bottom_tile, zback_tile, q_horz);
 	this.x += this.vel.x;
+	this.z += this.vel.z;
 	this.handleVerticalCollisions(delta, room, left_tile, top_tile, front_tile, right_tile, bottom_tile, zback_tile, q_vert);
 	this.y += this.vel.y;
 }
@@ -241,6 +297,20 @@ GameObject.prototype.handleHorizontalCollisions = function(delta, room, left_til
 						this.horizontal_collision = true;
 						this.x = tile.x + tile.lb - this.rb;
 					}
+				}
+				
+				//Check for back collisions
+				if (this.vel.z < 0 && this.isCollidingBack(tile, q)){
+					this.vel.z = 0;
+					this.horizontal_collision = true;
+					this.z = tile.z + tile.fb - this.zb;
+				}
+				
+				//Check for forward collisions
+				if (this.vel.z > 0 && this.isCollidingForward(tile, q)){
+					this.vel.z = 0;
+					this.horizontal_collision = true;
+					this.z = tile.z + tile.zb - this.fb;
 				}
 			}
 		}
@@ -288,59 +358,108 @@ GameObject.prototype.updateAnimationFromMoveState = function(){
 			//animation start index x, 
 			//animation start index y,
 			//animation number of frames
-			this.animation.Change(0, 0, 2);
+			if (this.facing === Facing.FORWARD)
+				this.animation.Change(2, 0, 1);
+			else if (this.facing === Facing.BACK)
+				this.animation.Change(3, 0, 1);
+			else 
+				this.animation.Change(0, 0, 2);
 			break;
 		case MoveState.RUNNING:
-			this.animation.Change(0, 1, 4);
+			if (this.facing === Facing.FORWARD)
+				this.animation.Change(2, 2, 2);
+			else if (this.facing === Facing.BACK)
+				this.animation.Change(2, 3, 2);
+			else 
+				this.animation.Change(0, 1, 4);
 			break;
 		case MoveState.JUMPING:
-			this.animation.Change(0, 2, 2);
+			if (this.facing === Facing.FORWARD)
+				this.animation.Change(2, 2, 2);
+			else if (this.facing === Facing.BACK)
+				this.animation.Change(2, 3, 2);
+			else
+				this.animation.Change(0, 2, 2);
 			break;
 		case MoveState.FALLING:
-			this.animation.Change(0, 3, 2);
+			if (this.facing === Facing.FORWARD)
+				this.animation.Change(2, 2, 2);
+			else if (this.facing === Facing.BACK)
+				this.animation.Change(2, 3, 2);
+			else
+				this.animation.Change(0, 3, 2);
 			break;
 	}
 }
 
 //Raw Collision functions
-GameObject.prototype.isRectColliding = function(globject, lb, tb, rb, bb){
+GameObject.prototype.isRectColliding = function(globject, lb, tb, fb, rb, bb, zb){
 	return (lb <= globject.x + globject.rb &&
 			rb >= globject.x + globject.lb &&
 			tb <= globject.y + globject.bb &&
-			bb >= globject.y + globject.tb);
+			bb >= globject.y + globject.tb &&
+			fb >= globject.z + globject.zb &&
+			zb <= globject.z + globject.fb);
 }
 GameObject.prototype.isCollidingLeft = function(globject, q){
 	//q is sort of an offset so we don't check collision so rigidly
 	//at the feet or head of the object
 	var lb = this.x + this.lb + this.vel.x - 1;
 	var tb = this.y + this.tb + q;
+	var fb = this.z + this.fb - q;
 	var rb = this.x + this.lb;
 	var bb = this.y + this.bb - q;
+	var zb = this.z + this.zb + q;
 	
-	return this.isRectColliding(globject, lb, tb, rb, bb);
+	return this.isRectColliding(globject, lb, tb, fb, rb, bb, zb);
 }
 GameObject.prototype.isCollidingRight = function(globject, q){
 	var lb = this.x + this.rb;
 	var tb = this.y + this.tb + q;
+	var fb = this.z + this.fb - q;
 	var rb = this.x + this.rb + this.vel.x + 1;
 	var bb = this.y + this.bb - q;
+	var zb = this.z + this.zb + q;
 	
-	return this.isRectColliding(globject, lb, tb, rb, bb);
+	return this.isRectColliding(globject, lb, tb, fb, rb, bb, zb);
 }
 GameObject.prototype.isCollidingTop = function(globject, q){
 	var lb = this.x + this.lb + q;
 	var tb = this.y + this.tb + this.vel.y - 1;
+	var fb = this.z + this.fb - q;
 	var rb = this.x + this.rb - q;
 	var bb = this.y + this.tb;
+	var zb = this.z + this.zb + q;
 	
-	return this.isRectColliding(globject, lb, tb, rb, bb);
+	return this.isRectColliding(globject, lb, tb, fb, rb, bb, zb);
 }
-
 GameObject.prototype.isCollidingBottom = function(globject, q){
 	var lb = this.x + this.lb + q;
 	var tb = this.y + this.bb;
+	var fb = this.z + this.fb - q;
 	var rb = this.x + this.rb - q;
 	var bb = this.y + this.bb + this.vel.y + 1;
+	var zb = this.z + this.zb + q;
 	
-	return this.isRectColliding(globject, lb, tb, rb, bb);
+	return this.isRectColliding(globject, lb, tb, fb, rb, bb, zb);
+}
+GameObject.prototype.isCollidingBack = function(globject, q){
+	var lb = this.x + this.lb + q;
+	var tb = this.y + this.tb + q;
+	var fb = this.z + this.zb;
+	var rb = this.x + this.rb - q;
+	var bb = this.y + this.bb - q;
+	var zb = this.z + this.zb + this.vel.z - 1;
+	
+	return this.isRectColliding(globject, lb, tb, fb, rb, bb, zb);
+}
+GameObject.prototype.isCollidingForward = function(globject, q){
+	var lb = this.x + this.lb + q;
+	var tb = this.y + this.tb + q;
+	var fb = this.z + this.fb + this.vel.z + 1;
+	var rb = this.x + this.rb - q;
+	var bb = this.y + this.bb - q;
+	var zb = this.z + this.fb;
+	
+	return this.isRectColliding(globject, lb, tb, fb, rb, bb, zb);
 }

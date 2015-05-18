@@ -15,7 +15,7 @@ Collision.FALLTHROUGH = 2;
 Collision.KILL_PLAYER = 3;
 
 function Tile(src, x, y, z, width, height, depth, collision, slope, slope_index){
-	GL3dObject.call(this, src, x, y, z, 0, 0, 0, width, height, depth, width, height, depth);
+	GL3dObject.call(this, src, x, y, z, 0, 0, 0, width, height, -depth, width, height, depth);
 	this.type = "Tile";
 	this.collision = defaultTo(collision, Collision.GHOST);
 	this.slope = defaultTo(slope, Slope.FLAT);

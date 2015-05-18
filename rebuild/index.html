@@ -111,15 +111,6 @@
 	</div>
     <canvas id="enchanted-canvas" style="border: none;" width="640" height="480"></canvas>
 	<br>
-	<input id="perspective-checkbox" type="checkbox" onchange="
-		var camera = game.level.camera;
-		if (this.checked){
-			camera.CalculateMatrices = camera.CalculateMatrices_perspective;
-		}else{
-			camera.CalculateMatrices = camera.CalculateMatrices_orthogonal;
-		}
-	"/> Turn on Perspective
-	<br>
 	<input id="lightsOut-checkbox" type="checkbox" onchange="
 		var tile_hydra = game.level.room.tile_hydra;
 		if (this.checked){

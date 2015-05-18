@@ -9,10 +9,10 @@ var GLObject = function(src, x, y, z, lb, tb, rb, bb, width, height){
 	
 	this.lb = defaultTo(lb, 0);
 	this.tb = defaultTo(tb, 0);
-	this.fb = 0;
+	this.fb = 4;
 	this.rb = defaultTo(rb, 16);
 	this.bb = defaultTo(bb, 16);
-	this.zb = 0;
+	this.zb = -4;
 	
 	this.width = defaultTo(width, 16);
 	this.height = defaultTo(height, 16);

@@ -29,18 +29,27 @@ LevelArchitect.prototype.InitMenu = function(){
 	//CAMERA OPTION
 	this.menu.camera_option = document.getElementById("level-architect-camera");
 	this.menu.camera_option.onclick = function(e){
-		Dialog.Alert("", "game camera");
+		var perspective_toggle = "<input type='checkbox' onchange='" +
+			"var camera = game.level.camera;" + 
+			"if (this.checked){" +
+			"	camera.CalculateMatrices = camera.CalculateMatrices_perspective;" + 
+			"}else{" +
+			"	camera.CalculateMatrices = camera.CalculateMatrices_orthogonal;" +
+			"}'/> Turn on Perspective";
+		var content = perspective_toggle;
+		Dialog.Alert(content, "game camera");
 	}
 	
 	//TILE OPTION
 	this.menu.tile_option = document.getElementById("level-architect-tile");
 	this.menu.tile_option.onclick = function(e){
-		var content = "tile placement depth: <input id='tile_placement_depth' type='number' value='1' oninput='" + 
+		var tile_placement_depth = "tile placement depth: <input type='number' value='1' oninput='" + 
 		"var number = Number(this.value);" + 
 		"if (number < 1) number = 1;" + 
 		"game.level.architect.tile_placement_depth = number;" + 
 		"this.value = number;" + 
 		"'/>";
+		var content = tile_placement_depth;
 		Dialog.Alert(content, "tile placement");
 	}
 	
