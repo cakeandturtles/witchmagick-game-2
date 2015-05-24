@@ -5,19 +5,32 @@ function TileOption(architect, menu_dom){
 	this.bb = Game.TILE_SIZE;
 	this.width = Game.TILE_SIZE;
 	this.height = Game.TILE_SIZE;
+	
 	this.tile_placement_depth = 1;
 }
 extend(Option, TileOption);
 
-TileOption.prototype.onContextMenu = function(e){
-	var tile_placement_depth = "tile placement depth: <input type='number' value='1' oninput='" + 
-		"var number = Number(this.value);" + 
-		"if (number < 1) number = 1;" + 
-		"game.level.architect.tile_placement_depth = number;" + 
-		"this.value = number;" + 
-		"'/>";
-	var content = tile_placement_depth;
-	Dialog.Alert(content, "tile placement");
+TileOption.prototype.onContextMenu = function(level){
+	var self = this;
+	Dialog.Alert("", "tile placement");
+	
+	var tile_placement_depth = document.createElement("div");
+	var text = document.createTextNode("tile placement depth: " );
+	var input = document.createElement("input");
+	input.type = "number";
+	input.value = this.tile_placement_depth;
+	input.oninput = function(){
+		var number = Number(this.value);
+		if (number < 1) number = 1;
+		self.tile_placement_depth = number;
+		this.value = number;
+	}
+	input.style.width = "50px";
+	tile_placement_depth.appendChild(text);
+	tile_placement_depth.appendChild(input);
+	
+	//add the elements to the dialog
+	Dialog.AddElement(tile_placement_depth);
 }
 
 TileOption.prototype.PlaceTiles = function(deleting, level){
@@ -38,6 +51,9 @@ TileOption.prototype.PlaceTiles = function(deleting, level){
 }
 
 TileOption.prototype.mouseDown = function(x, y, is_right_mb, level){
+	if (is_right_mb){
+		level.room.DeaggregateTiles();
+	}
 	this.PlaceTiles(is_right_mb, level);
 }
 
@@ -68,11 +84,6 @@ TileOption.prototype.mouseScroll = function(x, y, is_right_mb, level, delta){
 			this.width = Game.TILE_SIZE * 4;
 	}
 	this.height = this.width;
-}
-
-TileOption.prototype.mouseOut = function(x, y, is_right_mb, level, is_mouse_down){
-	this.x = x;
-	this.y = y;
 }
 
 TileOption.prototype.render = function(){

@@ -13,11 +13,13 @@ function Option(architect, menu_dom, id, dom_img_src, src){
 	this.dom.onclick = this.onDomClick_.bind(this);
 	this.dom.oncontextmenu = function(e){ 
 		e.preventDefault(); 
-		this.onContextMenu(e);
+		this.onContextMenu(architect.level);
 		return false; 
 	}.bind(this);
 	
 	this.alpha = 0.5;
+	
+	this.is_selectable = true;
 }
 extend(GLObject, Option);
 
@@ -37,11 +39,16 @@ Option.prototype.SelectMe = function(){
 Option.prototype.onDomClick_ = function(e){
 	var is_right_mb = isRightMB(e);
 	if (!is_right_mb){
-		this.SelectMe();
+		if (this.is_selectable){
+			this.SelectMe();
+		}
+		else{
+			this.onContextMenu(this.architect.level);
+		}
 	}
 }
 
-Option.prototype.onContextMenu = function(e){}
+Option.prototype.onContextMenu = function(level){}
 
 Option.prototype.mouseDown = function(x, y, is_right_mb, level){}
 
@@ -51,4 +58,7 @@ Option.prototype.mouseMove = function(x, y, is_right_mb, level, is_mouse_down){}
 
 Option.prototype.mouseScroll = function(x, y, is_right_mb, level, delta){}
 
-Option.prototype.mouseOut = function(x, y, is_right_mb, level, is_mouse_down){}
+Option.prototype.mouseOut = function(x, y, is_right_mb, level, is_mouse_down){
+	this.x = x;
+	this.y = y;
+}

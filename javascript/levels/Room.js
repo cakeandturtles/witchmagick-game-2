@@ -17,6 +17,9 @@ Room.prototype.AddTile = function(y_index, x_index, z_index, tile, suppress_aggr
 Room.prototype.RemoveTile = function(y_index, x_index, z_index, suppress_aggregation){
 	this.tile_hydra.RemoveTile(y_index, x_index, z_index, suppress_aggregation);
 }
+Room.prototype.DeaggregateTiles = function(){
+	this.tile_hydra.deaggregateTiles();
+}
 Room.prototype.AggregateTiles = function(){
 	this.tile_hydra.AggregateTiles();
 }
@@ -28,7 +31,7 @@ Room.prototype.update = function(delta){
 }
 
 Room.prototype.render = function(camera, player){
-	camera.render_trackObject(this.zoom, player, this);
+	camera.render(this.zoom, this);
 	
 	this.tile_hydra.render(camera);
 	

@@ -114,38 +114,7 @@
 
 
 <body onload="webGLStart();">
-	<div id="level-architect-menu">
-		<img id="level-architect-camera" class="level-architect-option" src="assets/images/option_camera.png"/>
-		<!--<img id="level-architect-tile" class="level-architect-option" src="assets/images/option_tile.png"/>
-		<img id="level-architect-player" class="level-architect-option" src="assets/images/option_player.png"/>-->
-	</div>
+	<div id="level-architect-menu"></div>
     <canvas id="enchanted-canvas" style="border: none;" width="640" height="480"></canvas>
-	<br>
-	<input id="lightsOut-checkbox" type="checkbox" onchange="
-		var tile_hydra = game.level.room.tile_hydra;
-		if (this.checked){
-			tile_hydra.render = tile_hydra.render_lightsOut;
-		}else{
-			tile_hydra.render = tile_hydra.render_allTiles;
-		}
-	"/> Turn off lights
-	<br>
-	<input id="z-index-camera-prev" type="number" value="0" style="display:none;"/>
-	<input id="z-index-camera" type="number" value="0" oninput="
-		var prev = document.getElementById('z-index-camera-prev');
-		var prev_value = Number(prev.value);
-		var number = Number(this.value);
-		if (number > prev_value && number !== 0)
-			number = prev_value + Game.TILE_SIZE;
-		else if (number < prev_value && number !== 0)
-			number = prev_value - Game.TILE_SIZE;
-		prev.value = number;
-		this.value = number;
-		
-		game.level.camera.z = number;
-		game.level.camera.eye_z = number + 100;
-	"/> Z-Index (of camera and tile editor) (player z index will not change)
-	<br>
-	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </body>
 </html>

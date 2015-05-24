@@ -24,27 +24,9 @@ LevelArchitect.prototype.InitMenuOptions = function(){
 	this.menu.options = [];
 	
 	//CAMERA OPTION
-	/*this.menu.camera_option = {dom: document.getElementById("level-architect-camera")};
-	this.menu.camera_option.dom.onclick = function(e){
-		var is_right_mb = isRightMB(e);
-		
-		if (is_right_mb){
-			var perspective_toggle = "<input type='checkbox' onchange='" +
-				"var camera = game.level.camera;" + 
-				"if (this.checked){" +
-				"	camera.CalculateMatrices = camera.CalculateMatrices_perspective;" + 
-				"}else{" +
-				"	camera.CalculateMatrices = camera.CalculateMatrices_orthogonal;" +
-				"}'/> Turn on Perspective";
-			var content = perspective_toggle;
-			Dialog.Alert(content, "game camera");
-		}
-		else{
-			architect.ToggleSelection(architect.menu.tile_option);
-		}
-	}*/
+	this.menu.options.push(new CameraOption(this, this.menu.dom));
 	
-	//TILE OPTION (WE'RE SELECTING THIS INITIALLY
+	//TILE OPTION (WE'RE SELECTING THIS INITIALLY)
 	var tile_option = new TileOption(this, this.menu.dom);
 	tile_option.SelectMe();
 	this.menu.options.push(tile_option);
@@ -71,26 +53,30 @@ LevelArchitect.prototype.InitMenuOptions = function(){
 }
 
 LevelArchitect.prototype.mouseDown = function(e){
+	var mouseX = e.clientX + document.body.scrollLeft;
+	var mouseY = e.clientY + document.body.scrollTop;
 	this.is_mouse_down = true;
 	
-	this.selected_option.mouseDown(this.x, this.y, isRightMB(e), this.level);
+	this.selected_option.mouseDown(this.x, this.y, isRightMB(e), this.level, mouseX, mouseY);
 }
 LevelArchitect.prototype.mouseUp = function(e){
+	var mouseX = e.clientX + document.body.scrollLeft;
+	var mouseY = e.clientY + document.body.scrollTop;
 	this.is_mouse_down = false;
 	
-	this.selected_option.mouseUp(this.x, this.y, isRightMB(e), this.level);
+	this.selected_option.mouseUp(this.x, this.y, isRightMB(e), this.level, mouseX, mouseY);
 }
 LevelArchitect.prototype.mouseMove = function(e){
 	var mouseX = e.clientX + document.body.scrollLeft;
 	var mouseY = e.clientY + document.body.scrollTop;
 	var zoom = this.level.room.zoom;
 	var gridX = ~~((mouseX + this.level.camera.x*zoom) / (Game.TILE_SIZE * zoom));
-	var gridY = ~~((mouseY + this.level.camera.y*zoom) / (Game.TILE_SIZE * zoom));
+	var gridY = ~~((mouseY - this.level.camera.y*zoom) / (Game.TILE_SIZE * zoom));
 	
 	this.x = gridX * Game.TILE_SIZE;
 	this.y = gridY * Game.TILE_SIZE;
 	
-	this.selected_option.mouseMove(this.x, this.y, isRightMB(e), this.level, this.is_mouse_down);
+	this.selected_option.mouseMove(this.x, this.y, isRightMB(e), this.level, this.is_mouse_down, mouseX, mouseY);
 }
 LevelArchitect.prototype.mouseScroll = function(e){
 	var delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));

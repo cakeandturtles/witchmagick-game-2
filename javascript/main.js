@@ -147,7 +147,15 @@ function tick() {
 var game;
 
 function webGLStart() {
-	randomCSSGradient(document.body);
+	//manipulate css to prettify dialogs and stuff I guess
+	var colors = randomCSSGradient(document.body);
+	var dialogCSS = getCSSRule("#dialog");
+	dialogCSS.style.background = colors[0];
+	dialogCSS.style.color = colors[1];
+	var dialogConfirmCSS = getCSSRule("#dialogConfirm");
+	dialogConfirmCSS.style.background = colors[1];
+	dialogConfirmCSS.style.color = colors[0];
+	
 	
 	var canvas = document.getElementById("enchanted-canvas");
 	canvas.oncontextmenu = function(e){

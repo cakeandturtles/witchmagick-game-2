@@ -3,6 +3,7 @@ function Level(canvas, input){
 	
 	this.player = new GameObject("sprite_sheet.png", 0, 0, 0, 0, 16, 16);
 	this.camera = new Camera();
+	this.camera.Follow(this.player);
 	this.room = new Room();
 	this.architect = new LevelArchitect(canvas, input, this);
 	this.ctx2d = canvas.getContext("2d");

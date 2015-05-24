@@ -5,10 +5,15 @@ function Camera(x, y){
 	this.eye_z = 100;
 	this.zoom = 1;
 	
+	this.leader = null;
+	
 	this.view = "";
 }
+Camera.prototype.Follow = function(object){
+	this.leader = object;
+}
 
-Camera.prototype.render_trackObject = function(zoom, object, room){
+Camera.prototype.render = function(zoom, room){
 	this.zoom = zoom;
 	var x_offset = 24;
 	var y_offset = 16;
@@ -18,43 +23,46 @@ Camera.prototype.render_trackObject = function(zoom, object, room){
 	var width = gl.viewportWidth / zoom;
 	var height = gl.viewportHeight / zoom;
 	
-	//move the camera with the x/y offset buffers
-	if (object.x + object.width + x_offset > x + width)
-		x += object.x + object.width + x_offset - (x + width);
-	if (object.x < x + x_offset)
-		x += object.x - (x + x_offset);
-	
-	if (object.y + object.height + y_offset > y + height)
-		y += object.y + object.height + y_offset - (y + height);
-	if (object.y < y + y_offset)
-		y += object.y - (y + y_offset);
-	
-	//correct the x and y positions so the buffer doesn't look past
-	//the boundaries of the room
-	if (x < 0) x = 0;
-	if (x + width > room.width)
-		x = room.width - width;
-	if (y < 0) y = 0;
-	if (y + height > room.height)
-		y = room.height - height;
-	
-	//move the camera past room boundaries sticking to the tracked object
-	//(allows for hidden paths)
-	if (object.x + object.width > x + width)
-		x += object.x + object.width - (x + width);
-	else if (object.x < x)
-		x += object.x - (x);
-	
-	if (object.y + object.height > y + height)
-		y += object.y + object.height - (y + height);
-	else if (object.y < y)
-		y += object.y - (y);
-	
-	this.x = x;
-	this.y = y;
-	this.eye_z = object.z + 100;
-	
-	y *= -1;
+	if (this.leader !== null && this.leader !== undefined){
+		var object = this.leader;
+		//move the camera with the x/y offset buffers
+		if (object.x + object.width + x_offset > x + width)
+			x += object.x + object.width + x_offset - (x + width);
+		if (object.x < x + x_offset)
+			x += object.x - (x + x_offset);
+
+		if (object.y + object.height + y_offset > y + height)
+			y += object.y + object.height + y_offset - (y + height);
+		if (object.y < y + y_offset)
+			y += object.y - (y + y_offset);
+
+		//correct the x and y positions so the buffer doesn't look past
+		//the boundaries of the room
+		if (x < 0) x = 0;
+		if (x + width > room.width)
+			x = room.width - width;
+		if (y < 0) y = 0;
+		if (y + height > room.height)
+			y = room.height - height;
+
+		//move the camera past room boundaries sticking to the tracked object
+		//(allows for hidden paths)
+		if (object.x + object.width > x + width)
+			x += object.x + object.width - (x + width);
+		else if (object.x < x)
+			x += object.x - (x);
+
+		if (object.y + object.height > y + height)
+			y += object.y + object.height - (y + height);
+		else if (object.y < y)
+			y += object.y - (y);
+
+		this.x = x;
+		this.y = y;
+		this.eye_z = object.z + 100;
+
+		y *= -1;
+	}
 	
 	this.CalculateMatrices(x, y, width, height, zoom);
 }

@@ -8,6 +8,11 @@ Dialog.Close = function(){
 	}catch(error){}
 }
 
+Dialog.AddElement = function(element){
+	var dialogBody = document.getElementById("dialogBody");
+	dialogBody.appendChild(element);
+}
+
 Dialog.Alert = function(content, title){
 	if (title === undefined) title = "";
 	
