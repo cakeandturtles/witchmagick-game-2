@@ -1,3 +1,36 @@
+function randomCSSGradient(ele){
+	color1 = "#000000".replace(/0/g,function(){return (~~(Math.random()*16)).toString(16);});
+	color2 = $ui.color.triadic(color1)[1];
+
+	ele.style.background = 
+		"linear-gradient("+color1+","+color2+")";
+	ele.style.color = color2;
+}
+
+function isRightMB(e){
+	var is_right_mb;
+	e = e || window.event;
+	if ("which" in e)
+		is_right_mb = e.which == 3;
+	else if ("button" in e)
+		is_right_mb = e.button == 2;
+	return is_right_mb;
+}
+
+//http://jaketrent.com/post/addremove-classes-raw-javascript/
+function hasClass(ele, cls){
+	return !!ele.className.match(new RegExp('(\\s|^)'+cls+'(\\s|$)'));
+}
+function addClass(ele, cls){
+	if (!hasClass(ele,cls)) ele.className += " "+cls;
+}
+function removeClass(ele,cls){
+	if (hasClass(ele,cls)){
+		var reg = new RegExp('(\\s|^)'+cls+'(\\s|$)');
+		ele.className = ele.className.replace(reg, '');
+	}
+}
+
 function isEmpty(obj){
 	return Object.keys(obj).length === 0;
 }

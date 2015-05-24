@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>arcane frog</title>
+<style type="text/css">
+	body{
+		margin: 0;
+		background: #000000;
+		background: linear-gradient(#00ffff, #ff00ff); 
+		
+		color: #ff00ff;
+		font-family: monospace;
+		overflow-x: hidden;
+		overflow-y: hidden;
+	}
+	table,tr,td{
+		margin: 0;
+		padding: 0;
+		border-collapse: collapse;
+	}
+	textarea, pre { 
+		-moz-tab-size:4; 
+		-o-tab-size:4; 
+		tab-size:4; 
+		background-color: #000000;
+		color: #00ffff;
+	}
+</style>
+
+<!--libraries and utils-->
+<script src="scripts/lib/webgl-utils.js"></script>
+<script src="scripts/lib/colorflow.min.js"></script>
+<script src="scripts/utils.js"></script>
+<!--init game-->
+<script src="scripts/init_game.js"></script>
+<!--managers-->
+<script src="scripts/managers/KeyManager.js"></script>
+<script src="scripts/managers/InputManager.js"></script>
+<script src="scripts/managers/ResourceManager.js"></script>
+<script src="scripts/managers/CorruptionManager.js"></script>
+<!--room managers-->
+<script src="scripts/managers/rooms/TileManager.js"></script>
+<script src="scripts/managers/rooms/Camera.js"></script>
+<script src="scripts/managers/rooms/Room.js"></script>
+<!--entities-->
+<script src="scripts/entities/abstract/Animation.js"></script>
+<script src="scripts/entities/abstract/GameObject.js"></script>
+<script src="scripts/entities/abstract/GameSprite.js"></script>
+<script src="scripts/entities/abstract/GameMover.js"></script>
+<script src="scripts/entities/Player.js"></script>
+<!--game & main-->
+<script src="scripts/game.js"></script>
+<script src="scripts/main.js"></script>
+
+</head>
+<body>
+	<table><tr>
+	<td>
+		<canvas id="glitch_canvas" style="width:640px;height:480px;" width="640" height="480" oncontextmenu="return false;"></canvas>
+	</td>
+	<td>
+	  <div style="height:480px;">
+		<u>Level Editor:</u>
+		<div style="padding-left:10px;">
+			Category: <select id="level_category_menu"></select>
+			<br/>
+			Object: <select id="level_object_menu"></select>
+		</div>
+		<br/>
+		<u>Modify instance code:</u>
+		<div style="padding-left:10px;">
+			Instance: <select id="corruption_object_menu"></select>
+			<br/>
+			Methods: <select id="corruption_method_menu"></select>
+		</div>
+		<br/>
+		<input type="submit" id="zoom_test_button" value="Zoom Test Start" style="margin-left: 10px;"/>
+		<script type="text/javascript">
+			var add = 0.01;
+			var zoomTest = function (){
+			  GlitchDungeon.game.room.camera.zoom += add;
+			  if (GlitchDungeon.game.room.camera.zoom >= 6.0){
+				add = -0.01;
+			  }
+			  if (GlitchDungeon.game.room.camera.zoom <= 1){
+				add = 0.01;
+			  }
+			}
+			var zoom_test_id = null;
+			
+			document.getElementById("zoom_test_button").addEventListener('click', function(e){
+				if (zoom_test_id === null){
+					zoom_test_id = window.setInterval(zoomTest, 50);
+					document.getElementById("zoom_test_button").value = "Stop Zoom Test";
+				}else{
+					window.clearInterval(zoom_test_id);
+					zoom_test_id = null;
+					document.getElementById("zoom_test_button").value = "Zoom Test Start";
+				}
+			});
+		</script>
+	  </div>
+	</td>
+	</tr></table>
+	<br/>
+	<span style="color: #ffffff;">Edit Code:</span><br/>
+	<textarea id="glitch_textarea" style="width:920px;height:360px;"></textarea>
+</tr>
+</table>
+<input id="glitch_button" type="submit" value="Edit Code for Object's Method (CTRL + S)" />
+<span id="glitch_save_text" style="color:#00ffff;font-weight:bold;"></span>
+</body>
+</html>

@@ -147,6 +147,8 @@ function tick() {
 var game;
 
 function webGLStart() {
+	randomCSSGradient(document.body);
+	
 	var canvas = document.getElementById("enchanted-canvas");
 	canvas.oncontextmenu = function(e){
 		e.preventDefault();

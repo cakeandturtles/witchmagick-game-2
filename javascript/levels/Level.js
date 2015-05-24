@@ -5,6 +5,7 @@ function Level(canvas, input){
 	this.camera = new Camera();
 	this.room = new Room();
 	this.architect = new LevelArchitect(canvas, input, this);
+	this.ctx2d = canvas.getContext("2d");
 }
 
 Level.prototype.update = function(delta, input){
