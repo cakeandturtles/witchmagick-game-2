@@ -162,6 +162,7 @@ function webGLStart() {
 		e.preventDefault();
 		return false;
 	}
+	
 	initGL(canvas);
 	initShaders();
 
@@ -174,4 +175,3 @@ function webGLStart() {
 	game = new Game(canvas);
 	tick();
 }
-

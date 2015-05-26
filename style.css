@@ -24,6 +24,8 @@ body{
 	margin-top: 4px;
 	cursor: pointer;
 	opacity: 0.3;
+	width: 24px;
+	height: 24px;
 }
 .selected{
 	opacity: 1.0;

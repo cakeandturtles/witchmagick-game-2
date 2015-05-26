@@ -1,12 +1,18 @@
 function Level(canvas, input){
-	this.room_names = [];
+	this.ctx2d = canvas.getContext("2d");
 	
 	this.player = new GameObject("sprite_sheet.png", 0, 0, 0, 0, 16, 16);
 	this.camera = new Camera();
 	this.camera.Follow(this.player);
+	
 	this.room = new Room();
+	this.rooms = [[this.room]];
+	
 	this.architect = new LevelArchitect(canvas, input, this);
-	this.ctx2d = canvas.getContext("2d");
+}
+Level.prototype.save = function(){
+}
+Level.prototype.load = function(){
 }
 
 Level.prototype.update = function(delta, input){

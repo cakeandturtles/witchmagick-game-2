@@ -13,6 +13,8 @@ function Option(architect, menu_dom, id, dom_img_src, src){
 	this.dom.onclick = this.onDomClick_.bind(this);
 	this.dom.oncontextmenu = function(e){ 
 		e.preventDefault(); 
+		if (!this.is_selectable)
+			this.SelectMe();
 		this.onContextMenu(architect.level);
 		return false; 
 	}.bind(this);
@@ -39,8 +41,8 @@ Option.prototype.SelectMe = function(){
 Option.prototype.onDomClick_ = function(e){
 	var is_right_mb = isRightMB(e);
 	if (!is_right_mb){
+		this.SelectMe();
 		if (this.is_selectable){
-			this.SelectMe();
 		}
 		else{
 			this.onContextMenu(this.architect.level);

@@ -8,12 +8,14 @@ after 1000 years in development we hope it was worth the wait
 
 -------------------------------------------------------------
 Credit::
-1. Preloading resources from PxLoader (http://thinkpixellab.com/pxloader/)
+1. Built on top of NW.js (http://nwjs.io/)
 
-2. For learning WebGL (make sure to start with lesson one if you're new and read the whole lesson: very helpful if you're used to just vanilla JavaScript.
+2. Preloading resources from PxLoader (http://thinkpixellab.com/pxloader/)
+
+3. For learning WebGL (make sure to start with lesson one if you're new and read the whole lesson: very helpful if you're used to just vanilla JavaScript.
 	http://learningwebgl.com/lessons/ 
 	
-3. JavaScript Matrix and Vector library:
+4. JavaScript Matrix and Vector library:
 	https://github.com/toji/gl-matrix
 	
-4. All the other libraries I used in the scripts/lib/ directory
+5. All the other libraries I used in the scripts/lib/ directory

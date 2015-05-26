@@ -23,6 +23,12 @@ LevelArchitect.prototype.InitMenuOptions = function(){
 	this.menu.dom = document.getElementById("level-architect-menu");
 	this.menu.options = [];
 	
+	//SAVE OPTION
+	this.menu.options.push(new SaveOption(this, this.menu.dom));
+	
+	//SPACE HOLDER
+	this.menu.options.push(new SpaceOption(this, this.menu.dom));
+	
 	//CAMERA OPTION
 	this.menu.options.push(new CameraOption(this, this.menu.dom));
 	
