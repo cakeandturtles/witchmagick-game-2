@@ -6,6 +6,9 @@ function LevelArchitect(canvas, input, level){
 	this.InitMenuOptions();
 	this.input = input;
 	this.level = level;
+	//this paused used to determine whether the PAUSED option is clicked
+	//which will pause the level (not the level editor) and prevent default dialog boxes closing from resuming the level prematurely
+	this.paused = false;
 	this.is_mouse_down = false;
 	
 	canvas.onmousedown = this.mouseDown.bind(this);
@@ -17,14 +20,33 @@ function LevelArchitect(canvas, input, level){
 	this.mouseOut();
 }
 
+LevelArchitect.prototype.pause = function(){
+	this.paused = true;
+	this.level.pause();
+}
+LevelArchitect.prototype.tryResume = function(){
+	if (!this.paused)
+		this.level.resume();
+}
+LevelArchitect.prototype.resume = function(){
+	this.paused = false;
+	this.level.resume();
+}
+
 LevelArchitect.prototype.InitMenuOptions = function(){
 	var architect = this;
 	this.menu = {};
 	this.menu.dom = document.getElementById("level-architect-menu");
 	this.menu.options = [];
 	
-	//SAVE OPTION
-	this.menu.options.push(new SaveOption(this, this.menu.dom));
+	//Export OPTION
+	this.menu.options.push(new ExportOption(this, this.menu.dom));
+	
+	//SPACE HOLDER
+	this.menu.options.push(new SpaceOption(this, this.menu.dom));
+	
+	//PAUSE OPTION
+	this.menu.options.push(new PauseOption(this, this.menu.dom));
 	
 	//SPACE HOLDER
 	this.menu.options.push(new SpaceOption(this, this.menu.dom));

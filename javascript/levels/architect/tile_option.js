@@ -12,7 +12,9 @@ extend(Option, TileOption);
 
 TileOption.prototype.onContextMenu = function(level){
 	var self = this;
-	Dialog.Alert("", "tile placement");
+	
+	level.pause();
+	Dialog.Alert("", "tile placement", function(){this.tryResume()}.bind(this.architect));
 	
 	var tile_placement_depth = document.createElement("div");
 	var text = document.createTextNode("tile placement depth: " );

@@ -4,21 +4,59 @@ function Level(canvas, input){
 	this.player = new GameObject("sprite_sheet.png", 0, 0, 0, 0, 16, 16);
 	this.camera = new Camera();
 	this.camera.Follow(this.player);
-	
 	this.room = new Room();
-	this.rooms = [[this.room]];
+	this.rooms = [[[this.room]]];
 	
 	this.architect = new LevelArchitect(canvas, input, this);
+	
+	this.paused = false;
 }
-Level.prototype.save = function(){
+Level.prototype.pause = function(){
+	this.paused = true;
 }
-Level.prototype.load = function(){
+Level.prototype.resume = function(){
+	this.paused = false;
+}
+Level.prototype.togglePause = function(){
+	this.paused = !this.paused;
+}
+
+Level.prototype.Export = function(){
+	//normal entity Export functions will return objects.
+	//room returns the collection of objects as json
+	//level returns an object consisting of the collection of room jsons and an additional json object
+	//containing additional objects and properties for the level
+	
+	var room_jsons = [];
+	
+	for (var i = 0; i < this.rooms.length; i++){
+		var room_row = [];
+		for (var j = 0; j < this.rooms[i].length; j++){
+			var room_z_row = [];
+			for (var k = 0; k < this.rooms[i][j].length; k++){
+				var room_json = this.rooms[i][j][k].save();
+				console.log(room_json.toString());
+				room_z_row.push(room_json);
+			}
+			room_row.push(room_z_row);
+		}
+		room_jsons.push(room_row);
+	}
+	
+	//other things to save for the level!!!
+	var etc = {};
+	
+	return {rooms: room_jsons, etc: JSON.stringify(etc)};
+}
+Level.prototype.Import = function(){
 }
 
 Level.prototype.update = function(delta, input){
-	this.detectInput(delta, input);
-	this.player.update(delta, this.room);
-	this.room.update(delta);
+	if (!this.paused){
+		this.detectInput(delta, input);
+		this.player.update(delta, this.room);
+		this.room.update(delta);
+	}
 }
 
 Level.prototype.render = function(){

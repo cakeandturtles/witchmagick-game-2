@@ -1,6 +1,19 @@
 function Dialog(){
 }
 
+function removeEventHandler(elem,eventType,handler) {
+ if (elem.removeEventListener) 
+    elem.removeEventListener (eventType,handler,false);
+ if (elem.detachEvent)
+    elem.detachEvent ('on'+eventType,handler); 
+}
+function addEventHandler(elem,eventType,handler) {
+ if (elem.addEventListener)
+     elem.addEventListener (eventType,handler,false);
+ else if (elem.attachEvent)
+     elem.attachEvent ('on'+eventType,handler); 
+}
+
 Dialog.Close = function(){
 	try{
 		var dialog = document.getElementById("dialog");
@@ -13,7 +26,7 @@ Dialog.AddElement = function(element){
 	dialogBody.appendChild(element);
 }
 
-Dialog.Alert = function(content, title){
+Dialog.Alert = function(content, title, close_callback){
 	if (title === undefined) title = "";
 	
 	var dialog = document.createElement("div");
@@ -49,24 +62,36 @@ Dialog.Alert = function(content, title){
 	
 		dialog.offY= e.clientY-parseInt(dialog.offsetTop);
 		dialog.offX= e.clientX-parseInt(dialog.offsetLeft);
-		window.addEventListener('mousemove', Dialog.move, true);
+		addEventHandler(window, "mousemove", Dialog.move);
 	};
 	dialogTitle.onmouseup = function(e){
 		document.getElementsByTagName("html")[0].style.cursor = "";
 		document.getElementsByTagName("body")[0].style.cursor = "";
-		window.removeEventListener('mousemove', Dialog.move, true);
+		removeEventHandler(window, "mousemove", Dialog.move);
 	};
+	var keyupHandler = function(e){
+		if (e.keyCode === 13 || e.keyCode === 27){
+			closeDialogButton.onclick();
+		}
+	}
 	closeDialogButton.onclick = function(e){
 		Dialog.Close();
+		removeEventHandler(window, 'keyup', keyupHandler);
+		console.log(close_callback);
+		console.log(typeof(close_callback));
+		console.log(typeof(close_callback) === "function");
+		if (typeof(close_callback) === "function")
+			close_callback();
 	}
 	dialogButton.onclick = function(e){
-		Dialog.Close();
+		closeDialogButton.onclick(e);
 	}
+	addEventHandler(window, 'keyup', keyupHandler);
 	
 	document.body.appendChild(dialog);
 }
 
-Dialog.Confirm = function(content, confirm_callback, title, confirm_text){
+Dialog.Confirm = function(content, confirm_callback, title, confirm_text, close_callback){
 	if (title === undefined) title = "";
 	if (confirm_text === undefined) confirm_text = "OK";
 	
@@ -108,24 +133,37 @@ Dialog.Confirm = function(content, confirm_callback, title, confirm_text){
 	
 		dialog.offY= e.clientY-parseInt(dialog.offsetTop);
 		dialog.offX= e.clientX-parseInt(dialog.offsetLeft);
-		window.addEventListener('mousemove', Dialog.move, true);
+		addEventHandler(window, "mousemove", Dialog.move);
 		
 	};
 	dialogTitle.onmouseup = function(e){
 		document.getElementsByTagName("html")[0].style.cursor = "";
 		document.getElementsByTagName("body")[0].style.cursor = "";
-		window.removeEventListener('mousemove', Dialog.move, true);
+		removeEventHandler(window, "mousemove", Dialog.move);
 	};
+	var keyupHandler = function(e){
+		if (e.keyCode === 13){
+			dialogConfirm.onclick();
+		}
+		if (e.keyCode === 27){
+			closeDialogButton.onclick();
+		}
+	}
 	closeDialogButton.onclick = function(e){
 		Dialog.Close();
+		removeEventHandler(window, 'keyup', keyupHandler);
+		if (typeof(close_callback) === "function")
+			close_callback();
 	}
 	dialogButton.onclick = function(e){
-		Dialog.Close();
+		closeDialogButton.onclick();
 	}
 	dialogConfirm.onclick = function(e){
-		Dialog.Close();
-		confirm_callback();
+		closeDialogButton.onclick();
+		if (typeof(confirm_callback) === "function")
+			confirm_callback();
 	}
+	addEventHandler(window, 'keyup', keyupHandler);
 	
 	document.body.appendChild(dialog);
 }

@@ -9,7 +9,9 @@ extend(Option, CameraOption);
 
 CameraOption.prototype.onContextMenu = function(level){
 	var self = this;
-	Dialog.Alert('', "game camera");
+	
+	level.pause()
+	Dialog.Alert('', "game camera",  function(){this.tryResume()}.bind(this.architect));
 	
 	var perspective_toggle = document.createElement("div");
 	var text = document.createTextNode("turn on perspective: ");

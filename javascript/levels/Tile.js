@@ -17,26 +17,51 @@ Collision.KILL_PLAYER = 3;
 function Tile(src, x, y, z, width, height, depth, collision, slope, slope_index){
 	GL3dObject.call(this, src, x, y, z, 0, 0, 0, width, height, -depth, width, height, depth);
 	this.type = "Tile";
-	this.collision = defaultTo(collision, Collision.GHOST);
+	this.collision = defaultTo(collision, Collision.SOLID);
 	this.slope = defaultTo(slope, Slope.FLAT);
 	this.slope_index = defaultTo(slope_index, 0);
-	switch (this.slope){
-		case Slope.LOW_POS: case Slope.LOW_NEG:
-			this.slope_index %= 4;
-			break;
-		case Slope.MID_POS: case Slope.MID_NEG:
-			this.slope_index %= 2;
-			break;
-		case Slope.HI_POS: case Slope.HI_NEG:
-			this.slope_index %= 4;
-			break;
-		default:
-			this.slope_index %= 1;
-	}
 	
 	this.setSideHeights();
 }
 extend(GL3dObject, Tile);
+
+Tile.prototype.Export = function(){
+	//return a simplified object of the tile that will be used for saving to file
+	//(only contain essential nonreplicatable information)
+	var tile = {};
+	tile.x = this.x;
+	tile.y = this.y;
+	tile.z = this.z;
+	
+	if (this.collision !== Collision.SOLID)
+		tile.collision = this.collision;
+	if (this.slope !== Slope.FLAT)
+		tile.slope = this.slope;
+	if (this.slope_index !== 0)
+		tile.slope_index = this.slope_index;
+	
+	return tile;
+}
+Tile.prototype.Import = function(tile){
+	this.x = tile.x;
+	this.y = tile.y;
+	this.z = tile.z;
+	
+	this.lb = 0;
+	this.tb = 0;
+	this.fb = 0;
+	this.width = this.rb = Game.TILE_SIZE;
+	this.height = this.bb = Game.TILE_SIZE;
+	this.zb = -Game.TILE_SIZE;
+	this.depth = Game.TILE_SIZE;
+	
+	this.collision = defaultTo(tile.collision, Collision.SOLID);
+	this.slope = defaultTo(tile.slope, Slope.FLAT);
+	this.slope_index = defaultTo(tile.slope_index, 0);
+	
+	this.setSideHeights();
+}
+
 
 Tile.prototype.initTextureCoords = function(){
 	this.vertex_texture_coord_buffer = gl.createBuffer();
@@ -86,6 +111,20 @@ Tile.prototype.isPartiallySolid = function(){
 }
 
 Tile.prototype.setSideHeights = function(){
+	switch (this.slope){
+		case Slope.LOW_POS: case Slope.LOW_NEG:
+			this.slope_index %= 4;
+			break;
+		case Slope.MID_POS: case Slope.MID_NEG:
+			this.slope_index %= 2;
+			break;
+		case Slope.HI_POS: case Slope.HI_NEG:
+			this.slope_index %= 4;
+			break;
+		default:
+			this.slope_index %= 1;
+	}
+	
 	var height_offset = Math.tan(degToRad(this.slope)) * Game.TILE_SIZE;
 	
 	switch (this.slope){

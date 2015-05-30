@@ -22,29 +22,42 @@ function Option(architect, menu_dom, id, dom_img_src, src){
 	this.alpha = 0.5;
 	
 	this.is_selectable = true;
+	this.is_toggleable = false;
 }
 extend(GLObject, Option);
 
-Option.prototype.SelectMe = function(){
-	this.architect.selected_option = this;
+Option.prototype.ToggleOn = function(){}
+Option.prototype.ToggleOff = function(){}
+
+Option.prototype.SelectMe = function(exclusive){
+	exclusive = defaultTo(exclusive, true);
+	if (exclusive)
+		this.architect.selected_option = this;
 		
 	//add the 'selected' class to the dom
 	if (!hasClass(this.dom, "selected")){
-		for (var i = 0; i < this.architect.menu.options.length; i++){
-			var dom = this.architect.menu.options[i].dom;
-			removeClass(dom, "selected");
+		if (exclusive){
+			for (var i = 0; i < this.architect.menu.options.length; i++){
+				var dom = this.architect.menu.options[i].dom;
+				removeClass(dom, "selected");
+			}
 		}
 		addClass(this.dom, "selected");
+		if (this.is_toggleable){
+			this.ToggleOn();
+		}
+	}else if (this.is_toggleable){
+		this.ToggleOff();
+		removeClass(this.dom, "selected");
 	}
 }
 
 Option.prototype.onDomClick_ = function(e){
 	var is_right_mb = isRightMB(e);
 	if (!is_right_mb){
-		this.SelectMe();
-		if (this.is_selectable){
-		}
-		else{
+		this.SelectMe(this.is_selectable);
+		
+		if (!this.is_selectable){
 			this.onContextMenu(this.architect.level);
 		}
 	}
