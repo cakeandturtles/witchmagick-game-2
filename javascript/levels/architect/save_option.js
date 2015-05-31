@@ -10,8 +10,8 @@ ExportOption.prototype.onContextMenu = function(level){
 	var self = this;
 	level.pause();
 	
-	var path = "./level_files/"+self.level_file_name+"/";
 	Dialog.Confirm("", function(){			
+		var path = "./level_files/"+self.level_file_name+"/";
 		var json = level.Export();
 		nodejs.ensureExists(path, function(err){
 			try{
@@ -44,8 +44,9 @@ ExportOption.prototype.onContextMenu = function(level){
 	var input = document.createElement("input");
 	input.type = "text";
 	input.style.width = "128px";
-	input.onkeydown = function(e){
+	input.onkeyup = function(e){
 		self.level_file_name = this.value;
+		console.log(self.level_file_name);
 	}
 	level_name_dom.appendChild(text);
 	level_name_dom.appendChild(document.createElement("br"));

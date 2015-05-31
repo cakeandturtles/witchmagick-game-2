@@ -18,7 +18,7 @@ Room.prototype.Export = function(){
 	
 	room.entities = [];
 	for (var i = 0; i < this.entities.length; i++){
-		room.entities.push(this.entities.Export());
+		room.entities.push(this.entities[i].Export());
 	}
 	
 	var tiles = this.tile_hydra.tiles;
@@ -57,13 +57,24 @@ Room.prototype.AggregateTiles = function(){
 	this.tile_hydra.AggregateTiles();
 }
 
-Room.prototype.update = function(delta){	
+Room.prototype.update = function(delta, player){
+	this.player = player
+	
+	this.player.update(delta, this);
+	for (var i = 0; i < this.entities.length; i++){
+		this.entities[i].update(delta, this);
+	}
+	delete this.player;
 }
 
 Room.prototype.render = function(camera, player){
 	camera.render(this.zoom, this);
 	
 	this.tile_hydra.render(camera);
+	
+	for (var i = 0; i < this.entities.length; i++){
+		this.entities[i].render(camera);
+	}
 	
 	player.render(camera);
 }

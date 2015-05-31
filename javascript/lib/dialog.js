@@ -77,9 +77,6 @@ Dialog.Alert = function(content, title, close_callback){
 	closeDialogButton.onclick = function(e){
 		Dialog.Close();
 		removeEventHandler(window, 'keyup', keyupHandler);
-		console.log(close_callback);
-		console.log(typeof(close_callback));
-		console.log(typeof(close_callback) === "function");
 		if (typeof(close_callback) === "function")
 			close_callback();
 	}

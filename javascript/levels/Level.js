@@ -1,7 +1,7 @@
 function Level(canvas, input){
 	this.ctx2d = canvas.getContext("2d");
 	
-	this.player = new GameObject("sprite_sheet.png", 0, 0, 0, 0, 16, 16);
+	this.player = new Player(0, 152);
 	this.camera = new Camera();
 	this.camera.Follow(this.player);
 	this.room = new Room();
@@ -34,8 +34,7 @@ Level.prototype.Export = function(){
 		for (var j = 0; j < this.rooms[i].length; j++){
 			var room_z_row = [];
 			for (var k = 0; k < this.rooms[i][j].length; k++){
-				var room_json = this.rooms[i][j][k].save();
-				console.log(room_json.toString());
+				var room_json = this.rooms[i][j][k].Export();
 				room_z_row.push(room_json);
 			}
 			room_row.push(room_z_row);
@@ -54,8 +53,7 @@ Level.prototype.Import = function(){
 Level.prototype.update = function(delta, input){
 	if (!this.paused){
 		this.detectInput(delta, input);
-		this.player.update(delta, this.room);
-		this.room.update(delta);
+		this.room.update(delta, this.player);
 	}
 }
 

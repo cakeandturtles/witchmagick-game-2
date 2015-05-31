@@ -26,12 +26,16 @@
 <script src="javascript/Game.js"></script>
 
 <!--entities-->
-<script src="javascript/entities/GLObject.js"></script>
-<script src="javascript/entities/Triangle.js"></script>
-<script src="javascript/entities/GLSprite.js"></script>
-<script src="javascript/entities/GLAnimation.js"></script>
-<script src="javascript/entities/GameObject.js"></script>
-<script src="javascript/entities/GL3dObject.js"></script>
+	<!--abstract-->
+	<script src="javascript/entities/abstract/GLObject.js"></script>
+	<script src="javascript/entities/abstract/GLSprite.js"></script>
+	<script src="javascript/entities/abstract/GLAnimation.js"></script>
+	<script src="javascript/entities/abstract/GameObject.js"></script>
+	<script src="javascript/entities/abstract/GL3dObject.js"></script>
+	<!--concrete-->
+	<script src="javascript/entities/Triangle.js"></script>
+	<script src="javascript/entities/Player.js"></script>
+	<script src="javascript/entities/Npc.js"></script>
 
 <!--level managers-->
 	<!--architect && options-->
@@ -42,6 +46,7 @@
 	<script src="javascript/levels/architect/space_option.js"></script>
 	<script src="javascript/levels/architect/camera_option.js"></script>
 	<script src="javascript/levels/architect/tile_option.js"></script>
+	<script src="javascript/levels/architect/npc_option.js"></script>
 	<script src="javascript/levels/architect/player_option.js"></script>
 
 <script src="javascript/levels/input_manager.js"></script>
