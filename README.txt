@@ -18,4 +18,7 @@ Credit::
 4. JavaScript Matrix and Vector library:
 	https://github.com/toji/gl-matrix
 	
-5. All the other libraries I used in the scripts/lib/ directory
+5. Pure JavaScript custom context menu created with help by
+	http://www.codeproject.com/Tips/630793/Context-Menu-on-Right-Click-in-Webpage
+	
+6. All the other libraries I used in the scripts/lib/ directory

@@ -80,6 +80,10 @@ LevelArchitect.prototype.InitMenuOptions = function(){
 	}
 }
 
+LevelArchitect.prototype.detectKeyInput = function(input){
+	this.selected_option.detectKeyInput(input, this.level);
+}
+
 LevelArchitect.prototype.mouseDown = function(e){
 	var mouseX = e.clientX + document.body.scrollLeft;
 	var mouseY = e.clientY + document.body.scrollTop;

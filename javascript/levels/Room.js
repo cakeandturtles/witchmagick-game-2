@@ -1,8 +1,9 @@
-function Room(width, height, zoom){	
+function Room(player, width, height, zoom){	
 	this.width = defaultTo(width, 320);
 	this.height = defaultTo(height, 240);
 	this.zoom = defaultTo(zoom, 2);
 	
+	this.player = player;
 	this.entities = [];
 	this.tile_hydra = new TileHydra(this);
 }
@@ -38,7 +39,43 @@ Room.prototype.Export = function(){
 	}
 	return JSON.stringify(room);
 }
-Room.prototype.Import = function(){
+Room.Import = function(obj){
+}
+
+Room.prototype.GetEntity = function(x, y){
+	var p = this.player;
+	if (x >= p.x && x <= p.x + p.width && y >= p.y && y <= p.y + p.height){
+		return p;
+	}
+	
+	for (var i = 0; i < this.entities.length; i++){
+		var e = this.entities[i];
+		if (x >= e.x && x <= e.x + e.width && y >= e.y && y <= e.y + e.height){
+			return e;
+		}
+	}
+	return null;
+}
+Room.prototype.RemoveEntity = function(x, y, entity){
+	if (isNaN(Number(x)))
+		entity = x;
+	
+	if (entity === undefined){
+		for (var i = 0; i < this.entities.length; i++){
+			var e = this.entities[i];
+			if (x >= e.x && x <= e.x + e.width && y >= e.y && y <= e.y + e.height){
+				this.entities.splice(i, 1);
+				break;
+			}
+		}
+	}else{
+		for (var i = 0; i < this.entities.length; i++){
+			if (this.entities[i] === entity){
+				this.entities.splice(i, 1);
+				break;
+			}
+		}
+	}
 }
 
 Room.prototype.GetTile = function(y_index, x_index, z_index){
@@ -57,17 +94,14 @@ Room.prototype.AggregateTiles = function(){
 	this.tile_hydra.AggregateTiles();
 }
 
-Room.prototype.update = function(delta, player){
-	this.player = player
-	
+Room.prototype.update = function(delta){
 	this.player.update(delta, this);
 	for (var i = 0; i < this.entities.length; i++){
 		this.entities[i].update(delta, this);
 	}
-	delete this.player;
 }
 
-Room.prototype.render = function(camera, player){
+Room.prototype.render = function(camera){
 	camera.render(this.zoom, this);
 	
 	this.tile_hydra.render(camera);
@@ -76,5 +110,5 @@ Room.prototype.render = function(camera, player){
 		this.entities[i].render(camera);
 	}
 	
-	player.render(camera);
+	this.player.render(camera);
 }

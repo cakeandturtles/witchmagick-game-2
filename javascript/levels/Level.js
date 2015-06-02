@@ -4,7 +4,7 @@ function Level(canvas, input){
 	this.player = new Player(0, 152);
 	this.camera = new Camera();
 	this.camera.Follow(this.player);
-	this.room = new Room();
+	this.room = new Room(this.player);
 	this.rooms = [[[this.room]]];
 	
 	this.architect = new LevelArchitect(canvas, input, this);
@@ -47,22 +47,26 @@ Level.prototype.Export = function(){
 	
 	return {rooms: room_jsons, etc: JSON.stringify(etc)};
 }
-Level.prototype.Import = function(){
+Level.Import = function(obj){
 }
 
 Level.prototype.update = function(delta, input){
+	this.detectInput(delta, input);
 	if (!this.paused){
-		this.detectInput(delta, input);
-		this.room.update(delta, this.player);
+		this.room.update(delta);
 	}
 }
 
 Level.prototype.render = function(){
-	this.room.render(this.camera, this.player);
+	this.room.render(this.camera);
 	this.architect.render();
 }
 
 Level.prototype.detectInput = function(delta, input){
+	this.architect.detectKeyInput(input);
+	
+	if (this.paused) return;
+	
 	if (input.IsKeyDown(">", "d")){
 		this.player.MoveRight();
 	}

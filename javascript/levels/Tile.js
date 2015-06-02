@@ -42,24 +42,10 @@ Tile.prototype.Export = function(){
 	
 	return tile;
 }
-Tile.prototype.Import = function(tile){
-	this.x = tile.x;
-	this.y = tile.y;
-	this.z = tile.z;
+Tile.Import = function(obj){
+	var tile = new Tile(obj.x, obj.y, obj.z, Game.TILE_SIZE, Game.TILE_SIZE, Game.TILE_SIZE, tile.collision, tile.slope, tile.slope_index);
 	
-	this.lb = 0;
-	this.tb = 0;
-	this.fb = 0;
-	this.width = this.rb = Game.TILE_SIZE;
-	this.height = this.bb = Game.TILE_SIZE;
-	this.zb = -Game.TILE_SIZE;
-	this.depth = Game.TILE_SIZE;
-	
-	this.collision = defaultTo(tile.collision, Collision.SOLID);
-	this.slope = defaultTo(tile.slope, Slope.FLAT);
-	this.slope_index = defaultTo(tile.slope_index, 0);
-	
-	this.setSideHeights();
+	return tile;
 }
 
 

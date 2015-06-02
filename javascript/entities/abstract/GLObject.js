@@ -28,6 +28,8 @@ var GLObject = function(src, x, y, z, lb, tb, rb, bb, width, height){
 	this.hazardous = false;
 }
 
+GLObject.prototype.Export = function(){}
+
 GLObject.prototype.initBuffers = function(){
 	this.vertex_position_buffer = gl.createBuffer();
 	gl.bindBuffer(gl.ARRAY_BUFFER, this.vertex_position_buffer);
