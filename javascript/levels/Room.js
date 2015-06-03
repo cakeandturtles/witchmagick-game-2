@@ -20,11 +20,13 @@ Room.prototype.Export = function(){
 	room.height = this.height;
 	room.zoom = this.zoom;
 	
+	//export entities
 	room.entities = [];
 	for (var i = 0; i < this.entities.length; i++){
 		room.entities.push(this.entities[i].Export());
 	}
 	
+	//export glitches
 	room.glitches = [];
 	for (var i = 0; i < this.glitches.length; i++){
 		if (this.glitches[i].HasAType())
@@ -34,6 +36,7 @@ Room.prototype.Export = function(){
 			room.glitches.push({type: undefined, glitches: this.glitches[i].glitches});
 	}
 	
+	//export tiles
 	var tiles = this.tile_hydra.tiles;
 	var tile_keys = Object.keys(tiles);
 	room.tiles = [];
@@ -51,7 +54,29 @@ Room.prototype.Export = function(){
 	}
 	return JSON.stringify(room);
 }
-Room.Import = function(obj){
+Room.Import = function(obj, player){
+	var room = new Room(player, obj.width, obj.height, obj.zoom);
+	
+	//import entities
+	for (var i = 0; i < obj.entities.length; i++){
+		var entitity = obj.entities[i];
+		room.entities.push(eval(entitity.type+".Import(entitity)"));
+	}
+	
+	//import glitches
+	for (var i = 0; i < obj.glitches.length; i++){
+		var glitch = obj.glitches[i];
+		if (glitch.type !== undefined)
+			room.glitches.push(eval("new " + glitch.type+"()"));
+		else{
+			var new_glitch = new Glitch();
+			new_glitch.glitches = glitch.glitches;
+			room.glitches.push(new_glitch);
+		}
+	}
+	
+	//import tiles
+
 }
 
 Room.prototype.AddGlitch = function(glitch){

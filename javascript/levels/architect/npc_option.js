@@ -21,33 +21,6 @@ NpcOption.prototype.whenSelected = function(){
 	this.npc = null;
 }
 
-NpcOption.prototype.ToggleAction = function(){
-	if (this.action === NpcOption.NORMAL){
-		document.body.style.cursor = "-webkit-grab";
-		this.visible = false;
-		
-		this.action = NpcOption.MOVE;
-	}else if (this.action === NpcOption.MOVE){
-		document.body.style.cursor = "";
-		this.action = NpcOption.NORMAL;
-		this.visible = true;
-	}
-}
-
-NpcOption.prototype.detectKeyInput = function(input, level){
-	var back_to_normal = false;
-	if (input.IsKeyPressed("shift") && !this.is_mouse_down){
-		this.ToggleAction();
-	}
-	
-	if (back_to_normal){
-		document.body.style.cursor = "";
-		this.visible = true;
-		
-		this.action = NpcOption.NORMAL;
-	}
-}
-
 NpcOption.prototype.mouseDown = function(x, y, is_right_mb, level){
 	if (is_right_mb) return;
 	
@@ -117,10 +90,22 @@ NpcOption.prototype.mouseMove = function(x, y, is_right_mb, level, is_mouse_down
 	this.x = x;
 	this.y = y;
 	
-	if (is_mouse_down && this.action === NpcOption.NORMAL || this.action === NpcOption.MOVE){
+	if (is_mouse_down && (this.action === NpcOption.NORMAL || this.action === NpcOption.MOVE)){
 		if (this.npc !== null){
 			this.npc.x = this.x;
 			this.npc.y = this.y;
+		}
+	}else{
+		var npc = level.room.GetEntity(x, y);
+		if (npc === null){
+			document.body.style.cursor = "";
+			this.action = NpcOption.NORMAL;
+			this.visible = true;
+		}else{
+			document.body.style.cursor = "-webkit-grab";
+			this.visible = false;
+			
+			this.action = NpcOption.MOVE;
 		}
 	}
 }

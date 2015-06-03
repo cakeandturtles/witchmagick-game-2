@@ -51,11 +51,11 @@ LevelArchitect.prototype.InitMenuOptions = function(){
 	//SPACE HOLDER
 	this.menu.options.push(new SpaceOption(this, this.menu.dom));
 	
-	//CAMERA OPTION
-	this.menu.options.push(new CameraOption(this, this.menu.dom));
-	
 	//Glitch Option
 	this.menu.options.push(new GlitchOption(this, this.menu.dom));
+	
+	//CAMERA OPTION
+	this.menu.options.push(new CameraOption(this, this.menu.dom));
 	
 	//TILE OPTION (WE'RE SELECTING THIS INITIALLY)
 	var tile_option = new TileOption(this, this.menu.dom);

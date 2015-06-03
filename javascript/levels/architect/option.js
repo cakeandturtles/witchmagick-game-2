@@ -13,9 +13,9 @@ function Option(architect, menu_dom, id, dom_img_src, src){
 	this.dom.onclick = this.onDomClick_.bind(this);
 	this.dom.oncontextmenu = function(e){ 
 		e.preventDefault(); 
+		this.onContextMenu(architect.level);
 		if (!this.is_selectable)
 			this.SelectMe();
-		this.onContextMenu(architect.level);
 		return false; 
 	}.bind(this);
 	
@@ -63,6 +63,9 @@ Option.prototype.onDomClick_ = function(e){
 			this.onContextMenu(this.architect.level);
 		}
 		
+		this.SelectMe(this.is_selectable);
+	}else{
+		this.onContextMenu(this.architect.level);
 		this.SelectMe(this.is_selectable);
 	}
 }
