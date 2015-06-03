@@ -54,6 +54,9 @@ LevelArchitect.prototype.InitMenuOptions = function(){
 	//CAMERA OPTION
 	this.menu.options.push(new CameraOption(this, this.menu.dom));
 	
+	//Glitch Option
+	this.menu.options.push(new GlitchOption(this, this.menu.dom));
+	
 	//TILE OPTION (WE'RE SELECTING THIS INITIALLY)
 	var tile_option = new TileOption(this, this.menu.dom);
 	tile_option.SelectMe();

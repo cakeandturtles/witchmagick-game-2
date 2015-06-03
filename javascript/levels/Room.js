@@ -3,6 +3,9 @@ function Room(player, width, height, zoom){
 	this.height = defaultTo(height, 240);
 	this.zoom = defaultTo(zoom, 2);
 	
+	this.glitches = [];
+	this.glitch_index = -1;
+	
 	this.player = player;
 	this.entities = [];
 	this.tile_hydra = new TileHydra(this);
@@ -20,6 +23,15 @@ Room.prototype.Export = function(){
 	room.entities = [];
 	for (var i = 0; i < this.entities.length; i++){
 		room.entities.push(this.entities[i].Export());
+	}
+	
+	room.glitches = [];
+	for (var i = 0; i < this.glitches.length; i++){
+		if (this.glitches[i].HasAType())
+			room.glitches.push({type: this.glitches[i].type});
+		//add support for custom, classless glitches
+		else
+			room.glitches.push({type: undefined, glitches: this.glitches[i].glitches});
 	}
 	
 	var tiles = this.tile_hydra.tiles;
@@ -40,6 +52,25 @@ Room.prototype.Export = function(){
 	return JSON.stringify(room);
 }
 Room.Import = function(obj){
+}
+
+Room.prototype.AddGlitch = function(glitch){
+	this.glitches.push(glitch);
+	if (this.glitch_index < 0) this.glitch_index = 0;
+}
+Room.prototype.RemoveGlitch = function(glitch){
+	for (var i = 0; i < this.glitches.length; i++){
+		if (this.glitches[i] === glitch){
+			this.glitches.splice(i, 1);
+			break;
+		}
+	}
+	if (this.glitches.length === 0)
+		this.glitch_index = -1;
+}
+Room.prototype.ClearGlitches = function(){
+	this.glitches = [];
+	this.glitch_index = -1;
 }
 
 Room.prototype.GetEntity = function(x, y){

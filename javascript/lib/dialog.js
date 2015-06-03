@@ -1,13 +1,13 @@
 function Dialog(){
 }
 
-function removeEventHandler(elem,eventType,handler) {
+Dialog.removeEventHandler = function(elem,eventType,handler) {
  if (elem.removeEventListener) 
     elem.removeEventListener (eventType,handler,false);
  if (elem.detachEvent)
     elem.detachEvent ('on'+eventType,handler); 
 }
-function addEventHandler(elem,eventType,handler) {
+Dialog.addEventHandler = function(elem,eventType,handler) {
  if (elem.addEventListener)
      elem.addEventListener (eventType,handler,false);
  else if (elem.attachEvent)
@@ -15,6 +15,12 @@ function addEventHandler(elem,eventType,handler) {
 }
 
 Dialog.Close = function(){
+	try{
+		var button = document.getElementById("closeDialogButton");
+		button.onclick();
+	}catch(error){}
+}
+Dialog._close = function(){
 	try{
 		var dialog = document.getElementById("dialog");
 		document.body.removeChild(dialog);
@@ -62,12 +68,12 @@ Dialog.Alert = function(content, title, close_callback){
 	
 		dialog.offY= e.clientY-parseInt(dialog.offsetTop);
 		dialog.offX= e.clientX-parseInt(dialog.offsetLeft);
-		addEventHandler(window, "mousemove", Dialog.move);
+		Dialog.addEventHandler(window, "mousemove", Dialog.move);
 	};
 	dialogTitle.onmouseup = function(e){
 		document.getElementsByTagName("html")[0].style.cursor = "";
 		document.getElementsByTagName("body")[0].style.cursor = "";
-		removeEventHandler(window, "mousemove", Dialog.move);
+		Dialog.removeEventHandler(window, "mousemove", Dialog.move);
 	};
 	var keyupHandler = function(e){
 		if (e.keyCode === 13 || e.keyCode === 27){
@@ -75,15 +81,15 @@ Dialog.Alert = function(content, title, close_callback){
 		}
 	}
 	closeDialogButton.onclick = function(e){
-		Dialog.Close();
-		removeEventHandler(window, 'keyup', keyupHandler);
+		Dialog._close();
+		Dialog.removeEventHandler(window, 'keyup', keyupHandler);
 		if (typeof(close_callback) === "function")
 			close_callback();
 	}
 	dialogButton.onclick = function(e){
 		closeDialogButton.onclick(e);
 	}
-	addEventHandler(window, 'keyup', keyupHandler);
+	Dialog.addEventHandler(window, 'keyup', keyupHandler);
 	
 	document.body.appendChild(dialog);
 }
@@ -130,13 +136,13 @@ Dialog.Confirm = function(content, confirm_callback, title, confirm_text, close_
 	
 		dialog.offY= e.clientY-parseInt(dialog.offsetTop);
 		dialog.offX= e.clientX-parseInt(dialog.offsetLeft);
-		addEventHandler(window, "mousemove", Dialog.move);
+		Dialog.addEventHandler(window, "mousemove", Dialog.move);
 		
 	};
 	dialogTitle.onmouseup = function(e){
 		document.getElementsByTagName("html")[0].style.cursor = "";
 		document.getElementsByTagName("body")[0].style.cursor = "";
-		removeEventHandler(window, "mousemove", Dialog.move);
+		Dialog.removeEventHandler(window, "mousemove", Dialog.move);
 	};
 	var keyupHandler = function(e){
 		if (e.keyCode === 13){
@@ -147,8 +153,8 @@ Dialog.Confirm = function(content, confirm_callback, title, confirm_text, close_
 		}
 	}
 	closeDialogButton.onclick = function(e){
-		Dialog.Close();
-		removeEventHandler(window, 'keyup', keyupHandler);
+		Dialog._close();
+		Dialog.removeEventHandler(window, 'keyup', keyupHandler);
 		if (typeof(close_callback) === "function")
 			close_callback();
 	}
@@ -160,7 +166,7 @@ Dialog.Confirm = function(content, confirm_callback, title, confirm_text, close_
 		if (typeof(confirm_callback) === "function")
 			confirm_callback();
 	}
-	addEventHandler(window, 'keyup', keyupHandler);
+	Dialog.addEventHandler(window, 'keyup', keyupHandler);
 	
 	document.body.appendChild(dialog);
 }

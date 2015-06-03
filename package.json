@@ -8,9 +8,9 @@
 		"toolbar": true,
 		"width": 640,
 		"min_width": 640,
-		"max_width": 640,
+		"__comment__TODO__max_width": 640,
 		"height": 519,
 		"min_height": 519,
-		"max_height": 519
+		"__comment__TODO__max_height": 519
 	}
 }

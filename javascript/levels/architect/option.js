@@ -59,11 +59,11 @@ Option.prototype.SelectMe = function(exclusive){
 Option.prototype.onDomClick_ = function(e){
 	var is_right_mb = isRightMB(e);
 	if (!is_right_mb){
-		this.SelectMe(this.is_selectable);
-		
 		if (!this.is_selectable){
 			this.onContextMenu(this.architect.level);
 		}
+		
+		this.SelectMe(this.is_selectable);
 	}
 }
 

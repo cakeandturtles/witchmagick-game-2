@@ -1,12 +1,17 @@
 //TODO:: I think this currently only works with one glitch per function per vessel
 function Glitch(){
 	this.glitches = [];
+	
+	this.type = "";
+}
+Glitch.prototype.HasAType = function(){
+	return this.type !== undefined && this.type !== null && this.type.length > 0;
 }
 Glitch.suffix = "_unglitched";
 
 //pass a single object/entity to glitch that object/entity
 //pass a prototype to glitch the entire class
-Glitch.prototype.Apply = function(vessel){
+Glitch.prototype.apply = function(vessel){
 	for (var i = 0; i < this.glitches.length; i++){
 		var glitch = this.glitches[i];
 		//only apply if it hasn't already been applied??
@@ -17,8 +22,23 @@ Glitch.prototype.Apply = function(vessel){
 		}
 	}
 }
+Glitch.prototype.applyAll = function(vessels){
+	for (var i = 0; i < vessels.length; i++){
+		this.apply(vessels[i]);
+	}
+}
 
-Glitch.prototype.Revert = function(vessel){
+Glitch.prototype.ApplyRoom = function(room){
+	this.apply(room.player);
+	this.applyAll(room.entities);
+}
+
+Glitch.prototype.RevertRoom = function(room){
+	this.revert(room.player);
+	this.revertAll(room.entities);
+}
+
+Glitch.prototype.revert = function(vessel){
 	for (var i = 0; i < this.glitches.length; i++){
 		var glitch = this.glitches[i];
 		//will attempt to revert glitch if (_unglitched) version exists
@@ -28,13 +48,8 @@ Glitch.prototype.Revert = function(vessel){
 		}
 	}
 }
-
-Glitch.RevertAll = function(vessel){
-	for (var key in vessel){
-		if (vessel.hasOwnProperty(key) && vessel.hasOwnProperty(key + Glitch.suffix)){
-			vessel[key] = vessel[key + Glitch.suffix];
-			delete vessel[key + Glitch.suffix];
-		}
+Glitch.prototype.revertAll = function(vessels){
+	for (var i = 0; i < vessels.length; i++){
+		this.revert(vessels[i]);
 	}
 }
-

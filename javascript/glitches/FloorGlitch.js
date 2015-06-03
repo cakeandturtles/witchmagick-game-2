@@ -1,5 +1,8 @@
 function FloorGlitch(){
 	Glitch.call(this);
+	
+	this.type = "FloorGlitch";
+	
 	this.glitches.push({
 		funcName: "applyGravity",
 		funcDef: function(delta){
