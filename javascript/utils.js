@@ -1,3 +1,16 @@
+var removeEventHandler = function(elem,eventType,handler) {
+ if (elem.removeEventListener) 
+    elem.removeEventListener (eventType,handler,false);
+ if (elem.detachEvent)
+    elem.detachEvent ('on'+eventType,handler); 
+}
+var addEventHandler = function(elem,eventType,handler) {
+ if (elem.addEventListener)
+     elem.addEventListener (eventType,handler,false);
+ else if (elem.attachEvent)
+     elem.attachEvent ('on'+eventType,handler); 
+}
+
 //http://www.hunlock.com/blogs/Totally_Pwn_CSS_with_Javascript
 function getCSSRule(ruleName, deleteFlag) {               // Return requested style obejct
    ruleName=ruleName.toLowerCase();                       // Convert test string to lower case.

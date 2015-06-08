@@ -1,7 +1,7 @@
-function GL3dObject(src, x, y, z, lb, tb, fb, rb, bb, zb, width, height, depth){		
+function GL3dObject(img_name, x, y, z, lb, tb, fb, rb, bb, zb, width, height, depth){		
 	this.depth = defaultTo(depth, 16);
 	
-	GLObject.call(this, src, x, y, z, lb, tb, rb, bb, width, height);
+	GLObject.call(this, img_name, x, y, z, lb, tb, rb, bb, width, height);
 	this.fb = defaultTo(fb, 0);
 	this.zb = defaultTo(zb, -16);
 }

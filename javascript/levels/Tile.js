@@ -15,7 +15,12 @@ Collision.FALLTHROUGH = 2;
 Collision.KILL_PLAYER = 3;
 
 function Tile(src, x, y, z, width, height, depth, collision, slope, slope_index){
+	src = defaultTo(src, "tile.png");
 	GL3dObject.call(this, src, x, y, z, 0, 0, 0, width, height, -depth, width, height, depth);
+	
+	this.y_index = y / Game.TILE_SIZE;
+	this.x_index = x / Game.TILE_SIZE;
+	this.z_index = z / Game.TILE_SIZE;
 	this.type = "Tile";
 	this.collision = defaultTo(collision, Collision.SOLID);
 	this.slope = defaultTo(slope, Slope.FLAT);
@@ -33,6 +38,9 @@ Tile.prototype.Export = function(){
 	tile.y = this.y;
 	tile.z = this.z;
 	
+	if (this.src !== "tile.png")
+		tile.src = this.src;
+	
 	if (this.collision !== Collision.SOLID)
 		tile.collision = this.collision;
 	if (this.slope !== Slope.FLAT)
@@ -43,7 +51,7 @@ Tile.prototype.Export = function(){
 	return tile;
 }
 Tile.Import = function(obj){
-	var tile = new Tile(obj.x, obj.y, obj.z, Game.TILE_SIZE, Game.TILE_SIZE, Game.TILE_SIZE, tile.collision, tile.slope, tile.slope_index);
+	var tile = new Tile(obj.src, obj.x, obj.y, obj.z, Game.TILE_SIZE, Game.TILE_SIZE, Game.TILE_SIZE, obj.collision, obj.slope, obj.slope_index);
 	
 	return tile;
 }

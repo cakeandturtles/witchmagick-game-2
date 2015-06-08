@@ -1,4 +1,8 @@
-function Room(player, width, height, zoom){	
+function Room(player, y, x, z, width, height, zoom){	
+	this.y = y;
+	this.x = x;
+	this.z = z;
+
 	this.width = defaultTo(width, 320);
 	this.height = defaultTo(height, 240);
 	this.zoom = defaultTo(zoom, 2);
@@ -16,6 +20,9 @@ Room.prototype.Export = function(){
 	//room returns the collection of objects as json
 	
 	var room = {};
+	room.y = this.y;
+	room.x = this.x;
+	room.z = this.z;
 	room.width = this.width;
 	room.height = this.height;
 	room.zoom = this.zoom;
@@ -55,7 +62,7 @@ Room.prototype.Export = function(){
 	return JSON.stringify(room);
 }
 Room.Import = function(obj, player){
-	var room = new Room(player, obj.width, obj.height, obj.zoom);
+	var room = new Room(player, obj.y, obj.x, obj.z, obj.width, obj.height, obj.zoom);
 	
 	//import entities
 	for (var i = 0; i < obj.entities.length; i++){
@@ -76,12 +83,39 @@ Room.Import = function(obj, player){
 	}
 	
 	//import tiles
+	for (var i = 0; i < obj.tiles.length; i++){
+		var tile = Tile.Import(obj.tiles[i]);
+		room.AddTile(tile.y_index, tile.x_index, tile.z_index, tile, true);
+	}
+	room.AggregateTiles();
+	
+	return room;
+}
 
+Room.prototype.SetPlayer = function(player){
+	this.player = player;
 }
 
 Room.prototype.AddGlitch = function(glitch){
 	this.glitches.push(glitch);
-	if (this.glitch_index < 0) this.glitch_index = 0;
+	if (this.glitch_index < 0){
+		this.glitch_index = 0;
+		glitch.ApplyRoom(this);
+	}
+}
+Room.prototype.SetGlitchIndex = function(index){
+	if (this.glitches.length === 0) return;
+	while (index >= this.glitches.length){
+		index %= this.glitches.length;
+	}
+	this.glitch_index = index;
+	this.glitches[index].ApplyRoom(this);
+}
+Room.prototype.IncrementGlitchIndex = function(){
+	this.SetGlitchIndex(this.glitch_index+1);
+}
+Room.prototype.DecrementGlitchIndex = function(){
+	this.SetGlitchIndex(this.glitch_index-1);
 }
 Room.prototype.RemoveGlitch = function(glitch){
 	for (var i = 0; i < this.glitches.length; i++){
@@ -90,10 +124,15 @@ Room.prototype.RemoveGlitch = function(glitch){
 			break;
 		}
 	}
-	if (this.glitches.length === 0)
+	if (this.glitches.length === 0){
 		this.glitch_index = -1;
+		glitch.RevertRoom(this);
+	}
 }
 Room.prototype.ClearGlitches = function(){
+	if (this.glitch_index > 0)
+		this.glitches[this.glitch_index].RevertRoom(this);
+	
 	this.glitches = [];
 	this.glitch_index = -1;
 }

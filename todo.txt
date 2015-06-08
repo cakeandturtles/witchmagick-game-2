@@ -1,6 +1,30 @@
+immediate::
+3. CHECKpoints?
+2. Add some way for glitches to modify visual properties of the room either by:
+	a. forcing player/entities/tile to use new asset (e.g. player.png vs player_red.png) OR
+	b. altering the render properties (changing globject color? changing lighting variables?)
+3. add other default glitches, allow level architect glitch manager to have dropdown menu, and buttons to add glitch, remove glitch, and shows the room's glitch array (and lets you set the glitch of the room)
+	
+
+
+-----------------------------------------------------------------eventual-----------------------------
+1. node webkit map f12 to opening up console
+
 2. Start designing/implementing levels/mechanics/glitches
 	
 3. Add key remapper for JUMP/LEFt/RIGHT/DOWN keys
 	-input manager should treat keys and mouse keys as the same (for ease of remapping input)
 	
 4. Can fix tile faces thingy by having a sorter or something in the render function of room. (painter's algorith,?) (so player isn't rendered in front of tiles she is behind)
+
+
+5. advanced spellbook: pops up a console window of a fixed size with a limited scope (change namespace of the console to the room that you are in (e.g. game.level.room.entities -> entities)
+	-further more (entities -> npc_alice, npc_chloe, swarm, grimoire)
+	-player -> olivia (or player's name)
+	
+	example player spell:
+		olivia.gravity = -1
+		tree.update = function(){
+			x++;	//todo how to make this work and not use the global namespace x, will have to parse
+		}			//functions and ensure that the scope is using this.x instead!!??
+	

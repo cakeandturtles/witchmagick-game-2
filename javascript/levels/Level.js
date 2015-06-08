@@ -4,8 +4,10 @@ function Level(canvas, input){
 	this.player = new Player(0, 152);
 	this.camera = new Camera();
 	this.camera.Follow(this.player);
-	this.room = new Room(this.player);
-	this.rooms = [[[this.room]]];
+	
+	this.start_index = {y: 0, x: 0, z: 0};
+	this.room = undefined;
+	this.rooms = [[[]]];
 	
 	this.architect = new LevelArchitect(canvas, input, this);
 	
@@ -29,6 +31,9 @@ Level.prototype.Export = function(){
 	
 	var room_jsons = [];
 	
+	//other things to save for the level!!!
+	var etc = {room_indices: []};
+	
 	for (var i = 0; i < this.rooms.length; i++){
 		var room_row = [];
 		for (var j = 0; j < this.rooms[i].length; j++){
@@ -36,18 +41,46 @@ Level.prototype.Export = function(){
 			for (var k = 0; k < this.rooms[i][j].length; k++){
 				var room_json = this.rooms[i][j][k].Export();
 				room_z_row.push(room_json);
+				etc.room_indices.push({y:i, x:j, z:k});
 			}
 			room_row.push(room_z_row);
 		}
 		room_jsons.push(room_row);
 	}
+	etc.start_index = this.start_index;
 	
-	//other things to save for the level!!!
-	var etc = {};
 	
 	return {rooms: room_jsons, etc: JSON.stringify(etc)};
 }
-Level.Import = function(obj){
+
+Level.Import = function(obj, canvas, input){
+	var level = new Level(canvas, input);
+	for (var i = 0; i < obj.rooms.length; i++){
+		var room = JSON.parse(obj.rooms[i]);
+		level.SetRoomAt(room.y, room.x, room.z, Room.Import(room));
+	}
+	
+	//other things to load for the level!!!
+	level.start_index = obj.etc.start_index;
+	level.SetRoom(level.start_index.y, level.start_index.x, level.start_index.z);
+	
+	return level;
+}
+
+Level.prototype.SetRoom = function(y, x, z){
+	try{
+		if (this.room !== undefined)
+			this.room.player = undefined;
+		this.room = this.rooms[y][x][z];
+		this.room.SetPlayer(this.player);
+	}catch(err){ console.log(err); }
+}
+Level.prototype.SetRoomAt = function(y, x, z, room){
+	if (this.rooms[y] === undefined)
+		this.rooms[y] = [];
+	if (this.rooms[y][x] === undefined)
+		this.rooms[y][x] = [];
+	this.rooms[y][x][z] = room;
 }
 
 Level.prototype.update = function(delta, input){

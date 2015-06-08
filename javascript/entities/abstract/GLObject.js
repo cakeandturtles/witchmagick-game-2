@@ -1,4 +1,4 @@
-var GLObject = function(src, x, y, z, lb, tb, rb, bb, width, height){	
+var GLObject = function(img_name, x, y, z, lb, tb, rb, bb, width, height){	
 	this.type = "GLObject";
 	this.x = x;
 	this.y = y;
@@ -17,9 +17,9 @@ var GLObject = function(src, x, y, z, lb, tb, rb, bb, width, height){
 	this.width = defaultTo(width, 16);
 	this.height = defaultTo(height, 16);
 	
-	this.src = src;
+	this.img_name = img_name;
 	this.initBuffers();
-	this.initTexture("assets/images/" + this.src);
+	this.initTexture();
 	
 	this.spritesheet_coords = {x: 0, y: 0};
 	
@@ -83,19 +83,18 @@ GLObject.prototype.initBuffers = function(){
 	this.vertex_texture_coord_buffer.numItems = 4;
 }
 
-GLObject.prototype.initTexture = function(src){
+GLObject.prototype.initTexture = function(){
 	this.texture = gl.createTexture();
-	this.texture.image = new Image();
-	this.texture.image.onload = function () {
+	Assets.GetImage(this.img_name, function(image){
+		this.texture.image = image;
+		
 		gl.bindTexture(gl.TEXTURE_2D, this.texture);
         gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, this.texture.image);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
         gl.bindTexture(gl.TEXTURE_2D, null);
-	}.bind(this);
-
-	this.texture.image.src = src;
+	}.bind(this));
 }
 
 GLObject.prototype.ResetPosition = function(){

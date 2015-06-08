@@ -1,7 +1,7 @@
-function nodejs(){
+function FileManager(){
 }
 
-nodejs.saveFile = function(file_name, file_content, callback){
+FileManager.saveFile = function(file_name, file_content, callback){
 	var fs = require('fs');
 	fs.writeFile(file_name, file_content, function(err){
 		if (err){
@@ -13,7 +13,7 @@ nodejs.saveFile = function(file_name, file_content, callback){
 	});
 }
 
-nodejs.ensureExists = function(path, mask, cb) {
+FileManager.ensureExists = function(path, mask, cb) {
 	var fs = require('fs');
     if (typeof mask == 'function') { // allow the `mask` parameter to be optional
         cb = mask;
@@ -27,7 +27,7 @@ nodejs.ensureExists = function(path, mask, cb) {
     });
 }
 
-nodejs.loadFile = function(file_name, callback){
+FileManager.loadFile = function(file_name, callback){
 	var fs = require('fs');
 	fs.readFile(file_name, {encoding: "UTF-8"}, callback);
 }

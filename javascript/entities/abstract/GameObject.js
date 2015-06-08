@@ -4,8 +4,8 @@ MoveState.RUNNING = 1;
 MoveState.JUMPING = 2;
 MoveState.FALLING = 3;
 
-function GameObject(src, x, y, lb, tb, rb, bb){
-	GLSprite.call(this, src, x, y, lb, tb, rb, bb);
+function GameObject(img_name, x, y, lb, tb, rb, bb){
+	GLSprite.call(this, img_name, x, y, lb, tb, rb, bb);
 	this.type = "GameObject";
 	
 	this.prev_coords = {x: this.x, y: this.y, z: this.z};

@@ -17,7 +17,7 @@ function LevelArchitect(canvas, input, level){
 	canvas.onmousewheel = this.mouseScroll.bind(this);
 	canvas.onmouseout = this.mouseOut.bind(this);
 	
-	this.mouseOut();
+	//this.mouseOut();
 }
 
 LevelArchitect.prototype.pause = function(){

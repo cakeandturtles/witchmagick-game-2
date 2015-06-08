@@ -16,30 +16,8 @@ ExportOption.prototype.onContextMenu = function(level){
 	}else{
 		level.pause();
 		
-		Dialog.Confirm("", function(){			
-			var path = "./level_files/"+self.level_file_name+"/";
-			var json = level.Export();
-			nodejs.ensureExists(path, function(err){
-				try{
-					if (!err){
-						for (var i = 0; i < json.rooms.length; i++){
-							for (var j = 0; j < json.rooms[i].length; j++){
-								for (var k = 0; k < json.rooms[i][j].length; k++){
-									nodejs.saveFile(path + i + "_" + j + "_" + k + ".json", json.rooms[i][j][k]);
-								}
-							}
-						}
-						nodejs.saveFile(path + "etc.json", json.etc);
-						alert("level saved to file!");
-						return
-					}else{
-						console.log(err);
-					}
-				}catch(e){
-					console.log(e);
-				}
-				alert("error saving level!");
-			});
+		Dialog.Confirm("", function(){
+			LevelLoader.Export(self.level_file_name, level, true);
 		}, "save level", "save", function(){
 			this.architect.tryResume()
 			removeClass(this.dom, "selected");
