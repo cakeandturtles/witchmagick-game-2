@@ -14,9 +14,8 @@ Collision.SUPER_SOLID = 1;
 Collision.FALLTHROUGH = 2;
 Collision.KILL_PLAYER = 3;
 
-function Tile(src, x, y, z, width, height, depth, collision, slope, slope_index){
-	src = defaultTo(src, "tile.png");
-	GL3dObject.call(this, src, x, y, z, 0, 0, 0, width, height, -depth, width, height, depth);
+function Tile(x, y, z, width, height, depth, collision, slope, slope_index){
+	GL3dObject.call(this, null, x, y, z, 0, 0, 0, width, height, -depth, width, height, depth);
 	
 	this.y_index = y / Game.TILE_SIZE;
 	this.x_index = x / Game.TILE_SIZE;
@@ -38,9 +37,6 @@ Tile.prototype.Export = function(){
 	tile.y = this.y;
 	tile.z = this.z;
 	
-	if (this.src !== "tile.png")
-		tile.src = this.src;
-	
 	if (this.collision !== Collision.SOLID)
 		tile.collision = this.collision;
 	if (this.slope !== Slope.FLAT)
@@ -51,7 +47,7 @@ Tile.prototype.Export = function(){
 	return tile;
 }
 Tile.Import = function(obj){
-	var tile = new Tile(obj.src, obj.x, obj.y, obj.z, Game.TILE_SIZE, Game.TILE_SIZE, Game.TILE_SIZE, obj.collision, obj.slope, obj.slope_index);
+	var tile = new Tile(obj.x, obj.y, obj.z, Game.TILE_SIZE, Game.TILE_SIZE, Game.TILE_SIZE, obj.collision, obj.slope, obj.slope_index);
 	
 	return tile;
 }
@@ -139,4 +135,43 @@ Tile.prototype.setSideHeights = function(){
 			this.height_offsets = { left: 0, right: 0};
 			break;
 	}
+}
+
+Tile.prototype.render = function(camera, texture){
+	mvPushMatrix();
+	mat4.translate(mvMatrix, [this.x, -this.height-this.y, this.z]);
+	
+	mat4.translate(mvMatrix, [this.lb + this.rb / 2, this.tb + this.bb / 2, this.fb + this.zb / 2]);
+	mat4.rotateX(mvMatrix, degToRad(this.rotations[0]));
+	mat4.rotateY(mvMatrix, degToRad(this.rotations[1]));
+	mat4.rotateZ(mvMatrix, degToRad(this.rotations[2]));
+	mat4.translate(mvMatrix, [-(this.lb + this.rb / 2), -(this.tb + this.bb / 2), -(this.fb + this.zb / 2)]);
+	
+	
+	gl.bindBuffer(gl.ARRAY_BUFFER, this.vertex_position_buffer);
+	gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, this.vertex_position_buffer.itemSize, gl.FLOAT, false, 0, 0);
+	
+	gl.bindBuffer(gl.ARRAY_BUFFER, this.vertex_normal_buffer);
+	gl.vertexAttribPointer(shaderProgram.vertexNormalAttribute, this.vertex_normal_buffer.itemSize, gl.FLOAT, false, 0, 0);
+	
+	gl.bindBuffer(gl.ARRAY_BUFFER, this.vertex_color_buffer);
+	gl.vertexAttribPointer(shaderProgram.vertexColorAttribute,
+	this.vertex_color_buffer.itemSize, gl.FLOAT, false, 0, 0);
+
+	gl.bindBuffer(gl.ARRAY_BUFFER, this.vertex_texture_coord_buffer);
+	gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, this.vertex_texture_coord_buffer.itemSize, gl.FLOAT, false, 0, 0);
+
+	gl.activeTexture(gl.TEXTURE0);
+	gl.bindTexture(gl.TEXTURE_2D, texture);
+	gl.uniform1i(shaderProgram.samplerUniform, 0);
+	
+	gl.uniform1f(shaderProgram.alpha, this.alpha);
+	//gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+	gl.disable(gl.BLEND);
+	gl.enable(gl.DEPTH_TEST);
+
+	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.vertex_index_buffer);
+	setMatrixUniforms();
+	gl.drawElements(gl.TRIANGLES, this.vertex_index_buffer.numItems, gl.UNSIGNED_SHORT, 0);
+	mvPopMatrix();
 }

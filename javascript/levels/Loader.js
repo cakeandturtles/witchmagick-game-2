@@ -7,6 +7,7 @@ LevelLoader.Import = function(level_name, canvas, input, callback_){
 	var loaded = 0;
 	var needs_loading = 0;
 	var obj = {};
+	obj.level_name = level_name;
 	
 	FileManager.loadFile(path + "etc.json", function(err, json){
 		if (err){

@@ -6,7 +6,7 @@ function Option(architect, menu_dom, id, dom_img_src, src){
 	//MAKE DOM ELEMENT AND APPEND TO MENU DOM!!
 	this.dom = document.createElement("img");
 	this.dom.id = id;
-	this.dom.src = "assets/images/" + dom_img_src;
+	this.dom.src = "assets/images/architect_options/" + dom_img_src;
 	this.dom.className = "level-architect-option";
 	
 	menu_dom.appendChild(this.dom);

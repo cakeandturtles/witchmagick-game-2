@@ -36,9 +36,8 @@ EntityOption.prototype.onDomClick = function(){
 		}
 		this.entity_type = this.entity_types[this.entity_type_index];
 		
-		this.dom.src = "assets/images/option_entity_" + this.entity_type.toLowerCase() + ".png";
-		this.img_name = this.entity_type.toLowerCase() + "_sheet.png";
-		GLObject.prototype.initTexture.call(this);
+		this.dom.src = "assets/images/architect_options/option_entity_" + this.entity_type.toLowerCase() + ".png";
+		GLObject.prototype.initTexture.call(this, this.entity_type.toLowerCase() + "_sheet.png");
 	}
 }
 

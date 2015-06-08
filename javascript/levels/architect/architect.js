@@ -40,7 +40,8 @@ LevelArchitect.prototype.InitMenuOptions = function(){
 	this.menu.options = [];
 	
 	//Export OPTION
-	this.menu.options.push(new ExportOption(this, this.menu.dom));
+	this.export_option = new ExportOption(this, this.menu.dom);
+	this.menu.options.push(this.export_option);
 	
 	//SPACE HOLDER
 	this.menu.options.push(new SpaceOption(this, this.menu.dom));

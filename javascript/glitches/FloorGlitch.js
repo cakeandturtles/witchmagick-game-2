@@ -3,6 +3,8 @@ function FloorGlitch(){
 	
 	this.type = "FloorGlitch";
 	
+	this.tile_img_name = "tile_sheet_red.png";
+	
 	this.glitches.push({
 		funcName: "applyGravity",
 		funcDef: function(delta){

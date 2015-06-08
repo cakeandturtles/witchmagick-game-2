@@ -17,9 +17,8 @@ var GLObject = function(img_name, x, y, z, lb, tb, rb, bb, width, height){
 	this.width = defaultTo(width, 16);
 	this.height = defaultTo(height, 16);
 	
-	this.img_name = img_name;
 	this.initBuffers();
-	this.initTexture();
+	this.initTexture(img_name);
 	
 	this.spritesheet_coords = {x: 0, y: 0};
 	
@@ -83,7 +82,8 @@ GLObject.prototype.initBuffers = function(){
 	this.vertex_texture_coord_buffer.numItems = 4;
 }
 
-GLObject.prototype.initTexture = function(){
+GLObject.prototype.initTexture = function(img_name){
+	this.img_name = img_name;
 	this.texture = gl.createTexture();
 	Assets.GetImage(this.img_name, function(image){
 		this.texture.image = image;

@@ -3,7 +3,6 @@ function ExportOption(architect, menu_dom){
 	
 	this.is_selectable = false;
 	this.is_toggleable = true;
-	this.level_file_name = "level_name";
 }
 extend(Option, ExportOption);
 
@@ -17,7 +16,7 @@ ExportOption.prototype.onContextMenu = function(level){
 		level.pause();
 		
 		Dialog.Confirm("", function(){
-			LevelLoader.Export(self.level_file_name, level, true);
+			LevelLoader.Export(level.level_name, level, true);
 		}, "save level", "save", function(){
 			this.architect.tryResume()
 			removeClass(this.dom, "selected");
@@ -28,9 +27,9 @@ ExportOption.prototype.onContextMenu = function(level){
 		var input = document.createElement("input");
 		input.type = "text";
 		input.style.width = "128px";
+		input.value = level.level_name;
 		input.onkeyup = function(e){
-			self.level_file_name = this.value;
-			console.log(self.level_file_name);
+			level.level_name = this.value;
 		}
 		level_name_dom.appendChild(text);
 		level_name_dom.appendChild(document.createElement("br"));

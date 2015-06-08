@@ -1,9 +1,7 @@
 immediate::
-3. CHECKpoints?
-2. Add some way for glitches to modify visual properties of the room either by:
-	a. forcing player/entities/tile to use new asset (e.g. player.png vs player_red.png) OR
-	b. altering the render properties (changing globject color? changing lighting variables?)
-3. add other default glitches, allow level architect glitch manager to have dropdown menu, and buttons to add glitch, remove glitch, and shows the room's glitch array (and lets you set the glitch of the room)
+3. allow level architect glitch manager to have dropdown menu, and buttons to add glitch, remove glitch, and shows the room's glitch array (and lets you set the glitch of the room)
+4. add other default glitches, 
+4. removing top 4 tiles and saving will remember them still???
 	
 
 
@@ -28,3 +26,4 @@ immediate::
 			x++;	//todo how to make this work and not use the global namespace x, will have to parse
 		}			//functions and ensure that the scope is using this.x instead!!??
 	
+6. could you save space by saving/loading the tiles by aggregate tile and reassembling original from the aggregation upon import?

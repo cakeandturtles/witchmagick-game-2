@@ -1,6 +1,6 @@
 //one manager for all tiles (of a certain texture???)!!!
 function TileHydra(room){
-	this.src = "tile.png";
+	this.initTexture("tile_sheet.png");
 	
 	this.room = room;
 	this.tiles = {};
@@ -15,16 +15,22 @@ function TileHydra(room){
 	for (var i = 0 ; i < 320/Game.TILE_SIZE/2; i++){
 		var y_index = y / Game.TILE_SIZE;
 		var x_index = i;
-		this.AddTile(y_index, x_index, 0, new Tile("tile.png", i*Game.TILE_SIZE, y, 0, Game.TILE_SIZE, Game.TILE_SIZE, Game.TILE_SIZE, Collision.SOLID), true);
+		this.AddTile(y_index, x_index, 0, new Tile(i*Game.TILE_SIZE, y, 0, Game.TILE_SIZE, Game.TILE_SIZE, Game.TILE_SIZE, Collision.SOLID), true);
 	}
 	y = 32;
 	for (var i = 0 ; i < 64/Game.TILE_SIZE/2; i++){
 		var y_index = y / Game.TILE_SIZE;
 		var x_index = i;
-		this.AddTile(y_index, x_index, 0, new Tile("tile.png", i*Game.TILE_SIZE, y, 0, Game.TILE_SIZE, Game.TILE_SIZE, Game.TILE_SIZE, Collision.SOLID), true);
+		this.AddTile(y_index, x_index, 0, new Tile(i*Game.TILE_SIZE, y, 0, Game.TILE_SIZE, Game.TILE_SIZE, Game.TILE_SIZE, Collision.SOLID), true);
 	}
 	
 	this.AggregateTiles();
+}
+
+TileHydra.prototype.initTexture = function(img_name){
+	//you can do this even though tilehydra isn't a 'child' of GLObject!! 
+	//javascript oop is so flexible :0
+	GLObject.prototype.initTexture.call(this, img_name);
 }
 
 TileHydra.prototype.GetTile = function(y_index, x_index, z_index){
@@ -178,7 +184,7 @@ TileHydra.prototype.AggregateTiles = function(){
 						}
 					}
 					//finally, create the aggregate visual tile and add it to the array
-					var agg_tile = new Tile(this.src, j * Game.TILE_SIZE, i * Game.TILE_SIZE, k * Game.TILE_SIZE, (j2 - j + 1) * Game.TILE_SIZE, (i2 - i + 1) * Game.TILE_SIZE, (k - k2 + 1)*Game.TILE_SIZE);
+					var agg_tile = new Tile(j * Game.TILE_SIZE, i * Game.TILE_SIZE, k * Game.TILE_SIZE, (j2 - j + 1) * Game.TILE_SIZE, (i2 - i + 1) * Game.TILE_SIZE, (k - k2 + 1)*Game.TILE_SIZE);
 					this.aggregated_tiles.push(agg_tile);
 				}
 			}
@@ -190,11 +196,11 @@ TileHydra.prototype.AggregateTiles = function(){
 TileHydra.prototype.render_allTiles = function(camera){
 	for (var i = 0; i < this.aggregated_tiles.length; i++){
 		if (!camera.IsOrthogonal() || this.aggregated_tiles[i].z === camera.z)
-			this.aggregated_tiles[i].render();
+			this.aggregated_tiles[i].render(camera, this.texture);
 	}
 	for (var i = 0; i < this.placed_tiles.length; i++){
 		if (!camera.IsOrthogonal() || this.placed_tiles[i].z === camera.z)
-			this.placed_tiles[i].render();
+			this.placed_tiles[i].render(camera, this.texture);
 	}
 }
 TileHydra.prototype.render_lightsOut = function(camera){
@@ -210,7 +216,7 @@ TileHydra.prototype.render_lightsOut = function(camera){
 		for (var j = left_tile; j <= right_tile; j++){
 			var tile = this.GetTile(i, j, 0);
 			if (tile === null) continue;
-			tile.render();
+			tile.render(camera, this.texture);
 		}
 	}
 }

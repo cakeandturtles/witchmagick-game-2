@@ -43,7 +43,7 @@ TileOption.prototype.PlaceTiles = function(deleting, level){
 		for (var j = 0; j < this.width / Game.TILE_SIZE; j++){
 			for (var k = level.camera.z; k > level.camera.z - this.tile_placement_depth*Game.TILE_SIZE; k-=Game.TILE_SIZE){
 				if (!deleting){
-					level.room.AddTile(y + i, x + j, k/Game.TILE_SIZE, new Tile("tile.png", this.x + j*Game.TILE_SIZE, this.y + i*Game.TILE_SIZE, k, Game.TILE_SIZE, Game.TILE_SIZE, Game.TILE_SIZE, Collision.SOLID), true);
+					level.room.AddTile(y + i, x + j, k/Game.TILE_SIZE, new Tile(this.x + j*Game.TILE_SIZE, this.y + i*Game.TILE_SIZE, k, Game.TILE_SIZE, Game.TILE_SIZE, Game.TILE_SIZE, Collision.SOLID), true);
 				}else{
 					level.room.RemoveTile(y + i, x + j, k/Game.TILE_SIZE, true);
 				}

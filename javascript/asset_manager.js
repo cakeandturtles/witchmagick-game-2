@@ -5,6 +5,9 @@ Assets.images = {};
 Assets.sounds = {};
 
 Assets.GetImage = function(img_name, callback){
+	if (img_name === undefined || img_name === null)
+		return;
+	
 	if (Assets.images[img_name] !== undefined){
 		if (Assets.images[img_name].complete){
 			callback(Assets.images[img_name]);

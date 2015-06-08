@@ -1,5 +1,6 @@
 function Level(canvas, input){
 	this.ctx2d = canvas.getContext("2d");
+	this.level_name = "insert_level_name";
 	
 	this.player = new Player(0, 152);
 	this.camera = new Camera();
@@ -55,6 +56,7 @@ Level.prototype.Export = function(){
 
 Level.Import = function(obj, canvas, input){
 	var level = new Level(canvas, input);
+	level.level_name = obj.level_name;
 	for (var i = 0; i < obj.rooms.length; i++){
 		var room = JSON.parse(obj.rooms[i]);
 		level.SetRoomAt(room.y, room.x, room.z, Room.Import(room));

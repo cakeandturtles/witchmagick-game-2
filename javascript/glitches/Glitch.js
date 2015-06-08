@@ -3,6 +3,8 @@ function Glitch(){
 	this.glitches = [];
 	
 	this.type = "";
+	
+	this.tile_img_name = "tile_sheet.png";
 }
 Glitch.prototype.HasAType = function(){
 	return this.type !== undefined && this.type !== null && this.type.length > 0;
@@ -31,11 +33,13 @@ Glitch.prototype.applyAll = function(vessels){
 Glitch.prototype.ApplyRoom = function(room){
 	this.apply(room.player);
 	this.applyAll(room.entities);
+	room.tile_hydra.initTexture(this.tile_img_name);
 }
 
 Glitch.prototype.RevertRoom = function(room){
 	this.revert(room.player);
 	this.revertAll(room.entities);
+	room.tile_hydra.initTexture("tile_sheet.png");
 }
 
 Glitch.prototype.revert = function(vessel){
