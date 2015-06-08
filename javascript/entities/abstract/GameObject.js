@@ -19,11 +19,11 @@ function GameObject(img_name, x, y, lb, tb, rb, bb){
 	this.air_run_dec = this.max_run_vel / 3.0;
 	this.horizontal_input = false;
 	
-	this.grav_acc = 0.8;
+	this.grav_acc = 0.4;
 	this.jump_vel = 4.5;
 	this.is_jumping = false;
 	this.jump_timer = 0;
-	this.jump_time_limit = 15;
+	this.jump_time_limit = 12;
 	this.terminal_vel = 7.0;
 	this.jump_acc = 35.0;
 	this.on_ground = true;
@@ -393,6 +393,9 @@ GameObject.prototype.updateAnimationFromMoveState = function(){
 }
 
 //Raw Collision functions
+GameObject.prototype.isColliding = function(globject){
+	return this.isRectColliding(globject, this.lb + this.x, this.tb + this.y, this.fb + this.z, this.rb + this.x, this.bb + this.y, this.zb + this.z);
+}
 GameObject.prototype.isRectColliding = function(globject, lb, tb, fb, rb, bb, zb){
 	return (lb <= globject.x + globject.rb &&
 			rb >= globject.x + globject.lb &&

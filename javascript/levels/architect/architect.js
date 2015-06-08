@@ -62,8 +62,8 @@ LevelArchitect.prototype.InitMenuOptions = function(){
 	tile_option.SelectMe();
 	this.menu.options.push(tile_option);
 	
-	//NPC OPTION
-	this.menu.options.push(new NpcOption(this, this.menu.dom));
+	//ENTITY OPTION
+	this.menu.options.push(new EntityOption(this, this.menu.dom));
 	
 	/////////////////////////////////////////////////////////////////////
 	var doms = Object.keys(this.menu);

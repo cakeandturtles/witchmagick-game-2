@@ -63,11 +63,15 @@ Option.prototype.onDomClick_ = function(e){
 			this.onContextMenu(this.architect.level);
 		}
 		
+		this.onDomClick();
 		this.SelectMe(this.is_selectable);
 	}else{
 		this.onContextMenu(this.architect.level);
 		this.SelectMe(this.is_selectable);
 	}
+}
+
+Option.prototype.onDomClick = function(e){
 }
 
 Option.prototype.whenSelected = function(){}
