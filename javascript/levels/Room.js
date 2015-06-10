@@ -133,6 +133,7 @@ Room.prototype.RemoveGlitch = function(glitch){
 		this.glitch_index = -1;
 		glitch.RevertRoom(this);
 	}
+	return glitch;
 }
 Room.prototype.ClearGlitches = function(){
 	if (this.glitch_index > 0)
@@ -142,15 +143,14 @@ Room.prototype.ClearGlitches = function(){
 	this.glitch_index = -1;
 }
 
-Room.prototype.GetEntity = function(x, y){
-	var p = this.player;
-	if (x >= p.x && x <= p.x + p.width && y >= p.y && y <= p.y + p.height){
-		return p;
+Room.prototype.GetEntity = function(x, y, z){
+	if (this.player.isPointColliding(x, y, z)){
+		return this.player;
 	}
 	
 	for (var i = 0; i < this.entities.length; i++){
 		var e = this.entities[i];
-		if (x >= e.x && x <= e.x + e.width && y >= e.y && y <= e.y + e.height){
+		if (e.isPointColliding(x, y, z)){
 			return e;
 		}
 	}
@@ -176,6 +176,7 @@ Room.prototype.RemoveEntity = function(x, y, entity){
 			}
 		}
 	}
+	return entity;
 }
 
 Room.prototype.GetTile = function(y_index, x_index, z_index){
@@ -185,7 +186,7 @@ Room.prototype.AddTile = function(y_index, x_index, z_index, tile, suppress_aggr
 	this.tile_hydra.AddTile(y_index, x_index, z_index, tile, suppress_aggregation);
 }
 Room.prototype.RemoveTile = function(y_index, x_index, z_index, suppress_aggregation){
-	this.tile_hydra.RemoveTile(y_index, x_index, z_index, suppress_aggregation);
+	return this.tile_hydra.RemoveTile(y_index, x_index, z_index, suppress_aggregation);
 }
 Room.prototype.DeaggregateTiles = function(){
 	this.tile_hydra.deaggregateTiles();

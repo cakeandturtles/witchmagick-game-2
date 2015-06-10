@@ -42,8 +42,10 @@ TileHydra.prototype.AddTile = function(y_index, x_index, z_index, tile, suppress
 	this.TrySuppressAggregation(suppress_aggregation);
 }
 TileHydra.prototype.RemoveTile = function(y_index, x_index, z_index, suppress_aggregation){
+	var tile = false;
+	
 	if (this.tiles[y_index] !== undefined && this.tiles[y_index][x_index] !== undefined){
-		var tile_to_remove = this.tiles[y_index][x_index];
+		tile = this.tiles[y_index][x_index][z_index];
 		delete this.tiles[y_index][x_index][z_index];
 		
 		if (isEmpty(this.tiles[y_index][x_index])){
@@ -53,14 +55,11 @@ TileHydra.prototype.RemoveTile = function(y_index, x_index, z_index, suppress_ag
 				delete this.tiles[y_index];
 			}
 		}
-		
-		var index = this.placed_tiles.indexOf(tile_to_remove);
-		if (index >= 0)
-			this.placed_tiles.splice(index, 1);
 	}	
 	
 	
 	this.TrySuppressAggregation(suppress_aggregation);
+	return tile;
 }
 TileHydra.prototype.TrySuppressAggregation = function(suppress_aggregation){
 	if (suppress_aggregation === undefined || !suppress_aggregation){

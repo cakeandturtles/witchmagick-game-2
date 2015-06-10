@@ -1,7 +1,8 @@
 immediate::
-3. allow level architect glitch manager to have dropdown menu, and buttons to add glitch, remove glitch, and shows the room's glitch array (and lets you set the glitch of the room)
-4. add other default glitches, 
-	
+1. Create entity context menu option
+	-select which entity to create??
+2. Clone entity context menu option
+3. Edit entity context menu option
 
 
 -----------------------------------------------------------------eventual-----------------------------

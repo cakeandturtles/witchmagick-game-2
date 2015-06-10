@@ -6,14 +6,18 @@ function TileOption(architect, menu_dom){
 	this.width = Game.TILE_SIZE;
 	this.height = Game.TILE_SIZE;
 	
+	this.entity = null;
+	
 	this.tile_placement_depth = 1;
 	
 	this.action = TileOption.NORMAL;
+	this.prev_action = this.action;
 }
 extend(Option, TileOption);
 
 TileOption.NORMAL = 0;
 TileOption.DELETE = 1;
+TileOption.MOVE = 2;
 
 TileOption.prototype.onContextMenu = function(level){
 	var self = this;
@@ -42,20 +46,10 @@ TileOption.prototype.onContextMenu = function(level){
 
 TileOption.prototype.whenSelected = function(){
 	this.action = TileOption.NORMAL;
+	document.body.style.cursor = "";
 	this.alpha = 0.5;
 	
 	this.initTexture("tile.png");
-}
-
-TileOption.prototype.ToggleAction = function(){
-	if (this.action === TileOption.NORMAL){
-		this.alpha = 1.0;
-		
-		this.action = TileOption.DELETE;
-		this.initTexture("delete.png");
-	}else if (this.action === TileOption.DELETE){
-		this.whenSelected();
-	}
 }
 
 TileOption.prototype.detectKeyInput = function(input, level){
@@ -68,16 +62,23 @@ TileOption.prototype.PlaceTiles = function(deleting, level){
 	var x = this.x / Game.TILE_SIZE;
 	var y = this.y / Game.TILE_SIZE;
 	
+	var deleted = false;
+	
 	for (var i = 0; i < this.height / Game.TILE_SIZE; i++){
 		for (var j = 0; j < this.width / Game.TILE_SIZE; j++){
 			for (var k = level.camera.z; k > level.camera.z - this.tile_placement_depth*Game.TILE_SIZE; k-=Game.TILE_SIZE){
 				if (!deleting){
 					level.room.AddTile(y + i, x + j, k/Game.TILE_SIZE, new Tile(this.x + j*Game.TILE_SIZE, this.y + i*Game.TILE_SIZE, k, Game.TILE_SIZE, Game.TILE_SIZE, Game.TILE_SIZE, Collision.SOLID), true);
 				}else{
-					level.room.RemoveTile(y + i, x + j, k/Game.TILE_SIZE, true);
+					deleted = level.room.RemoveTile(y + i, x + j, k/Game.TILE_SIZE, true);
 				}
 			}
 		}
+	}
+	
+	if (deleting && deleted !== false){
+		level.room.DeaggregateTiles();
+		level.room.AggregateTiles();
 	}
 }
 
@@ -85,7 +86,22 @@ TileOption.prototype.mouseDown = function(x, y, is_right_mb, level){
 	if (is_right_mb){
 		return;
 	}
-	this.PlaceTiles(this.action === TileOption.DELETE, level);
+	if (this.action === TileOption.NORMAL || this.action === TileOption.DELETE){
+		this.PlaceTiles(this.action === TileOption.DELETE, level);
+		if (this.action === TileOption.DELETE)
+			this.alpha = 0;
+	}else if (this.action === TileOption.MOVE){
+		if (this.entity === null) return;
+		this.entity_grav_acc = this.entity.grav_acc;
+		this.entity.grav_acc = 0;
+		this.visible = false;
+		this.entity.x = x;
+		this.entity.y = y;
+		
+		document.body.style.cursor = "-webkit-grabbing";
+	}
+	
+	this.is_mouse_down = true;
 }
 
 TileOption.prototype.mouseUp = function(x, y, is_right_mb, level){
@@ -93,9 +109,19 @@ TileOption.prototype.mouseUp = function(x, y, is_right_mb, level){
 		return;
 	}
 	level.room.AggregateTiles();
+	
+	if (this.entity !== null && this.entity_grav_acc !== 0){
+		this.entity.grav_acc = this.entity_grav_acc;
+		this.whenSelected();
+	}
+	this.entity = null;
+	
+	this.mouseMove(x, y, false, level, false);
+	
+	this.is_mouse_down = false;
 }
 
-TileOption.prototype.mouseMove = function(x, y, is_right_mb, level, is_mouse_down){
+TileOption.prototype.mouseMove = function(x, y, is_right_mb, level, is_mouse_down, mouseX, mouseY){
 	this.x = x;
 	this.y = y;
 	
@@ -104,7 +130,37 @@ TileOption.prototype.mouseMove = function(x, y, is_right_mb, level, is_mouse_dow
 	}
 	
 	if (is_mouse_down){
-		this.PlaceTiles(this.action === TileOption.DELETE, level);
+		if (this.action === TileOption.NORMAL || this.action === TileOption.DELETE){
+			this.PlaceTiles(this.action === TileOption.DELETE, level);
+		}else if (this.action === TileOption.MOVE){
+			if (this.entity !== null){
+				this.entity.x = this.x;
+				this.entity.y = this.y;
+			}
+		}
+	}
+	else{
+		var entity = level.room.GetEntity(x+2, y+2, 0);
+		var tile = level.room.GetTile(y / Game.TILE_SIZE, x / Game.TILE_SIZE, 0);
+		
+		if ((entity === null && this.action === TileOption.MOVE) || (this.entity !== null && this.entity !== entity) ||
+			(tile === null && this.action === TileOption.DELETE)){
+			this.whenSelected();
+			this.entity = null;
+		}
+		
+		if (entity !== null && this.action !== TileOption.MOVE){
+			document.body.style.cursor = "-webkit-grab";
+			this.alpha = 0.0;
+			this.entity = entity;
+			
+			this.action = TileOption.MOVE;
+		}else if (tile !== null && this.action !== TileOption.DELETE){
+			this.alpha = 0.8;
+			
+			this.action = TileOption.DELETE;
+			this.initTexture("delete.png");
+		}
 	}
 }
 

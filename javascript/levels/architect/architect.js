@@ -65,7 +65,7 @@ LevelArchitect.prototype.InitMenuOptions = function(){
 	this.menu.options.push(tile_option);
 	
 	//ENTITY OPTION
-	this.menu.options.push(new EntityOption(this, this.menu.dom));
+	//this.menu.options.push(new EntityOption(this, this.menu.dom));
 	
 	/////////////////////////////////////////////////////////////////////
 	var doms = Object.keys(this.menu);
@@ -101,13 +101,13 @@ LevelArchitect.prototype.canvasContextMenu = function(e){
 		function(){
 			this.level.room.IncrementGlitchIndex();
 		}.bind(this),
-		this.level.room.glitches.length === 0
+		this.level.room.glitches.length <= 1
 	);
 	this.context_menu.menu.AddItem('prev glitch (H)',
 		function(){
 			this.level.room.DecrementGlitchIndex();
 		}.bind(this),
-		this.level.room.glitches.length === 0
+		this.level.room.glitches.length <= 1
 	);
 	
 	this.context_menu.menu.AddDivider();
@@ -119,7 +119,7 @@ LevelArchitect.prototype.canvasContextMenu = function(e){
 		}.bind(this)
 	);
 	
-	var entity = this.level.room.GetEntity(this.x, this.y);
+	var entity = this.level.room.GetEntity(this.x + 2, this.y + 2, 0);
 	if (entity !== null && entity !== undefined){
 		this.context_menu.menu.AddItem('clone entity', 
 			function(entity){

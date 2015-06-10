@@ -393,6 +393,12 @@ GameObject.prototype.updateAnimationFromMoveState = function(){
 }
 
 //Raw Collision functions
+GameObject.prototype.isPointColliding = function(x, y, z){
+	return (this.lb + this.x <= x && this.rb + this.x >= x && 
+			this.tb + this.y <= y && this.bb + this.y >= y && 
+			this.fb + this.z >= z && this.zb + this.z <= z);
+}
+
 GameObject.prototype.isColliding = function(globject){
 	return this.isRectColliding(globject, this.lb + this.x, this.tb + this.y, this.fb + this.z, this.rb + this.x, this.bb + this.y, this.zb + this.z);
 }
