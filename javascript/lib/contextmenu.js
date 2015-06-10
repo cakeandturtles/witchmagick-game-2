@@ -3,22 +3,48 @@ function CtxMenu(dom, table, element){
 	this.table = table;
 	this.element = element;
 	
-	CtxMenu.addEventHandler(this.element, "mousedown", this.HideMe.bind(this));
-	CtxMenu.addEventHandler(this.element, "mouseup", this.HideMe.bind(this));
-	CtxMenu.addEventHandler(this.element, "contextmenu", this.ShowMe.bind(this));
+	this.ele_mousedown_handler = function(e){
+		this.Remove();
+	}.bind(this);
+	this.dom_mousedown_handler = function(e){
+		e.stopPropagation();
+		e.preventDefault();
+	}.bind(this);
+	
+	this.ele_mouseup_handler = function(e){
+	}.bind(this);
+	this.dom_mouseup_handler = function(e){
+	}.bind(this);
+	
+	this.ele_contextmenu_handler = function(e){
+		this.ShowMe(e);
+	}.bind(this);
+	this.dom_contextmenu_handler = function(e){
+		e.stopPropagation();
+		e.preventDefault();
+	}.bind(this);
+	
+	CtxMenu.addEventHandler(this.element, "mousedown", this.ele_mousedown_handler);
+	CtxMenu.addEventHandler(this.dom, "mousedown", this.dom_mousedown_handler);
+	
+	CtxMenu.addEventHandler(this.element, "mouseup", this.ele_mouseup_handler);
+	CtxMenu.addEventHandler(this.dom, "mouseup", this.dom_mouseup_handler);
+	
+	CtxMenu.addEventHandler(this.element, "contextmenu", this.ele_contextmenu_handler);
+	CtxMenu.addEventHandler(this.dom, "contextmenu", this.dom_contextmenu_handler);
 }
 
 CtxMenu.removeEventHandler = function(elem,eventType,handler) {
  if (elem.removeEventListener) 
-    elem.removeEventListener (eventType,handler,true);
+    elem.removeEventListener (eventType,handler,false);
  if (elem.detachEvent)
     elem.detachEvent ('on'+eventType,handler); 
 }
 CtxMenu.addEventHandler = function(elem,eventType,handler) {
  if (elem.addEventListener)
-     elem.addEventListener (eventType,handler,true);
+     elem.addEventListener (eventType,handler,false);
  else if (elem.attachEvent)
-     elem.attachEvent ('on'+eventType,handler); 
+     elem.attachEvent('on'+eventType,handler); 
 }
 
 CtxMenu.Init = function(element){
@@ -44,14 +70,32 @@ CtxMenu.Init = function(element){
 	return ctx_menu;
 }
 
+CtxMenu.prototype.MouseDown = function(e){
+	alert(e);
+	e.preventDefault();
+	e.stopPropagation();
+}
+CtxMenu.prototype.MouseUp = function(e){
+}
+CtxMenu.prototype.ContextMenu = function(e){
+}
+
 CtxMenu.prototype.Remove = function(){
-	CtxMenu.removeEventHandler(this.element, "mousedown", this.HideMe.bind(this));
-	CtxMenu.removeEventHandler(this.element, "mouseup", this.HideMe.bind(this));
-	CtxMenu.removeEventHandler(this.element, "contextmenu", this.ShowMe.bind(this));
+	CtxMenu.removeEventHandler(this.element, "mousedown", this.ele_mousedown_handler);
+	CtxMenu.removeEventHandler(this.element, "mouseup", this.ele_mouseup_handler);
+	CtxMenu.removeEventHandler(this.element, "contextmenu", this.ele_contextmenu_handler);
+	
+	CtxMenu.removeEventHandler(this.dom, "mousedown", this.dom_mousedown_handler);
+	CtxMenu.removeEventHandler(this.dom, "mouseup", this.dom_mouseup_handler);
+	CtxMenu.removeEventHandler(this.dom, "contextmenu", this.dom_contextmenu_handler);
 	
 	try{
 		this.HideMe();
 	}catch(e){};
+}
+
+CtxMenu.prototype.AddDivider = function(){
+	this.table.appendChild(document.createElement("hr"));
 }
 
 CtxMenu.prototype.AddItem = function(label, callback, disabled){
@@ -67,10 +111,13 @@ CtxMenu.prototype.AddItem = function(label, callback, disabled){
 	if (disabled){
 		item.style.cursor = "";
 		item.style.color = "#aaaaaa";
+		item.onclick = function(e){
+			this.Remove();
+		}.bind(this);
 	}else{
 		item.onclick = function(e){
 			callback();
-			this.HideMe(e);
+			this.Remove();
 		}.bind(this);
 	}
 	item_element.appendChild(item);

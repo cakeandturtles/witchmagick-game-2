@@ -31,6 +31,11 @@ Checkpoint.Import = function(obj){
 	var checkpoint = new Checkpoint(obj.x, obj.y);
 	return checkpoint;
 }
+Checkpoint.prototype.refresh = function(){
+	var active = this.active;
+	this.constructor(this.x, this.y);
+	this.active = active;
+}
 
 Checkpoint.prototype.update = function(delta, room){
 	if (this.isColliding(room.player)){

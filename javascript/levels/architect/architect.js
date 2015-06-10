@@ -43,6 +43,10 @@ LevelArchitect.prototype.InitMenuOptions = function(){
 	this.export_option = new ExportOption(this, this.menu.dom);
 	this.menu.options.push(this.export_option);
 	
+	//GLITCH OPTION
+	this.glitch_option = new GlitchOption(this, this.menu.dom);
+	this.menu.options.push(this.glitch_option);
+	
 	//SPACE HOLDER
 	this.menu.options.push(new SpaceOption(this, this.menu.dom));
 	
@@ -51,9 +55,6 @@ LevelArchitect.prototype.InitMenuOptions = function(){
 	
 	//SPACE HOLDER
 	this.menu.options.push(new SpaceOption(this, this.menu.dom));
-	
-	//Glitch Option
-	this.menu.options.push(new GlitchOption(this, this.menu.dom));
 	
 	//CAMERA OPTION
 	this.menu.options.push(new CameraOption(this, this.menu.dom));
@@ -84,7 +85,70 @@ LevelArchitect.prototype.InitMenuOptions = function(){
 	}
 }
 
+LevelArchitect.prototype.canvasContextMenu = function(e){	
+	this.context_menu = {};
+	this.context_menu.menu = CtxMenu.Init(document.body);
+	
+	this.context_menu.menu.Open();
+	
+	//glitch management
+	this.context_menu.menu.AddItem('room glitch cycle',
+		function(){
+			this.glitch_option.onDomClick_();
+		}.bind(this)
+	);
+	this.context_menu.menu.AddItem('next glitch (G)',
+		function(){
+			this.level.room.IncrementGlitchIndex();
+		}.bind(this),
+		this.level.room.glitches.length === 0
+	);
+	this.context_menu.menu.AddItem('prev glitch (H)',
+		function(){
+			this.level.room.DecrementGlitchIndex();
+		}.bind(this),
+		this.level.room.glitches.length === 0
+	);
+	
+	this.context_menu.menu.AddDivider();
+	
+	//entity management
+	this.context_menu.menu.AddItem('create entity here',
+		function(){
+			
+		}.bind(this)
+	);
+	
+	var entity = this.level.room.GetEntity(this.x, this.y);
+	if (entity !== null && entity !== undefined){
+		this.context_menu.menu.AddItem('clone entity', 
+			function(entity){
+			}.bind(this, entity),
+			entity === this.level.player
+		);
+		
+		this.context_menu.menu.AddItem('delete entity', 
+			function(entity){
+				this.level.room.RemoveEntity(entity);
+			}.bind(this, entity), 
+			entity === this.level.player
+		);
+	}
+}
+
 LevelArchitect.prototype.detectKeyInput = function(input){
+	var s = input.IsKeyPressed("s");
+	if (s && s.ctrl){
+		this.export_option.onDomClick_();
+	}
+	
+	if (input.IsKeyPressed("g")){
+		this.level.room.IncrementGlitchIndex();
+	}
+	if (input.IsKeyPressed("h")){
+		this.level.room.DecrementGlitchIndex();
+	}
+	
 	this.selected_option.detectKeyInput(input, this.level);
 }
 
@@ -99,6 +163,11 @@ LevelArchitect.prototype.mouseUp = function(e){
 	var mouseX = e.clientX + document.body.scrollLeft;
 	var mouseY = e.clientY + document.body.scrollTop;
 	this.is_mouse_down = false;
+	
+	if (isRightMB(e)){
+		this.canvasContextMenu(mouseX, mouseY);
+		this.selected_option.canvasContextMenu(this.x, this.y, this.level, mouseX, mouseY, this.context_menu);
+	}
 	
 	this.selected_option.mouseUp(this.x, this.y, isRightMB(e), this.level, mouseX, mouseY);
 }

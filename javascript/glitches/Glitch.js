@@ -11,6 +11,12 @@ Glitch.prototype.HasAType = function(){
 }
 Glitch.suffix = "_unglitched";
 
+Glitch.DEFAULT_GLITCHES = [
+	"None",
+	"FloorGlitch",
+	"WallGlitch"
+];
+
 //pass a single object/entity to glitch that object/entity
 //pass a prototype to glitch the entire class
 Glitch.prototype.apply = function(vessel){
@@ -42,6 +48,14 @@ Glitch.prototype.RevertRoom = function(room){
 	room.tile_hydra.initTexture("tile_sheet.png");
 }
 
+Glitch.RefreshRoom = function(room){
+	room.player.refresh();
+	for (var i = 0; i < room.entities.length; i++){
+		room.entities[i].refresh();
+	}
+	room.tile_hydra.initTexture("tile_sheet.png");
+}
+
 Glitch.prototype.revert = function(vessel){
 	for (var i = 0; i < this.glitches.length; i++){
 		var glitch = this.glitches[i];
@@ -55,5 +69,15 @@ Glitch.prototype.revert = function(vessel){
 Glitch.prototype.revertAll = function(vessels){
 	for (var i = 0; i < vessels.length; i++){
 		this.revert(vessels[i]);
+	}
+}
+
+Glitch.refresh = function(vessel){
+	vessel.refresh();
+}
+
+Glitch.refreshAll = function(vessels){
+	for (var i = 0; i < vessels.length; i++){
+		this.refresh(vessels[i]);
 	}
 }

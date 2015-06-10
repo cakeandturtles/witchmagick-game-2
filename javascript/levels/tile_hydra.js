@@ -11,19 +11,6 @@ function TileHydra(room){
 	//use this to aggregate tiles into fewer visual objects so performance is slightly more efficient (less vertices to render)
 	this.aggregated_tiles = [];
 	
-	var y = 232;
-	for (var i = 0 ; i < 320/Game.TILE_SIZE/2; i++){
-		var y_index = y / Game.TILE_SIZE;
-		var x_index = i;
-		this.AddTile(y_index, x_index, 0, new Tile(i*Game.TILE_SIZE, y, 0, Game.TILE_SIZE, Game.TILE_SIZE, Game.TILE_SIZE, Collision.SOLID), true);
-	}
-	y = 32;
-	for (var i = 0 ; i < 64/Game.TILE_SIZE/2; i++){
-		var y_index = y / Game.TILE_SIZE;
-		var x_index = i;
-		this.AddTile(y_index, x_index, 0, new Tile(i*Game.TILE_SIZE, y, 0, Game.TILE_SIZE, Game.TILE_SIZE, Game.TILE_SIZE, Collision.SOLID), true);
-	}
-	
 	this.AggregateTiles();
 }
 

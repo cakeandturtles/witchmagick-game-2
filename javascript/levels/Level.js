@@ -89,6 +89,8 @@ Level.prototype.update = function(delta, input){
 	this.detectInput(delta, input);
 	if (!this.paused){
 		this.room.update(delta);
+		this.player = this.room.player;
+		this.camera.Follow(this.player);
 	}
 }
 
@@ -109,13 +111,13 @@ Level.prototype.detectInput = function(delta, input){
 		this.player.MoveLeft();
 	}
 	
-	if (input.IsKeyPressed("x")){
+	if (input.IsKeyPressed(" ")){
 		this.player.StartJump(delta);
 	}
-	else if (input.IsKeyDown("x")){
+	else if (input.IsKeyDown(" ")){
 		this.player.Jump(delta);
 	}
-	else if (input.IsKeyUp("x")){
+	else if (input.IsKeyUp(" ")){
 		this.player.StopJump(delta);
 	}
 

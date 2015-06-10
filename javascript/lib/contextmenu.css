@@ -1,7 +1,7 @@
 #context_menu_table{
 	border: thin solid #808080;
 	cursor: default;
-	width: 100px;
+	min-width: 100px;
 	background-color: #ffffff;
 }
 .context_menu_item    /*Context Menu Item Style*/
@@ -13,6 +13,5 @@
 .context_menu_item:hover   /*Context Menu Item Style On Mouse Over*/
 {
 	background-color:#0066FF;
-	color:White;
-	font-weight:bold;            
+	color:White;            
 }

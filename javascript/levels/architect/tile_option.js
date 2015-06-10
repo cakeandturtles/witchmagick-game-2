@@ -7,8 +7,13 @@ function TileOption(architect, menu_dom){
 	this.height = Game.TILE_SIZE;
 	
 	this.tile_placement_depth = 1;
+	
+	this.action = TileOption.NORMAL;
 }
 extend(Option, TileOption);
+
+TileOption.NORMAL = 0;
+TileOption.DELETE = 1;
 
 TileOption.prototype.onContextMenu = function(level){
 	var self = this;
@@ -35,6 +40,30 @@ TileOption.prototype.onContextMenu = function(level){
 	Dialog.AddElement(tile_placement_depth);
 }
 
+TileOption.prototype.whenSelected = function(){
+	this.action = TileOption.NORMAL;
+	this.alpha = 0.5;
+	
+	this.initTexture("tile.png");
+}
+
+TileOption.prototype.ToggleAction = function(){
+	if (this.action === TileOption.NORMAL){
+		this.alpha = 1.0;
+		
+		this.action = TileOption.DELETE;
+		this.initTexture("delete.png");
+	}else if (this.action === TileOption.DELETE){
+		this.whenSelected();
+	}
+}
+
+TileOption.prototype.detectKeyInput = function(input, level){
+	if (input.IsKeyPressed("shift") && !this.is_mouse_down){
+		this.ToggleAction();
+	}
+}
+
 TileOption.prototype.PlaceTiles = function(deleting, level){
 	var x = this.x / Game.TILE_SIZE;
 	var y = this.y / Game.TILE_SIZE;
@@ -54,12 +83,15 @@ TileOption.prototype.PlaceTiles = function(deleting, level){
 
 TileOption.prototype.mouseDown = function(x, y, is_right_mb, level){
 	if (is_right_mb){
-		level.room.DeaggregateTiles();
+		return;
 	}
-	this.PlaceTiles(is_right_mb, level);
+	this.PlaceTiles(this.action === TileOption.DELETE, level);
 }
 
 TileOption.prototype.mouseUp = function(x, y, is_right_mb, level){
+	if (is_right_mb){
+		return;
+	}
 	level.room.AggregateTiles();
 }
 
@@ -67,8 +99,12 @@ TileOption.prototype.mouseMove = function(x, y, is_right_mb, level, is_mouse_dow
 	this.x = x;
 	this.y = y;
 	
+	if (is_right_mb){
+		return;
+	}
+	
 	if (is_mouse_down){
-		this.PlaceTiles(is_right_mb, level);
+		this.PlaceTiles(this.action === TileOption.DELETE, level);
 	}
 }
 

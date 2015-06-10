@@ -27,7 +27,28 @@ var GLObject = function(img_name, x, y, z, lb, tb, rb, bb, width, height){
 	this.hazardous = false;
 }
 
-GLObject.prototype.Export = function(){}
+GLObject.prototype.Export = function(){
+	var obj = {};
+	obj.img_name = this.img_name;
+	obj.x = this.x;
+	obj.y = this.y;
+	obj.z = this.z;
+	obj.lb = this.lb;
+	obj.tb = this.tb;
+	obj.rb = this.rb;
+	obj.bb = this.bb;
+	obj.width = this.width;
+	obj.height = this.height;
+	return obj;
+};
+GLObject.Import = function(obj){ 
+	var globj = new GLObject(obj.img_name, obj.x, obj.y, obj.z, obj.lb, obj.tb, obj.rb, obj.bb, obj.width, obj.height);
+	return globj;
+};
+
+GLObject.prototype.refresh = function(){
+	this.constructor(this.img_name, this.x, this.y, this.z, this.lb, this.tb, this.rb, this.bb, this.width, this.height);
+}
 
 GLObject.prototype.initBuffers = function(){
 	this.vertex_position_buffer = gl.createBuffer();

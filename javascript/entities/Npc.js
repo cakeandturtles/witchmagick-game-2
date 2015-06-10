@@ -16,3 +16,7 @@ Npc.Import = function(obj){
 	var npc = new Npc(obj.x, obj.y);
 	return npc;
 }
+
+Npc.prototype.refresh = function(){
+	this.constructor(this.x, this.y);
+}

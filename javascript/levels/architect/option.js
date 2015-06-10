@@ -52,12 +52,17 @@ Option.prototype.SelectMe = function(exclusive){
 	}else if (this.is_toggleable){
 		this.ToggleOff();
 		removeClass(this.dom, "selected");
-	}
-	
+	}	
 }
 
+Option.prototype.canvasContextMenu = function(x, y, level, mouseX, mouseY){}
+
 Option.prototype.onDomClick_ = function(e){
-	var is_right_mb = isRightMB(e);
+	var is_right_mb = false;
+	try{
+		is_right_mb = isRightMB(e);
+	}catch(err){}
+	
 	if (!is_right_mb){
 		if (!this.is_selectable){
 			this.onContextMenu(this.architect.level);

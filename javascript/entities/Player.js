@@ -16,3 +16,7 @@ Player.Import = function(obj){
 	var player = new Player(obj.x, obj.y);
 	return player;
 }
+
+Player.prototype.refresh = function(){
+	this.constructor(this.x, this.y);
+}

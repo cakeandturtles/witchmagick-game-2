@@ -105,9 +105,14 @@ Room.prototype.AddGlitch = function(glitch){
 }
 Room.prototype.SetGlitchIndex = function(index){
 	if (this.glitches.length === 0) return;
-	while (index >= this.glitches.length){
+	if (index >= this.glitches.length){
 		index %= this.glitches.length;
 	}
+	while (index < 0){
+		index += this.glitches.length;
+	}
+	
+	this.glitches[this.glitch_index].RevertRoom(this);
 	this.glitch_index = index;
 	this.glitches[index].ApplyRoom(this);
 }

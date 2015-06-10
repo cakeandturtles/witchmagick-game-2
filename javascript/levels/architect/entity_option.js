@@ -11,7 +11,6 @@ function EntityOption(architect, menu_dom){
 	this.is_mouse_down = false;
 	this.entity_grav_acc = 0;
 	this.entity = null;
-	this.context_menu = {};
 	this.visible = true;
 	
 	this.action = EntityOption.NORMAL;
@@ -71,27 +70,6 @@ EntityOption.prototype.mouseUp = function(x, y, is_right_mb, level){
 	if (this.action === EntityOption.NORMAL || this.action === EntityOption.MOVE){
 		if (this.entity !== null && this.entity_grav_acc !== 0){
 			this.entity.grav_acc = this.entity_grav_acc;
-		}else if (is_right_mb){
-			//Custom context menu!
-			var canvas = document.getElementById("enchanted-canvas");
-			
-			var entity = level.room.GetEntity(x, y);
-			if (entity !== null && entity !== undefined){
-				this.context_menu = {};
-				this.context_menu.menu = CtxMenu.Init(canvas);
-				
-				
-				this.context_menu.menu.AddItem('delete entity', 
-					function(entity){
-						level.room.RemoveEntity(entity);
-						this.context_menu.menu.Remove();
-					}.bind(this, entity), 
-					entity === level.player
-				);
-				
-				
-				this.context_menu.menu.Open();
-			}
 		}
 		this.entity = null;
 		if (this.action === EntityOption.NORMAL){

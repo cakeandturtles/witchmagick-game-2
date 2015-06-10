@@ -5,14 +5,14 @@ function Input(){
 	
 	window.onkeydown = function(e){
 		if (this.keys_down[e.keyCode] === undefined){
-			this.keys_down[e.keyCode] = true;
-			this.keys_pressed[e.keyCode] = true;
+			this.keys_down[e.keyCode] = { ctrl: e.ctrlKey, shift: e.shiftKey, meta: e.metaKey, alt: e.altKey };
+			this.keys_pressed[e.keyCode] = { ctrl: e.ctrlKey, shift: e.shiftKey, meta: e.metaKey, alt: e.altKey };
 		}
 	}.bind(this);
 	
 	window.onkeyup = function(e){
 		delete this.keys_down[e.keyCode];
-		this.keys_up[e.keyCode] = true;
+		this.keys_up[e.keyCode] = { ctrl: e.ctrlKey, shift: e.shiftKey, meta: e.metaKey, alt: e.altKey };
 	}.bind(this);
 }
 
@@ -25,7 +25,7 @@ Input.prototype.IsKeyDown = function(){
 	for (var i = 0; i < arguments.length; i++){
 		var keyCode = this.getKeyCode(arguments[i]);
 		if (this.keys_down[keyCode]){
-			return true;
+			return this.keys_down[keyCode];
 		}
 	}
 	return false;
@@ -34,7 +34,7 @@ Input.prototype.IsKeyUp = function(){
 	for (var i = 0; i < arguments.length; i++){
 		var keyCode = this.getKeyCode(arguments[i]);
 		if (this.keys_up[keyCode]){
-			return true;
+			return this.keys_up[keyCode];
 		}
 	}
 	return false;
@@ -43,7 +43,7 @@ Input.prototype.IsKeyPressed = function(){
 	for (var i = 0; i < arguments.length; i++){
 		var keyCode = this.getKeyCode(arguments[i]);
 		if (this.keys_pressed[keyCode]){
-			return true;
+			return this.keys_pressed[keyCode];
 		}
 	}
 	return false;
@@ -64,7 +64,10 @@ Input.prototype.getKeyCode = function(ascii){
 		case "q": return 81;
 		case "e": return 69;
 		case "x": return 88;
+		case "g": return 71;
+		case "h": return 72;
 		case "shift": return 16;
+		case "ctrl": return 17;
 		default: return 0;
 	}
 }
