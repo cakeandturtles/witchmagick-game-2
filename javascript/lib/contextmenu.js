@@ -1,4 +1,7 @@
-function CtxMenu(dom, table, element){
+function CtxMenu(x, y, dom, table, element){
+	this.x = x;
+	this.y = y;
+	
 	this.dom = dom;
 	this.table = table;
 	this.element = element;
@@ -47,7 +50,7 @@ CtxMenu.addEventHandler = function(elem,eventType,handler) {
      elem.attachEvent('on'+eventType,handler); 
 }
 
-CtxMenu.Init = function(element){
+CtxMenu.Init = function(x, y, element){
 	var dom = document.getElementById("context_menu");
 	var table = document.getElementById("context_menu_table");
 	if (dom === undefined || dom === null){
@@ -66,7 +69,7 @@ CtxMenu.Init = function(element){
 	dom.style.display = "none";
 	table.innerHTML = "";
 	
-	var ctx_menu = new CtxMenu(dom, table, element);
+	var ctx_menu = new CtxMenu(x, y, dom, table, element);
 	return ctx_menu;
 }
 

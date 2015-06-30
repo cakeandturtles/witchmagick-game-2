@@ -1,11 +1,13 @@
 immediate::
+1. entity bug when moving entity offscreen and mouse leaves canvas
+4. npc talk to you 
+	-render speech uses 2d canvas drawn over webgl canvas
+3. Edit entity context menu option
 1. Create entity context menu option
 	-select which entity to create??
-2. Clone entity context menu option
-3. Edit entity context menu option
 
 
------------------------------------------------------------------eventual-----------------------------
+-----------------------------------------------------------------eventual------------------------
 1. node webkit map f12 to opening up console
 
 2. Start designing/implementing levels/mechanics/glitches

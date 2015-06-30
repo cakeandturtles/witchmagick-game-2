@@ -60,9 +60,9 @@ LevelArchitect.prototype.InitMenuOptions = function(){
 	this.menu.options.push(new CameraOption(this, this.menu.dom));
 	
 	//TILE OPTION (WE'RE SELECTING THIS INITIALLY)
-	var tile_option = new TileOption(this, this.menu.dom);
-	tile_option.SelectMe();
-	this.menu.options.push(tile_option);
+	this.tile_option = new TileOption(this, this.menu.dom);
+	this.tile_option.SelectMe();
+	this.menu.options.push(this.tile_option);
 	
 	//ENTITY OPTION
 	//this.menu.options.push(new EntityOption(this, this.menu.dom));
@@ -87,7 +87,7 @@ LevelArchitect.prototype.InitMenuOptions = function(){
 
 LevelArchitect.prototype.canvasContextMenu = function(e){	
 	this.context_menu = {};
-	this.context_menu.menu = CtxMenu.Init(document.body);
+	this.context_menu.menu = CtxMenu.Init(this.x, this.y, document.body);
 	
 	this.context_menu.menu.Open();
 	
@@ -113,27 +113,34 @@ LevelArchitect.prototype.canvasContextMenu = function(e){
 	this.context_menu.menu.AddDivider();
 	
 	//entity management
-	this.context_menu.menu.AddItem('create entity here',
+	this.context_menu.menu.AddItem('create entity here (T + click)',
 		function(){
+			var x = this.context_menu.menu.x;
+			var y = this.context_menu.menu.y;
 			
+			var npc = new Npc(x, y);
+			this.level.room.AddEntity(npc);
 		}.bind(this)
 	);
 	
 	var entity = this.level.room.GetEntity(this.x + 2, this.y + 2, 0);
-	if (entity !== null && entity !== undefined){
-		this.context_menu.menu.AddItem('clone entity', 
-			function(entity){
-			}.bind(this, entity),
-			entity === this.level.player
-		);
-		
-		this.context_menu.menu.AddItem('delete entity', 
-			function(entity){
-				this.level.room.RemoveEntity(entity);
-			}.bind(this, entity), 
-			entity === this.level.player
-		);
-	}
+	this.context_menu.menu.AddItem('clone entity (Y + click)', 
+		function(entity){
+			var newen = eval(entity.type + ".Import(entity.Export())");
+			newen.x = entity.x + entity.rb / 2;
+			newen.y = entity.y;
+			this.level.room.AddEntity(newen);
+			
+		}.bind(this, entity),
+		entity === this.level.player || entity === null || entity === undefined
+	);
+	
+	this.context_menu.menu.AddItem('delete entity (U + click)', 
+		function(entity){
+			this.level.room.RemoveEntity(entity);
+		}.bind(this, entity), 
+		entity === this.level.player || entity === null || entity === undefined
+	);
 }
 
 LevelArchitect.prototype.detectKeyInput = function(input){
@@ -176,7 +183,7 @@ LevelArchitect.prototype.mouseMove = function(e){
 	var mouseY = e.clientY + document.body.scrollTop;
 	var zoom = this.level.room.zoom;
 	var gridX = ~~((mouseX + this.level.camera.x*zoom) / (Game.TILE_SIZE * zoom));
-	var gridY = ~~((mouseY - this.level.camera.y*zoom) / (Game.TILE_SIZE * zoom));
+	var gridY = ~~((mouseY + this.level.camera.y*zoom) / (Game.TILE_SIZE * zoom));
 	
 	this.x = gridX * Game.TILE_SIZE;
 	this.y = gridY * Game.TILE_SIZE;

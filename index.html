@@ -9,6 +9,7 @@
 
 <script src="javascript/lib/glMatrix-0.9.5.min.js"></script>
 <script src="javascript/lib/webgl-utils.js"></script>
+<!--<script src="javascript/lib/faye-browser.js"></script>-->
 
 <!--Colorflow (for triadic color creation for css gradient)-->
 <script src="javascript/lib/colorflow.min.js"></script>
@@ -69,6 +70,7 @@
 <script src="javascript/glitches/NoneGlitch.js"></script>
 <script src="javascript/glitches/FloorGlitch.js"></script>
 <script src="javascript/glitches/WallGlitch.js"></script>
+<script src="javascript/glitches/FeatherGlitch.js"></script>
 
 <script id="shader-vs" type="x-shader/x-vertex">
     attribute vec3 aVertexPosition;
@@ -134,8 +136,9 @@
 </head>
 
 
-<body onload="webGLStart();">
+<body>
 	<div id="level-architect-menu"></div>
-    <canvas id="enchanted-canvas" style="border: none;" width="640" height="480"></canvas>
+	<canvas id="text-canvas" style="border:none;position:absolute;z-index:1;pointer-events:none;" width="640" height="480"></canvas>
+    <canvas id="enchanted-canvas" style="border:none;" width="640" height="480"></canvas>
 </body>
 </html>

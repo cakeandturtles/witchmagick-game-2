@@ -157,13 +157,13 @@ function webGLStart() {
 	dialogConfirmCSS.style.color = colors[0];
 	
 	
-	var canvas = document.getElementById("enchanted-canvas");
-	canvas.oncontextmenu = function(e){
+	var game_canvas = document.getElementById("enchanted-canvas");
+	game_canvas.oncontextmenu = function(e){
 		e.preventDefault();
 		return false;
 	}
 	
-	initGL(canvas);
+	initGL(game_canvas);
 	initShaders();
 
 	gl.clearColor(0.0, 0.0, 0.0, 1.0);
@@ -172,6 +172,8 @@ function webGLStart() {
 	gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 	gl.enable(gl.BLEND);
 	
-	game = new Game(canvas);
+	game = new Game(game_canvas, document.getElementById("text-canvas"));
 	tick();
 }
+
+window.onload = webGLStart;

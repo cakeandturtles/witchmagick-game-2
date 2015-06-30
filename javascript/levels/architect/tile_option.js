@@ -7,6 +7,7 @@ function TileOption(architect, menu_dom){
 	this.height = Game.TILE_SIZE;
 	
 	this.entity = null;
+	this.placed_tiles = [];
 	
 	this.tile_placement_depth = 1;
 	
@@ -64,11 +65,14 @@ TileOption.prototype.PlaceTiles = function(deleting, level){
 	
 	var deleted = false;
 	
+	var tiles = [];
 	for (var i = 0; i < this.height / Game.TILE_SIZE; i++){
 		for (var j = 0; j < this.width / Game.TILE_SIZE; j++){
 			for (var k = level.camera.z; k > level.camera.z - this.tile_placement_depth*Game.TILE_SIZE; k-=Game.TILE_SIZE){
 				if (!deleting){
-					level.room.AddTile(y + i, x + j, k/Game.TILE_SIZE, new Tile(this.x + j*Game.TILE_SIZE, this.y + i*Game.TILE_SIZE, k, Game.TILE_SIZE, Game.TILE_SIZE, Game.TILE_SIZE, Collision.SOLID), true);
+					var tile = new Tile(this.x + j*Game.TILE_SIZE, this.y + i*Game.TILE_SIZE, k, Game.TILE_SIZE, Game.TILE_SIZE, Game.TILE_SIZE, Collision.SOLID);
+					level.room.AddTile(y + i, x + j, k/Game.TILE_SIZE, tile, true);
+					tiles.push(tile);
 				}else{
 					deleted = level.room.RemoveTile(y + i, x + j, k/Game.TILE_SIZE, true);
 				}
@@ -80,6 +84,8 @@ TileOption.prototype.PlaceTiles = function(deleting, level){
 		level.room.DeaggregateTiles();
 		level.room.AggregateTiles();
 	}
+	
+	return tiles;
 }
 
 TileOption.prototype.mouseDown = function(x, y, is_right_mb, level){
@@ -87,21 +93,31 @@ TileOption.prototype.mouseDown = function(x, y, is_right_mb, level){
 		return;
 	}
 	if (this.action === TileOption.NORMAL || this.action === TileOption.DELETE){
-		this.PlaceTiles(this.action === TileOption.DELETE, level);
+		var tiles = this.PlaceTiles(this.action === TileOption.DELETE, level);
 		if (this.action === TileOption.DELETE)
 			this.alpha = 0;
+		else
+			this.placed_tiles = this.placed_tiles.concat(tiles);
 	}else if (this.action === TileOption.MOVE){
 		if (this.entity === null) return;
-		this.entity_grav_acc = this.entity.grav_acc;
-		this.entity.grav_acc = 0;
-		this.visible = false;
-		this.entity.x = x;
-		this.entity.y = y;
-		
-		document.body.style.cursor = "-webkit-grabbing";
+		this.GrabEntity(level, this.entity, x, y);
 	}
 	
 	this.is_mouse_down = true;
+}
+
+TileOption.prototype.GrabEntity = function(level, entity, x, y){
+	this.entity = entity;
+	
+	this.entity_grav_acc = this.entity.grav_acc;
+	this.entity.grav_acc = 0;
+	this.visible = false;
+	this.entity.x = x;
+	this.entity.y = y;
+	
+	document.body.style.cursor = "-webkit-grabbing";
+	
+	level.room.BringEntityToFront(entity);
 }
 
 TileOption.prototype.mouseUp = function(x, y, is_right_mb, level){
@@ -131,7 +147,9 @@ TileOption.prototype.mouseMove = function(x, y, is_right_mb, level, is_mouse_dow
 	
 	if (is_mouse_down){
 		if (this.action === TileOption.NORMAL || this.action === TileOption.DELETE){
-			this.PlaceTiles(this.action === TileOption.DELETE, level);
+			var tiles = this.PlaceTiles(this.action === TileOption.DELETE, level);
+			if (this.action === TileOption.NORMAL)
+				this.placed_tiles = this.placed_tiles.concat(tiles);
 		}else if (this.action === TileOption.MOVE){
 			if (this.entity !== null){
 				this.entity.x = this.x;
@@ -155,13 +173,28 @@ TileOption.prototype.mouseMove = function(x, y, is_right_mb, level, is_mouse_dow
 			this.entity = entity;
 			
 			this.action = TileOption.MOVE;
-		}else if (tile !== null && this.action !== TileOption.DELETE){
+		}else if (tile !== null && !this.InPlacedTiles(tile) && this.action !== TileOption.DELETE){
+			this.placed_tiles = [];
 			this.alpha = 0.8;
 			
 			this.action = TileOption.DELETE;
 			this.initTexture("delete.png");
 		}
+		
+		if (tile === null)
+			this.placed_tiles = [];
 	}
+}
+
+TileOption.prototype.InPlacedTiles = function(tile){
+	if (this.placed_tiles === null) return;
+	
+	for (var i = 0; i < this.placed_tiles.length; i++){
+		if (this.placed_tiles[i].x === tile.x && this.placed_tiles[i].y === tile.y && this.placed_tiles[i].z === tile.z){
+			return true;
+		}
+	}
+	return false;
 }
 
 TileOption.prototype.mouseScroll = function(x, y, is_right_mb, level, delta){

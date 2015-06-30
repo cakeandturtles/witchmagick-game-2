@@ -12,5 +12,6 @@
 		"height": 519,
 		"min_height": 519,
 		"__comment__TODO__max_height": 519
-	}
+	},
+	"chromium-args": "--ignore-gpu-blacklist, --disable-accelerated-2d-canvas"
 }

@@ -1,5 +1,5 @@
-function Level(canvas, input){
-	this.ctx2d = canvas.getContext("2d");
+function Level(canvas, text_canvas, input){
+	this.text_ctx = text_canvas.getContext("2d");
 	this.level_name = "insert_level_name";
 	
 	this.player = new Player(0, 152);
@@ -59,7 +59,7 @@ Level.Import = function(obj, canvas, input){
 	level.level_name = obj.level_name;
 	for (var i = 0; i < obj.rooms.length; i++){
 		var room = JSON.parse(obj.rooms[i]);
-		level.SetRoomAt(room.y, room.x, room.z, Room.Import(room));
+		level.SetRoomAt(room.y, room.x, room.z, Room.Import(room, level.player));
 	}
 	
 	//other things to load for the level!!!
@@ -91,12 +91,70 @@ Level.prototype.update = function(delta, input){
 		this.room.update(delta);
 		this.player = this.room.player;
 		this.camera.Follow(this.player);
+		
+		if (this.spoken_text !== null && this.spoken_text !== undefined && this.spoken_text.length > 0){
+			this.speech_timer+=delta;
+			if (this.speech_timer > this.speech_time_limit){
+				this.speech_timer = 0;
+				this.Speak(null);
+			}
+		}
 	}
 }
 
 Level.prototype.render = function(){
 	this.room.render(this.camera);
+	this.render_speech();
 	this.architect.render();
+}
+
+Level.prototype.Speak = function(text, timer){
+	this.speech_timer = 0;
+	this.speech_time_limit = timer;
+	this.spoken_text = text;
+}
+
+Level.prototype.render_speech = function(){
+	var speech_height = 144;
+	var border_size = 4;
+	var padding = 16;
+	var txt_padding = 12;
+	
+	var ctx = this.text_ctx;
+
+	ctx.clearRect(0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT);
+	if (this.spoken_text !== null && this.spoken_text !== undefined && this.spoken_text.length > 0){		
+		var h = 0;
+		if (this.player.y+(this.player.bb/2) >= Game.GAME_HEIGHT/2) 
+			h = (-1)*(Game.GAME_HEIGHT/1.5)+8;
+		
+		ctx.fillStyle = "#ffffff";
+		ctx.fillRect(
+			padding, 
+			h + Game.GAME_HEIGHT-speech_height-padding, 
+			Game.GAME_WIDTH-(padding*2), 
+			speech_height
+		);
+		ctx.fillStyle = "#000000";
+		ctx.fillRect(
+			padding+border_size, 
+			h + Game.GAME_HEIGHT-speech_height-padding+border_size, 
+			Game.GAME_WIDTH-((padding+border_size)*2), 
+			speech_height-(border_size*2)
+		);
+	
+		var fs = 32;
+		ctx.font = fs + "px pixelFont";
+		ctx.fillStyle = "#ffffff";
+		ctx.strokeStyle = "#ffffff";
+		var texts = this.spoken_text.split("\n");
+		for (var i = 0; i < texts.length; i++){
+			ctx.fillText(texts[i], 
+				padding+border_size+txt_padding, 
+				h + (fs*i)+Game.GAME_HEIGHT-speech_height+border_size+txt_padding, 
+				Game.GAME_WIDTH-(2*(padding+border_size+txt_padding)));
+		}
+	}
 }
 
 Level.prototype.detectInput = function(delta, input){
@@ -121,12 +179,15 @@ Level.prototype.detectInput = function(delta, input){
 		this.player.StopJump(delta);
 	}
 
-	if (this.camera.view === "perspective"){
+	/*if (this.camera.view === "perspective"){
 		if (input.IsKeyDown("^", "w")){
 			this.player.MoveBack();
 		}
 		else if (input.IsKeyDown("V", "s")){
 			this.player.MoveForward();
 		}
+	}*/
+	if (input.IsKeyDown("V", "s")){
+		this.player.PressDown();
 	}
 }

@@ -1,7 +1,7 @@
 function LevelLoader(){
 }
 
-LevelLoader.Import = function(level_name, canvas, input, callback_){
+LevelLoader.Import = function(level_name, canvas, text_canvas, input, callback_){
 	var path = "./level_files/"+level_name+"/";
 	
 	var loaded = 0;
@@ -35,7 +35,7 @@ LevelLoader.Import = function(level_name, canvas, input, callback_){
 				obj.rooms.push(json);
 				loaded++;
 				if (loaded === needs_loading){
-					callback_(Level.Import(obj, canvas, input));
+					callback_(Level.Import(obj, canvas, text_canvas, input));
 				}
 			});
 		}

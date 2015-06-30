@@ -89,6 +89,8 @@ Room.Import = function(obj, player){
 	}
 	room.AggregateTiles();
 	
+	if (room.glitches.length > 0)
+		room.SetGlitchIndex(0);
 	return room;
 }
 
@@ -112,7 +114,8 @@ Room.prototype.SetGlitchIndex = function(index){
 		index += this.glitches.length;
 	}
 	
-	this.glitches[this.glitch_index].RevertRoom(this);
+	if (this.glitch_index >= 0)
+		this.glitches[this.glitch_index].RevertRoom(this);
 	this.glitch_index = index;
 	this.glitches[index].ApplyRoom(this);
 }
@@ -143,12 +146,18 @@ Room.prototype.ClearGlitches = function(){
 	this.glitch_index = -1;
 }
 
+Room.prototype.AddEntity = function(entity){
+	this.entities.push(entity);
+}
+Room.prototype.BringEntityToFront = function(entity){
+	this.AddEntity(this.RemoveEntity(entity));
+}
 Room.prototype.GetEntity = function(x, y, z){
 	if (this.player.isPointColliding(x, y, z)){
 		return this.player;
 	}
 	
-	for (var i = 0; i < this.entities.length; i++){
+	for (var i = this.entities.length-1; i >= 0; i--){
 		var e = this.entities[i];
 		if (e.isPointColliding(x, y, z)){
 			return e;
@@ -169,7 +178,7 @@ Room.prototype.RemoveEntity = function(x, y, entity){
 			}
 		}
 	}else{
-		for (var i = 0; i < this.entities.length; i++){
+		for (var i = this.entities.length-1; i >= 0; i--){
 			if (this.entities[i] === entity){
 				this.entities.splice(i, 1);
 				break;

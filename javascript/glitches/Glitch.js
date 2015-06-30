@@ -14,7 +14,8 @@ Glitch.suffix = "_unglitched";
 Glitch.DEFAULT_GLITCHES = [
 	"None",
 	"FloorGlitch",
-	"WallGlitch"
+	"WallGlitch",
+	"FeatherGlitch"
 ];
 
 //pass a single object/entity to glitch that object/entity
@@ -23,10 +24,14 @@ Glitch.prototype.apply = function(vessel){
 	for (var i = 0; i < this.glitches.length; i++){
 		var glitch = this.glitches[i];
 		//only apply if it hasn't already been applied??
-		if (vessel[glitch.funcName + Glitch.suffix] === undefined){
-			//before applying, remember the old so we can revert
-			vessel[glitch.funcName + Glitch.suffix] = vessel[glitch.funcName];
-			vessel[glitch.funcName] = glitch.funcDef;
+		if (glitch.funcName){
+			if (vessel[glitch.funcName + Glitch.suffix] === undefined){
+				//before applying, remember the old so we can revert
+				vessel[glitch.funcName + Glitch.suffix] = vessel[glitch.funcName];
+				vessel[glitch.funcName] = glitch.funcDef;
+			}
+		}else if (glitch.init){
+			glitch.init(vessel);
 		}
 	}
 }
@@ -44,7 +49,9 @@ Glitch.prototype.ApplyRoom = function(room){
 
 Glitch.prototype.RevertRoom = function(room){
 	this.revert(room.player);
+	Glitch.refresh(room.player);
 	this.revertAll(room.entities);
+	Glitch.refreshAll(room.entities);
 	room.tile_hydra.initTexture("tile_sheet.png");
 }
 

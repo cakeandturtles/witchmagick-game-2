@@ -12,15 +12,15 @@ function GameObject(img_name, x, y, lb, tb, rb, bb){
 	
 	this.vel = {x: 0, y: 0, z: 0};
 	
-	this.max_run_vel = 2.0;
+	this.max_run_vel = 2.5;
 	this.gnd_run_acc = this.max_run_vel / 3.0;
 	this.gnd_run_dec = this.max_run_vel / 3.0;
 	this.air_run_acc = this.max_run_vel / 3.0;
 	this.air_run_dec = this.max_run_vel / 3.0;
 	this.horizontal_input = false;
 	
-	this.grav_acc = 0.4;
-	this.jump_vel = 4.5;
+	this.grav_acc = 0.8;
+	this.jump_vel = 5.5;
 	this.is_jumping = false;
 	this.jump_timer = 0;
 	this.jump_time_limit = 12;
@@ -99,6 +99,10 @@ GameObject.prototype.applyGravity = function(delta){
 	
 	// Reset flag to search for ground collision.
 	this.was_on_ground = this.on_ground;
+	this.on_ground = false;
+}
+
+GameObject.prototype.PressDown = function(){
 	this.on_ground = false;
 }
 
@@ -366,12 +370,14 @@ GameObject.prototype.updateAnimationFromMoveState = function(){
 				this.animation.Change(0, 0, 2);
 			break;
 		case MoveState.RUNNING:
+			var run_ani_speed = 5;
+		
 			if (this.facing === Facing.FORWARD)
-				this.animation.Change(2, 2, 2);
+				this.animation.Change(2, 2, 2, run_ani_speed);
 			else if (this.facing === Facing.BACK)
-				this.animation.Change(2, 3, 2);
+				this.animation.Change(2, 3, 2, run_ani_speed);
 			else 
-				this.animation.Change(0, 1, 4);
+				this.animation.Change(0, 1, 4, run_ani_speed);
 			break;
 		case MoveState.JUMPING:
 			if (this.facing === Facing.FORWARD)

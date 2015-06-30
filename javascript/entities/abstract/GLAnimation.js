@@ -2,6 +2,7 @@ function GLAnimation(max_frame, frame_delay, frame_width, frame_height, rel_ani_
 	this.max_frame = max_frame;
 	this.frame_count = 0;
 	this.frame_delay = frame_delay;
+	this.original_frame_delay = frame_delay;
 	this.frame_width = defaultTo(frame_width, 16);
 	this.frame_height = defaultTo(frame_height, 16);
 	this.rel_ani_x = defaultTo(rel_ani_x, 0);
@@ -24,7 +25,11 @@ GLAnimation.prototype.Restart = function(){
 	this.frame_change = false;
 }
 
-GLAnimation.prototype.Change = function(rax, ray, mf){
+GLAnimation.prototype.Change = function(rax, ray, mf, frame_delay){
+	if (frame_delay !== undefined)
+		this.frame_delay = frame_delay;
+	else this.frame_delay = this.original_frame_delay;
+	
 	if (!(this.rel_ani_x == rax && this.rel_ani_y == ray && this.max_frame == mf)){
 		this.rel_ani_x = rax;
 		this.rel_ani_y = ray;
