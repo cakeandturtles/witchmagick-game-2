@@ -5,6 +5,7 @@ immediate::
 3. Edit entity context menu option
 1. Create entity context menu option
 	-select which entity to create??
+0. make loading screen that uses css gradient
 
 
 -----------------------------------------------------------------eventual------------------------

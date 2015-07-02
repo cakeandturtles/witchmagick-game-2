@@ -1,0 +1,28 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'C:\\Program Files (x86)\\nodejs\\\\node.exe',
+1 verbose cli   'C:\\Program Files (x86)\\nodejs\\node_modules\\npm\\bin\\npm-cli.js',
+1 verbose cli   'install',
+1 verbose cli   'nw.gui' ]
+2 info using npm@1.4.3
+3 info using node@v0.10.26
+4 verbose node symlink C:\Program Files (x86)\nodejs\\node.exe
+5 error Error: Invalid name: "glitch dungeon++"
+5 error     at ensureValidName (C:\Program Files (x86)\nodejs\node_modules\npm\node_modules\read-package-json\node_modules\normalize-package-data\lib\fixer.js:302:15)
+5 error     at Object.module.exports.fixNameField (C:\Program Files (x86)\nodejs\node_modules\npm\node_modules\read-package-json\node_modules\normalize-package-data\lib\fixer.js:206:5)
+5 error     at C:\Program Files (x86)\nodejs\node_modules\npm\node_modules\read-package-json\node_modules\normalize-package-data\lib\normalize.js:29:38
+5 error     at Array.forEach (native)
+5 error     at normalize (C:\Program Files (x86)\nodejs\node_modules\npm\node_modules\read-package-json\node_modules\normalize-package-data\lib\normalize.js:28:15)
+5 error     at final (C:\Program Files (x86)\nodejs\node_modules\npm\node_modules\read-package-json\read-json.js:328:33)
+5 error     at then (C:\Program Files (x86)\nodejs\node_modules\npm\node_modules\read-package-json\read-json.js:126:33)
+5 error     at C:\Program Files (x86)\nodejs\node_modules\npm\node_modules\read-package-json\read-json.js:317:40
+5 error     at fs.js:266:14
+5 error     at C:\Program Files (x86)\nodejs\node_modules\npm\node_modules\graceful-fs\graceful-fs.js:105:5
+6 error If you need help, you may report this *entire* log,
+6 error including the npm and node versions, at:
+6 error     <http://github.com/npm/npm/issues>
+7 error System Windows_NT 6.2.9200
+8 error command "C:\\Program Files (x86)\\nodejs\\\\node.exe" "C:\\Program Files (x86)\\nodejs\\node_modules\\npm\\bin\\npm-cli.js" "install" "nw.gui"
+9 error cwd D:\cake\code\html\glitchdungeon_+
+10 error node -v v0.10.26
+11 error npm -v 1.4.3
+12 verbose exit [ 1, true ]

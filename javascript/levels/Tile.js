@@ -147,7 +147,6 @@ Tile.prototype.render = function(camera, texture){
 	mat4.rotateZ(mvMatrix, degToRad(this.rotations[2]));
 	mat4.translate(mvMatrix, [-(this.lb + this.rb / 2), -(this.tb + this.bb / 2), -(this.fb + this.zb / 2)]);
 	
-	
 	gl.bindBuffer(gl.ARRAY_BUFFER, this.vertex_position_buffer);
 	gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, this.vertex_position_buffer.itemSize, gl.FLOAT, false, 0, 0);
 	
