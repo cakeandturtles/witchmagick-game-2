@@ -2,7 +2,7 @@
 1 verbose cli [ 'C:\\Program Files (x86)\\nodejs\\\\node.exe',
 1 verbose cli   'C:\\Program Files (x86)\\nodejs\\node_modules\\npm\\bin\\npm-cli.js',
 1 verbose cli   'install',
-1 verbose cli   'nw.gui' ]
+1 verbose cli   'socket' ]
 2 info using npm@1.4.3
 3 info using node@v0.10.26
 4 verbose node symlink C:\Program Files (x86)\nodejs\\node.exe
@@ -21,7 +21,7 @@
 6 error including the npm and node versions, at:
 6 error     <http://github.com/npm/npm/issues>
 7 error System Windows_NT 6.2.9200
-8 error command "C:\\Program Files (x86)\\nodejs\\\\node.exe" "C:\\Program Files (x86)\\nodejs\\node_modules\\npm\\bin\\npm-cli.js" "install" "nw.gui"
+8 error command "C:\\Program Files (x86)\\nodejs\\\\node.exe" "C:\\Program Files (x86)\\nodejs\\node_modules\\npm\\bin\\npm-cli.js" "install" "socket"
 9 error cwd D:\cake\code\html\glitchdungeon_+
 10 error node -v v0.10.26
 11 error npm -v 1.4.3
