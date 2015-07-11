@@ -1,28 +1,412 @@
-0 info it worked if it ends with ok
-1 verbose cli [ 'C:\\Program Files (x86)\\nodejs\\\\node.exe',
-1 verbose cli   'C:\\Program Files (x86)\\nodejs\\node_modules\\npm\\bin\\npm-cli.js',
-1 verbose cli   'install',
-1 verbose cli   'socket' ]
-2 info using npm@1.4.3
-3 info using node@v0.10.26
-4 verbose node symlink C:\Program Files (x86)\nodejs\\node.exe
-5 error Error: Invalid name: "glitch dungeon++"
-5 error     at ensureValidName (C:\Program Files (x86)\nodejs\node_modules\npm\node_modules\read-package-json\node_modules\normalize-package-data\lib\fixer.js:302:15)
-5 error     at Object.module.exports.fixNameField (C:\Program Files (x86)\nodejs\node_modules\npm\node_modules\read-package-json\node_modules\normalize-package-data\lib\fixer.js:206:5)
-5 error     at C:\Program Files (x86)\nodejs\node_modules\npm\node_modules\read-package-json\node_modules\normalize-package-data\lib\normalize.js:29:38
-5 error     at Array.forEach (native)
-5 error     at normalize (C:\Program Files (x86)\nodejs\node_modules\npm\node_modules\read-package-json\node_modules\normalize-package-data\lib\normalize.js:28:15)
-5 error     at final (C:\Program Files (x86)\nodejs\node_modules\npm\node_modules\read-package-json\read-json.js:328:33)
-5 error     at then (C:\Program Files (x86)\nodejs\node_modules\npm\node_modules\read-package-json\read-json.js:126:33)
-5 error     at C:\Program Files (x86)\nodejs\node_modules\npm\node_modules\read-package-json\read-json.js:317:40
-5 error     at fs.js:266:14
-5 error     at C:\Program Files (x86)\nodejs\node_modules\npm\node_modules\graceful-fs\graceful-fs.js:105:5
-6 error If you need help, you may report this *entire* log,
-6 error including the npm and node versions, at:
-6 error     <http://github.com/npm/npm/issues>
-7 error System Windows_NT 6.2.9200
-8 error command "C:\\Program Files (x86)\\nodejs\\\\node.exe" "C:\\Program Files (x86)\\nodejs\\node_modules\\npm\\bin\\npm-cli.js" "install" "socket"
-9 error cwd D:\cake\code\html\glitchdungeon_+
-10 error node -v v0.10.26
-11 error npm -v 1.4.3
-12 verbose exit [ 1, true ]
+info it worked if it ends with ok
+verbose cli [ 'node', '/usr/bin/npm', 'install', 'chromeos-apk', '-g' ]
+info using npm@1.1.4
+info using node@v0.6.12
+verbose config file /home/saturn/.npmrc
+verbose config file /usr/etc/npmrc
+verbose config file /usr/share/npm/npmrc
+silly exec /usr/bin/node "/usr/share/npm/bin/npm-get-uid-gid.js" "nobody" 1000
+silly spawning [ '/usr/bin/node',
+silly spawning   [ '/usr/share/npm/bin/npm-get-uid-gid.js', 'nobody', 1000 ],
+silly spawning   null ]
+silly output from getuid/gid {"uid":65534,"gid":1000}
+silly output from getuid/gid 
+verbose cache add [ 'chromeos-apk', null ]
+silly cache add: name, spec, args [ undefined, 'chromeos-apk', [ 'chromeos-apk', null ] ]
+verbose parsed url { pathname: 'chromeos-apk',
+verbose parsed url   path: 'chromeos-apk',
+verbose parsed url   href: 'chromeos-apk' }
+verbose addNamed [ 'chromeos-apk', '' ]
+verbose addNamed [ null, '' ]
+silly name, range, hasData [ 'chromeos-apk', '', false ]
+verbose raw, before any munging chromeos-apk
+verbose url resolving [ 'http://registry.npmjs.org/', './chromeos-apk' ]
+verbose url resolved http://registry.npmjs.org/chromeos-apk
+http GET http://registry.npmjs.org/chromeos-apk
+http 200 http://registry.npmjs.org/chromeos-apk
+silly get cb [ 200,
+silly get cb   { server: 'CouchDB/1.5.0 (Erlang OTP/R16B03)',
+silly get cb     etag: '"3TCZA5G5HRYCX0TAMSWGWYMUW"',
+silly get cb     'content-type': 'application/json',
+silly get cb     'cache-control': 'max-age=60',
+silly get cb     'content-length': '14689',
+silly get cb     'accept-ranges': 'bytes',
+silly get cb     date: 'Sat, 11 Jul 2015 05:16:51 GMT',
+silly get cb     via: '1.1 varnish',
+silly get cb     age: '0',
+silly get cb     connection: 'keep-alive',
+silly get cb     'x-served-by': 'cache-ord1734-ORD',
+silly get cb     'x-cache': 'MISS',
+silly get cb     'x-cache-hits': '0',
+silly get cb     'x-timer': 'S1436591811.736840,VS0,VE186',
+silly get cb     vary: 'Accept' } ]
+verbose mkdir (expected) error ENOENT, no such file or directory '/home/saturn/.npm/chromeos-apk'
+verbose mkdir done: /home/saturn/.npm/chromeos-apk 755
+silly name, range, hasData 2 [ 'chromeos-apk', '', true ]
+silly versions [ 'chromeos-apk',
+silly versions   [ '1.0.0',
+silly versions     '1.0.1',
+silly versions     '1.1.0',
+silly versions     '2.0.0',
+silly versions     '3.0.0',
+silly versions     '4.0.0',
+silly versions     '4.0.1',
+silly versions     '4.0.2' ] ]
+verbose bin dist [ '0.6-ares1.7.5-evundefined-openssl1.0.1-v83.7.12.22-linux-x64-3.4.0',
+verbose bin dist   { shasum: 'd8b88e2962acce8cc59114decf661c670e0cc558',
+verbose bin dist     tarball: 'http://registry.npmjs.org/chromeos-apk/-/chromeos-apk-4.0.2.tgz' } ]
+verbose addRemoteTarball [ 'http://registry.npmjs.org/chromeos-apk/-/chromeos-apk-4.0.2.tgz',
+verbose addRemoteTarball   'd8b88e2962acce8cc59114decf661c670e0cc558' ]
+verbose mkdir (expected) error ENOENT, no such file or directory '/tmp/npm-1436591811720'
+verbose mkdir (expected) error ENOENT, no such file or directory '/tmp/npm-1436591811720/1436591811720-0.9087612144649029'
+verbose mkdir done: /tmp/npm-1436591811720/1436591811720-0.9087612144649029 755
+verbose fetch to /tmp/npm-1436591811720/1436591811720-0.9087612144649029/tmp.tgz
+http GET http://registry.npmjs.org/chromeos-apk/-/chromeos-apk-4.0.2.tgz
+http 200 http://registry.npmjs.org/chromeos-apk/-/chromeos-apk-4.0.2.tgz
+silly updated sha bytes 37337
+info shasum d8b88e2962acce8cc59114decf661c670e0cc558
+info shasum /tmp/npm-1436591811720/1436591811720-0.9087612144649029/tmp.tgz
+verbose mkdir (expected) error ENOENT, no such file or directory '/tmp/npm-1436591811720/1436591811720-0.9087612144649029/___package.npm'
+verbose mkdir done: /tmp/npm-1436591811720/1436591811720-0.9087612144649029/___package.npm 755
+verbose unpack_ uid, gid [ 1000, 1000 ]
+verbose unpackTarget /tmp/npm-1436591811720/1436591811720-0.9087612144649029/package
+silly gunzTarPerm modes [ '755', '644' ]
+silly afterUntar ok
+silly asyncMap in gTP /tmp/npm-1436591811720/1436591811720-0.9087612144649029/___package.npm/package
+silly asyncMap in gTP /tmp/npm-1436591811720/1436591811720-0.9087612144649029/___package.npm/package/archon.md
+silly asyncMap in gTP /tmp/npm-1436591811720/1436591811720-0.9087612144649029/___package.npm/package/multiple-apps.md
+silly asyncMap in gTP /tmp/npm-1436591811720/1436591811720-0.9087612144649029/___package.npm/package/manually-convert.md
+silly asyncMap in gTP /tmp/npm-1436591811720/1436591811720-0.9087612144649029/___package.npm/package/manifest.md
+silly asyncMap in gTP /tmp/npm-1436591811720/1436591811720-0.9087612144649029/___package.npm/package/.travis.yml
+silly asyncMap in gTP /tmp/npm-1436591811720/1436591811720-0.9087612144649029/___package.npm/package/chromeos-apk
+silly asyncMap in gTP /tmp/npm-1436591811720/1436591811720-0.9087612144649029/___package.npm/package/CHANGELOG
+silly asyncMap in gTP /tmp/npm-1436591811720/1436591811720-0.9087612144649029/___package.npm/package/chromeos-apk.js
+silly asyncMap in gTP /tmp/npm-1436591811720/1436591811720-0.9087612144649029/___package.npm/package/LICENSE
+silly asyncMap in gTP /tmp/npm-1436591811720/1436591811720-0.9087612144649029/___package.npm/package/README.md
+silly asyncMap in gTP /tmp/npm-1436591811720/1436591811720-0.9087612144649029/___package.npm/package/.npmignore
+silly asyncMap in gTP /tmp/npm-1436591811720/1436591811720-0.9087612144649029/___package.npm/package/package.json
+silly asyncMap in gTP /tmp/npm-1436591811720/1436591811720-0.9087612144649029/___package.npm/package/misc
+silly asyncMap in gTP /tmp/npm-1436591811720/1436591811720-0.9087612144649029/___package.npm/package/misc/ARChonLogo.svg
+silly asyncMap in gTP /tmp/npm-1436591811720/1436591811720-0.9087612144649029/___package.npm/package/misc/ARChonLogo.png
+silly asyncMap in gTP /tmp/npm-1436591811720/1436591811720-0.9087612144649029/___package.npm/package/lib
+silly asyncMap in gTP /tmp/npm-1436591811720/1436591811720-0.9087612144649029/___package.npm/package/lib/parseApk.js
+silly asyncMap in gTP /tmp/npm-1436591811720/1436591811720-0.9087612144649029/___package.npm/package/.idea
+silly asyncMap in gTP /tmp/npm-1436591811720/1436591811720-0.9087612144649029/___package.npm/package/.idea/workspace.xml
+silly asyncMap in gTP /tmp/npm-1436591811720/1436591811720-0.9087612144649029/___package.npm/package/.idea/vcs.xml
+silly asyncMap in gTP /tmp/npm-1436591811720/1436591811720-0.9087612144649029/___package.npm/package/.idea/modules.xml
+silly asyncMap in gTP /tmp/npm-1436591811720/1436591811720-0.9087612144649029/___package.npm/package/.idea/misc.xml
+silly asyncMap in gTP /tmp/npm-1436591811720/1436591811720-0.9087612144649029/___package.npm/package/.idea/jsLibraryMappings.xml
+silly asyncMap in gTP /tmp/npm-1436591811720/1436591811720-0.9087612144649029/___package.npm/package/.idea/encodings.xml
+silly asyncMap in gTP /tmp/npm-1436591811720/1436591811720-0.9087612144649029/___package.npm/package/.idea/chromeos-apk.iml
+silly asyncMap in gTP /tmp/npm-1436591811720/1436591811720-0.9087612144649029/___package.npm/package/.idea/.name
+silly asyncMap in gTP /tmp/npm-1436591811720/1436591811720-0.9087612144649029/___package.npm/package/.idea/scopes
+silly asyncMap in gTP /tmp/npm-1436591811720/1436591811720-0.9087612144649029/___package.npm/package/.idea/scopes/scope_settings.xml
+silly asyncMap in gTP /tmp/npm-1436591811720/1436591811720-0.9087612144649029/___package.npm/package/.idea/libraries
+silly asyncMap in gTP /tmp/npm-1436591811720/1436591811720-0.9087612144649029/___package.npm/package/.idea/libraries/chromeos_apk_node_modules.xml
+silly asyncMap in gTP /tmp/npm-1436591811720/1436591811720-0.9087612144649029/___package.npm/package/_template
+silly asyncMap in gTP /tmp/npm-1436591811720/1436591811720-0.9087612144649029/___package.npm/package/_template/manifest.json
+silly asyncMap in gTP /tmp/npm-1436591811720/1436591811720-0.9087612144649029/___package.npm/package/_template/icon.png
+silly asyncMap in gTP /tmp/npm-1436591811720/1436591811720-0.9087612144649029/___package.npm/package/_template/app_main.html
+silly asyncMap in gTP /tmp/npm-1436591811720/1436591811720-0.9087612144649029/___package.npm/package/_template/_locales
+silly asyncMap in gTP /tmp/npm-1436591811720/1436591811720-0.9087612144649029/___package.npm/package/_template/_locales/en
+silly asyncMap in gTP /tmp/npm-1436591811720/1436591811720-0.9087612144649029/___package.npm/package/_template/_locales/en/messages.json
+silly asyncMap in gTP /tmp/npm-1436591811720/1436591811720-0.9087612144649029/___package.npm/package/_template/vendor
+silly asyncMap in gTP /tmp/npm-1436591811720/1436591811720-0.9087612144649029/___package.npm/package/_template/vendor/chromium
+silly asyncMap in gTP /tmp/npm-1436591811720/1436591811720-0.9087612144649029/___package.npm/package/_template/vendor/chromium/crx
+silly asyncMap in gTP /tmp/npm-1436591811720/1436591811720-0.9087612144649029/___package.npm/package/_template/vendor/chromium/crx/README.txt
+verbose gunzed /tmp/npm-1436591811720/1436591811720-0.9087612144649029/___package.npm/package
+verbose rm'ed /tmp/npm-1436591811720/1436591811720-0.9087612144649029/package
+verbose renamed [ '/tmp/npm-1436591811720/1436591811720-0.9087612144649029/___package.npm/package',
+verbose renamed   '/tmp/npm-1436591811720/1436591811720-0.9087612144649029/package' ]
+verbose caching /tmp/npm-1436591811720/1436591811720-0.9087612144649029/package/package.json
+verbose loadDefaults chromeos-apk@4.0.2
+verbose tarball contents [ 'package', 'tmp.tgz' ]
+verbose from cache /tmp/npm-1436591811720/1436591811720-0.9087612144649029/package/package.json
+verbose pack /tmp/npm-1436591811720/1436591811720-0.9087612144649029/package
+verbose pack /tmp/npm-1436591811720/1436591811720-0.9087612144649029/package /home/saturn/.npm/chromeos-apk/4.0.2/package.tgz
+silly makeList /tmp/npm-1436591811720/1436591811720-0.9087612144649029/package
+silly dir, dirLen [ '/tmp/npm-1436591811720/1436591811720-0.9087612144649029/package',
+silly dir, dirLen   64 ]
+verbose tarball /home/saturn/.npm/chromeos-apk/4.0.2/package.tgz
+verbose parent /tmp/npm-1436591811720/1436591811720-0.9087612144649029/package
+verbose mkdir (expected) error ENOENT, no such file or directory '/home/saturn/.npm/chromeos-apk/4.0.2/___package.npm'
+verbose mkdir done: /home/saturn/.npm/chromeos-apk/4.0.2/___package.npm 755
+verbose unpack_ uid, gid [ 1000, 1000 ]
+verbose unpackTarget /home/saturn/.npm/chromeos-apk/4.0.2/package
+silly gunzTarPerm modes [ '755', '644' ]
+silly afterUntar ok
+silly asyncMap in gTP /home/saturn/.npm/chromeos-apk/4.0.2/___package.npm/package
+silly asyncMap in gTP /home/saturn/.npm/chromeos-apk/4.0.2/___package.npm/package/manifest.md
+silly asyncMap in gTP /home/saturn/.npm/chromeos-apk/4.0.2/___package.npm/package/README.md
+silly asyncMap in gTP /home/saturn/.npm/chromeos-apk/4.0.2/___package.npm/package/package.json
+silly asyncMap in gTP /home/saturn/.npm/chromeos-apk/4.0.2/___package.npm/package/multiple-apps.md
+silly asyncMap in gTP /home/saturn/.npm/chromeos-apk/4.0.2/___package.npm/package/CHANGELOG
+silly asyncMap in gTP /home/saturn/.npm/chromeos-apk/4.0.2/___package.npm/package/.npmignore
+silly asyncMap in gTP /home/saturn/.npm/chromeos-apk/4.0.2/___package.npm/package/chromeos-apk.js
+silly asyncMap in gTP /home/saturn/.npm/chromeos-apk/4.0.2/___package.npm/package/LICENSE
+silly asyncMap in gTP /home/saturn/.npm/chromeos-apk/4.0.2/___package.npm/package/manually-convert.md
+silly asyncMap in gTP /home/saturn/.npm/chromeos-apk/4.0.2/___package.npm/package/chromeos-apk
+silly asyncMap in gTP /home/saturn/.npm/chromeos-apk/4.0.2/___package.npm/package/.travis.yml
+silly asyncMap in gTP /home/saturn/.npm/chromeos-apk/4.0.2/___package.npm/package/archon.md
+silly asyncMap in gTP /home/saturn/.npm/chromeos-apk/4.0.2/___package.npm/package/lib
+silly asyncMap in gTP /home/saturn/.npm/chromeos-apk/4.0.2/___package.npm/package/lib/parseApk.js
+silly asyncMap in gTP /home/saturn/.npm/chromeos-apk/4.0.2/___package.npm/package/misc
+silly asyncMap in gTP /home/saturn/.npm/chromeos-apk/4.0.2/___package.npm/package/misc/ARChonLogo.png
+silly asyncMap in gTP /home/saturn/.npm/chromeos-apk/4.0.2/___package.npm/package/misc/ARChonLogo.svg
+silly asyncMap in gTP /home/saturn/.npm/chromeos-apk/4.0.2/___package.npm/package/.idea
+silly asyncMap in gTP /home/saturn/.npm/chromeos-apk/4.0.2/___package.npm/package/.idea/encodings.xml
+silly asyncMap in gTP /home/saturn/.npm/chromeos-apk/4.0.2/___package.npm/package/.idea/workspace.xml
+silly asyncMap in gTP /home/saturn/.npm/chromeos-apk/4.0.2/___package.npm/package/.idea/.name
+silly asyncMap in gTP /home/saturn/.npm/chromeos-apk/4.0.2/___package.npm/package/.idea/jsLibraryMappings.xml
+silly asyncMap in gTP /home/saturn/.npm/chromeos-apk/4.0.2/___package.npm/package/.idea/vcs.xml
+silly asyncMap in gTP /home/saturn/.npm/chromeos-apk/4.0.2/___package.npm/package/.idea/modules.xml
+silly asyncMap in gTP /home/saturn/.npm/chromeos-apk/4.0.2/___package.npm/package/.idea/misc.xml
+silly asyncMap in gTP /home/saturn/.npm/chromeos-apk/4.0.2/___package.npm/package/.idea/chromeos-apk.iml
+silly asyncMap in gTP /home/saturn/.npm/chromeos-apk/4.0.2/___package.npm/package/.idea/scopes
+silly asyncMap in gTP /home/saturn/.npm/chromeos-apk/4.0.2/___package.npm/package/.idea/scopes/scope_settings.xml
+silly asyncMap in gTP /home/saturn/.npm/chromeos-apk/4.0.2/___package.npm/package/.idea/libraries
+silly asyncMap in gTP /home/saturn/.npm/chromeos-apk/4.0.2/___package.npm/package/.idea/libraries/chromeos_apk_node_modules.xml
+silly asyncMap in gTP /home/saturn/.npm/chromeos-apk/4.0.2/___package.npm/package/_template
+silly asyncMap in gTP /home/saturn/.npm/chromeos-apk/4.0.2/___package.npm/package/_template/icon.png
+silly asyncMap in gTP /home/saturn/.npm/chromeos-apk/4.0.2/___package.npm/package/_template/manifest.json
+silly asyncMap in gTP /home/saturn/.npm/chromeos-apk/4.0.2/___package.npm/package/_template/app_main.html
+silly asyncMap in gTP /home/saturn/.npm/chromeos-apk/4.0.2/___package.npm/package/_template/_locales
+silly asyncMap in gTP /home/saturn/.npm/chromeos-apk/4.0.2/___package.npm/package/_template/_locales/en
+silly asyncMap in gTP /home/saturn/.npm/chromeos-apk/4.0.2/___package.npm/package/_template/_locales/en/messages.json
+silly asyncMap in gTP /home/saturn/.npm/chromeos-apk/4.0.2/___package.npm/package/_template/vendor
+silly asyncMap in gTP /home/saturn/.npm/chromeos-apk/4.0.2/___package.npm/package/_template/vendor/chromium
+silly asyncMap in gTP /home/saturn/.npm/chromeos-apk/4.0.2/___package.npm/package/_template/vendor/chromium/crx
+silly asyncMap in gTP /home/saturn/.npm/chromeos-apk/4.0.2/___package.npm/package/_template/vendor/chromium/crx/README.txt
+verbose gunzed /home/saturn/.npm/chromeos-apk/4.0.2/___package.npm/package
+verbose rm'ed /home/saturn/.npm/chromeos-apk/4.0.2/package
+verbose renamed [ '/home/saturn/.npm/chromeos-apk/4.0.2/___package.npm/package',
+verbose renamed   '/home/saturn/.npm/chromeos-apk/4.0.2/package' ]
+verbose caching /home/saturn/.npm/chromeos-apk/4.0.2/package/package.json
+verbose loadDefaults chromeos-apk@4.0.2
+silly updated sha bytes 37696
+info shasum 4d8344b2ebdf9a55a7885ebfb0a977612acfd491
+info shasum /home/saturn/.npm/chromeos-apk/4.0.2/package.tgz
+verbose from cache /home/saturn/.npm/chromeos-apk/4.0.2/package/package.json
+verbose chmod /home/saturn/.npm/chromeos-apk/4.0.2/package.tgz 644
+verbose chown [ '/home/saturn/.npm/chromeos-apk/4.0.2/package.tgz',
+verbose chown   1000,
+verbose chown   1000 ]
+silly resolved [ { name: 'chromeos-apk',
+silly resolved     version: '4.0.2',
+silly resolved     description: 'Run Android APKs on Chromebooks',
+silly resolved     main: 'chromeos-apk.js',
+silly resolved     scripts: { test: 'echo "Error: no test specified" && exit 1' },
+silly resolved     bin: { 'chromeos-apk': 'chromeos-apk' },
+silly resolved     repository: 
+silly resolved      { type: 'git',
+silly resolved        url: 'git://github.com/vladikoff/chromebook-apk-creator.git' },
+silly resolved     author: { name: 'Vlad Filippov' },
+silly resolved     license: 'MIT',
+silly resolved     bugs: { url: 'https://github.com/vladikoff/chromebook-apk-creator/issues' },
+silly resolved     homepage: 'https://github.com/vladikoff/chromebook-apk-creator',
+silly resolved     dependencies: 
+silly resolved      { 'adbkit-apkreader': '^1.0.0',
+silly resolved        chalk: '^0.5.1',
+silly resolved        commander: '^2.3.0',
+silly resolved        ncp: '^0.6.0' },
+silly resolved     _id: 'chromeos-apk@4.0.2',
+silly resolved     devDependencies: {},
+silly resolved     optionalDependencies: {},
+silly resolved     engines: { node: '*' },
+silly resolved     _engineSupported: true,
+silly resolved     _npmVersion: '1.1.4',
+silly resolved     _nodeVersion: 'v0.6.12',
+silly resolved     _defaultsLoaded: true,
+silly resolved     dist: { shasum: '4d8344b2ebdf9a55a7885ebfb0a977612acfd491' },
+silly resolved     _from: 'chromeos-apk' } ]
+info into /usr/local/lib chromeos-apk@4.0.2
+info installOne chromeos-apk@4.0.2
+verbose from cache /home/saturn/.npm/chromeos-apk/4.0.2/package/package.json
+info unbuild /usr/local/lib/node_modules/chromeos-apk
+verbose mkdir (expected) error ENOENT, no such file or directory '/usr/local/lib/node_modules'
+verbose mkdir (expected) error ENOENT, no such file or directory '/usr/local/lib/node_modules/___chromeos-apk.npm'
+verbose mkdir done: /usr/local/lib/node_modules/___chromeos-apk.npm 755
+verbose unpack_ uid, gid [ 65534, 1000 ]
+verbose unpackTarget /usr/local/lib/node_modules/chromeos-apk
+silly gunzTarPerm modes [ '755', '644' ]
+silly afterUntar ok
+silly asyncMap in gTP /usr/local/lib/node_modules/___chromeos-apk.npm/package
+silly asyncMap in gTP /usr/local/lib/node_modules/___chromeos-apk.npm/package/manifest.md
+silly asyncMap in gTP /usr/local/lib/node_modules/___chromeos-apk.npm/package/README.md
+silly asyncMap in gTP /usr/local/lib/node_modules/___chromeos-apk.npm/package/package.json
+silly asyncMap in gTP /usr/local/lib/node_modules/___chromeos-apk.npm/package/multiple-apps.md
+silly asyncMap in gTP /usr/local/lib/node_modules/___chromeos-apk.npm/package/CHANGELOG
+silly asyncMap in gTP /usr/local/lib/node_modules/___chromeos-apk.npm/package/.npmignore
+silly asyncMap in gTP /usr/local/lib/node_modules/___chromeos-apk.npm/package/chromeos-apk.js
+silly asyncMap in gTP /usr/local/lib/node_modules/___chromeos-apk.npm/package/LICENSE
+silly asyncMap in gTP /usr/local/lib/node_modules/___chromeos-apk.npm/package/manually-convert.md
+silly asyncMap in gTP /usr/local/lib/node_modules/___chromeos-apk.npm/package/chromeos-apk
+silly asyncMap in gTP /usr/local/lib/node_modules/___chromeos-apk.npm/package/.travis.yml
+silly asyncMap in gTP /usr/local/lib/node_modules/___chromeos-apk.npm/package/archon.md
+silly asyncMap in gTP /usr/local/lib/node_modules/___chromeos-apk.npm/package/lib
+silly asyncMap in gTP /usr/local/lib/node_modules/___chromeos-apk.npm/package/lib/parseApk.js
+silly asyncMap in gTP /usr/local/lib/node_modules/___chromeos-apk.npm/package/misc
+silly asyncMap in gTP /usr/local/lib/node_modules/___chromeos-apk.npm/package/misc/ARChonLogo.png
+silly asyncMap in gTP /usr/local/lib/node_modules/___chromeos-apk.npm/package/misc/ARChonLogo.svg
+silly asyncMap in gTP /usr/local/lib/node_modules/___chromeos-apk.npm/package/.idea
+silly asyncMap in gTP /usr/local/lib/node_modules/___chromeos-apk.npm/package/.idea/encodings.xml
+silly asyncMap in gTP /usr/local/lib/node_modules/___chromeos-apk.npm/package/.idea/workspace.xml
+silly asyncMap in gTP /usr/local/lib/node_modules/___chromeos-apk.npm/package/.idea/.name
+silly asyncMap in gTP /usr/local/lib/node_modules/___chromeos-apk.npm/package/.idea/jsLibraryMappings.xml
+silly asyncMap in gTP /usr/local/lib/node_modules/___chromeos-apk.npm/package/.idea/vcs.xml
+silly asyncMap in gTP /usr/local/lib/node_modules/___chromeos-apk.npm/package/.idea/modules.xml
+silly asyncMap in gTP /usr/local/lib/node_modules/___chromeos-apk.npm/package/.idea/misc.xml
+silly asyncMap in gTP /usr/local/lib/node_modules/___chromeos-apk.npm/package/.idea/chromeos-apk.iml
+silly asyncMap in gTP /usr/local/lib/node_modules/___chromeos-apk.npm/package/.idea/scopes
+silly asyncMap in gTP /usr/local/lib/node_modules/___chromeos-apk.npm/package/.idea/scopes/scope_settings.xml
+silly asyncMap in gTP /usr/local/lib/node_modules/___chromeos-apk.npm/package/.idea/libraries
+silly asyncMap in gTP /usr/local/lib/node_modules/___chromeos-apk.npm/package/.idea/libraries/chromeos_apk_node_modules.xml
+silly asyncMap in gTP /usr/local/lib/node_modules/___chromeos-apk.npm/package/_template
+silly asyncMap in gTP /usr/local/lib/node_modules/___chromeos-apk.npm/package/_template/icon.png
+silly asyncMap in gTP /usr/local/lib/node_modules/___chromeos-apk.npm/package/_template/manifest.json
+silly asyncMap in gTP /usr/local/lib/node_modules/___chromeos-apk.npm/package/_template/app_main.html
+silly asyncMap in gTP /usr/local/lib/node_modules/___chromeos-apk.npm/package/_template/_locales
+silly asyncMap in gTP /usr/local/lib/node_modules/___chromeos-apk.npm/package/_template/_locales/en
+silly asyncMap in gTP /usr/local/lib/node_modules/___chromeos-apk.npm/package/_template/_locales/en/messages.json
+silly asyncMap in gTP /usr/local/lib/node_modules/___chromeos-apk.npm/package/_template/vendor
+silly asyncMap in gTP /usr/local/lib/node_modules/___chromeos-apk.npm/package/_template/vendor/chromium
+silly asyncMap in gTP /usr/local/lib/node_modules/___chromeos-apk.npm/package/_template/vendor/chromium/crx
+silly asyncMap in gTP /usr/local/lib/node_modules/___chromeos-apk.npm/package/_template/vendor/chromium/crx/README.txt
+verbose gunzed /usr/local/lib/node_modules/___chromeos-apk.npm/package
+verbose rm'ed /usr/local/lib/node_modules/chromeos-apk
+verbose renamed [ '/usr/local/lib/node_modules/___chromeos-apk.npm/package',
+verbose renamed   '/usr/local/lib/node_modules/chromeos-apk' ]
+verbose caching /usr/local/lib/node_modules/chromeos-apk/package.json
+verbose loadDefaults chromeos-apk@4.0.2
+info preinstall chromeos-apk@4.0.2
+verbose from cache /usr/local/lib/node_modules/chromeos-apk/package.json
+verbose readDependencies: using package.json deps
+verbose from cache /usr/local/lib/node_modules/chromeos-apk/package.json
+verbose readDependencies: using package.json deps
+verbose cache add [ 'adbkit-apkreader@^1.0.0', null ]
+silly cache add: name, spec, args [ undefined,
+silly cache add: name, spec, args   'adbkit-apkreader@^1.0.0',
+silly cache add: name, spec, args   [ 'adbkit-apkreader@^1.0.0', null ] ]
+verbose parsed url { pathname: 'adbkit-apkreader@^1.0.0',
+verbose parsed url   path: 'adbkit-apkreader@^1.0.0',
+verbose parsed url   href: 'adbkit-apkreader@^1.0.0' }
+silly cache add: name, spec, args [ 'adbkit-apkreader',
+silly cache add: name, spec, args   '^1.0.0',
+silly cache add: name, spec, args   [ 'adbkit-apkreader', '^1.0.0' ] ]
+verbose parsed url { pathname: '^1.0.0', path: '^1.0.0', href: '^1.0.0' }
+verbose addNamed [ 'adbkit-apkreader', '^1.0.0' ]
+verbose addNamed [ null, null ]
+info addNameTag [ 'adbkit-apkreader', '^1.0.0' ]
+verbose cache add [ 'chalk@^0.5.1', null ]
+silly cache add: name, spec, args [ undefined, 'chalk@^0.5.1', [ 'chalk@^0.5.1', null ] ]
+verbose parsed url { pathname: 'chalk@^0.5.1',
+verbose parsed url   path: 'chalk@^0.5.1',
+verbose parsed url   href: 'chalk@^0.5.1' }
+silly cache add: name, spec, args [ 'chalk', '^0.5.1', [ 'chalk', '^0.5.1' ] ]
+verbose parsed url { pathname: '^0.5.1', path: '^0.5.1', href: '^0.5.1' }
+verbose addNamed [ 'chalk', '^0.5.1' ]
+verbose addNamed [ null, null ]
+info addNameTag [ 'chalk', '^0.5.1' ]
+verbose raw, before any munging adbkit-apkreader
+verbose url resolving [ 'http://registry.npmjs.org/', './adbkit-apkreader' ]
+verbose url resolved http://registry.npmjs.org/adbkit-apkreader
+http GET http://registry.npmjs.org/adbkit-apkreader
+verbose raw, before any munging chalk
+verbose url resolving [ 'http://registry.npmjs.org/', './chalk' ]
+verbose url resolved http://registry.npmjs.org/chalk
+http GET http://registry.npmjs.org/chalk
+verbose cache add [ 'commander@^2.3.0', null ]
+silly cache add: name, spec, args [ undefined, 'commander@^2.3.0', [ 'commander@^2.3.0', null ] ]
+verbose parsed url { pathname: 'commander@^2.3.0',
+verbose parsed url   path: 'commander@^2.3.0',
+verbose parsed url   href: 'commander@^2.3.0' }
+silly cache add: name, spec, args [ 'commander', '^2.3.0', [ 'commander', '^2.3.0' ] ]
+verbose parsed url { pathname: '^2.3.0', path: '^2.3.0', href: '^2.3.0' }
+verbose addNamed [ 'commander', '^2.3.0' ]
+verbose addNamed [ null, null ]
+info addNameTag [ 'commander', '^2.3.0' ]
+verbose cache add [ 'ncp@^0.6.0', null ]
+silly cache add: name, spec, args [ undefined, 'ncp@^0.6.0', [ 'ncp@^0.6.0', null ] ]
+verbose parsed url { pathname: 'ncp@^0.6.0',
+verbose parsed url   path: 'ncp@^0.6.0',
+verbose parsed url   href: 'ncp@^0.6.0' }
+silly cache add: name, spec, args [ 'ncp', '^0.6.0', [ 'ncp', '^0.6.0' ] ]
+verbose parsed url { pathname: '^0.6.0', path: '^0.6.0', href: '^0.6.0' }
+verbose addNamed [ 'ncp', '^0.6.0' ]
+verbose addNamed [ null, null ]
+info addNameTag [ 'ncp', '^0.6.0' ]
+verbose raw, before any munging ncp
+verbose url resolving [ 'http://registry.npmjs.org/', './ncp' ]
+verbose url resolved http://registry.npmjs.org/ncp
+http GET http://registry.npmjs.org/ncp
+verbose raw, before any munging commander
+verbose url resolving [ 'http://registry.npmjs.org/', './commander' ]
+verbose url resolved http://registry.npmjs.org/commander
+verbose etag "6B3NNJSYPK3SD218YHD886MPF"
+http GET http://registry.npmjs.org/commander
+http 304 http://registry.npmjs.org/commander
+silly get cb [ 304,
+silly get cb   { date: 'Sat, 11 Jul 2015 05:16:53 GMT',
+silly get cb     via: '1.1 varnish',
+silly get cb     'cache-control': 'max-age=60',
+silly get cb     etag: '"6B3NNJSYPK3SD218YHD886MPF"',
+silly get cb     age: '34',
+silly get cb     connection: 'keep-alive',
+silly get cb     'x-served-by': 'cache-ord1734-ORD',
+silly get cb     'x-cache': 'HIT',
+silly get cb     'x-cache-hits': '1',
+silly get cb     'x-timer': 'S1436591813.336645,VS0,VE0',
+silly get cb     vary: 'Accept' } ]
+verbose etag commander from cache
+verbose about to build /usr/local/lib/node_modules/chromeos-apk
+ERR! error installing chromeos-apk@4.0.2
+info unbuild /usr/local/lib/node_modules/chromeos-apk
+verbose from cache /usr/local/lib/node_modules/chromeos-apk/package.json
+info preuninstall chromeos-apk@4.0.2
+info uninstall chromeos-apk@4.0.2
+http 200 http://registry.npmjs.org/chalk
+silly get cb [ 200,
+silly get cb   { server: 'CouchDB/1.5.0 (Erlang OTP/R16B03)',
+silly get cb     etag: '"BLNTVWHV71ARYOXRHPPCGTKUX"',
+silly get cb     'content-type': 'application/json',
+silly get cb     'cache-control': 'max-age=60',
+silly get cb     'content-length': '23123',
+silly get cb     'accept-ranges': 'bytes',
+silly get cb     date: 'Sat, 11 Jul 2015 05:16:53 GMT',
+silly get cb     via: '1.1 varnish',
+silly get cb     age: '37',
+silly get cb     connection: 'keep-alive',
+silly get cb     'x-served-by': 'cache-ord1720-ORD',
+silly get cb     'x-cache': 'HIT',
+silly get cb     'x-cache-hits': '1',
+silly get cb     'x-timer': 'S1436591813.307783,VS0,VE0',
+silly get cb     vary: 'Accept' } ]
+verbose unbuild chromeos-apk@4.0.2 [ true,
+verbose unbuild chromeos-apk@4.0.2   '/usr/local/lib/node_modules',
+verbose unbuild chromeos-apk@4.0.2   '/usr/local/lib/node_modules' ]
+verbose binRoot [ '/usr/local/bin', { 'chromeos-apk': 'chromeos-apk' } ]
+info postuninstall chromeos-apk@4.0.2
+verbose mkdir (expected) error ENOENT, no such file or directory '/home/saturn/.npm/chalk'
+verbose mkdir done: /home/saturn/.npm/chalk 755
+verbose installOne cb chromeos-apk@4.0.2
+ERR! Error: No compatible version found: commander@'^2.3.0'
+ERR! Valid install targets:
+ERR! ["0.2.1","0.3.0","0.3.1","0.3.2","0.3.3","0.4.0","0.4.1","0.4.2","0.4.3","0.5.0","0.5.1","0.6.0","0.6.1","0.5.2","1.0.0","1.0.1","1.0.2","1.0.3","1.0.4","1.0.5","1.1.0","1.1.1","1.2.0","1.3.0","1.3.1","1.3.2","2.0.0","2.1.0","2.2.0","2.3.0","2.4.0","2.5.0","2.5.1","2.6.0","2.7.0","2.7.1","2.8.0","2.8.1"]
+ERR!     at installTargetsError (/usr/share/npm/lib/cache.js:488:10)
+ERR!     at /usr/share/npm/lib/cache.js:375:15
+ERR!     at saved (/usr/share/npm/lib/utils/npm-registry-client/get.js:147:7)
+ERR!     at Object.oncomplete (/usr/lib/nodejs/graceful-fs.js:230:7)
+ERR! You may report this log at:
+ERR!     <http://bugs.debian.org/npm>
+ERR! or use
+ERR!     reportbug --attach /home/saturn/Downloads/crystal/npm-debug.log npm
+ERR! 
+ERR! System Linux 3.4.0
+ERR! command "node" "/usr/bin/npm" "install" "chromeos-apk" "-g"
+ERR! cwd /home/saturn/Downloads/crystal
+ERR! node -v v0.6.12
+ERR! npm -v 1.1.4
+ERR! message No compatible version found: commander@'^2.3.0'
+ERR! message Valid install targets:
+ERR! message ["0.2.1","0.3.0","0.3.1","0.3.2","0.3.3","0.4.0","0.4.1","0.4.2","0.4.3","0.5.0","0.5.1","0.6.0","0.6.1","0.5.2","1.0.0","1.0.1","1.0.2","1.0.3","1.0.4","1.0.5","1.1.0","1.1.1","1.2.0","1.3.0","1.3.1","1.3.2","2.0.0","2.1.0","2.2.0","2.3.0","2.4.0","2.5.0","2.5.1","2.6.0","2.7.0","2.7.1","2.8.0","2.8.1"]
+verbose exit [ 1, true ]

@@ -4,6 +4,9 @@ function Camera(x, y){
 	this.z = 0;
 	this.eye_z = 100;
 	this.zoom = 1;
+
+	this.width = gl.viewportWidth / this.zoom;
+	this.height = gl.viewportHeight / this.zoom;
 	
 	this.leader = null;
 	
@@ -22,6 +25,8 @@ Camera.prototype.render = function(zoom, room){
 	var y = this.y;
 	var width = gl.viewportWidth / zoom;
 	var height = gl.viewportHeight / zoom;
+	this.width = width;
+	this.height = height;
 	
 	if (this.leader !== null && this.leader !== undefined){
 		var object = this.leader;

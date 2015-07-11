@@ -74,7 +74,7 @@ Level.prototype.SetRoom = function(y, x, z){
 		if (this.room !== undefined)
 			this.room.player = undefined;
 		this.room = this.rooms[y][x][z];
-		this.room.SetPlayer(this.player);
+		this.room.Init(this.player, this);
 	}catch(err){ console.log(err); }
 }
 Level.prototype.SetRoomAt = function(y, x, z, room){
@@ -114,6 +114,12 @@ Level.prototype.Speak = function(text, timer){
 	this.spoken_text = text;
 }
 
+Level.prototype.IsPlayerOnBottomScreenHalf = function(){
+	if (this.player.y > this.camera.y + this.camera.height/2)
+		return true;	
+	return false;
+}
+
 Level.prototype.render_speech = function(){
 	var speech_height = 144;
 	var border_size = 4;
@@ -125,7 +131,7 @@ Level.prototype.render_speech = function(){
 	ctx.clearRect(0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT);
 	if (this.spoken_text !== null && this.spoken_text !== undefined && this.spoken_text.length > 0){		
 		var h = 0;
-		if (this.player.y+(this.player.bb/2) >= Game.GAME_HEIGHT/2) 
+		if (this.IsPlayerOnBottomScreenHalf()) 
 			h = (-1)*(Game.GAME_HEIGHT/1.5)+8;
 		
 		ctx.fillStyle = "#ffffff";

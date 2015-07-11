@@ -203,20 +203,26 @@ function initGradient(){
 }
 
 var lastTime = 0;
+var updateTime = 22;
 
 function update() {
-	var timeNow = new Date().getTime();
-	if (lastTime != 0) {
-		var elapsed = timeNow - lastTime;
-	}
-	game.update(/*elapsed / 1000.0*/1.0);
-	lastTime = timeNow;
+	game.update(1.0);
 }
 
 function tick() {
 	update();
 	drawScene();
-	requestAnimFrame(tick);
+
+	var timeNow = new Date().getTime();
+	var elapsed = timeNow - lastTime;
+	var timeout_time = updateTime - (elapsed - updateTime);
+	if (timeout_time < 0) timeout_time = 0;
+
+	setTimeout(function(){
+		requestAnimFrame(tick);
+	}, timeout_time);
+	
+	lastTime = timeNow;
 }
 
 var game;
@@ -231,6 +237,7 @@ function main(){
 	initGradient();
 	webGLStart(game_canvas, "shaders/vertex.glsl", "shaders/fragment.glsl", function(){
 		game = new Game(game_canvas, document.getElementById("text-canvas"));
+		lastTime = new Date().getTime();
 		tick();
 	});
 }

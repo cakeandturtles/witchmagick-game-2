@@ -1,11 +1,9 @@
 immediate::
 1. entity bug when moving entity offscreen and mouse leaves canvas
-4. npc talk to you 
-	-render speech uses 2d canvas drawn over webgl canvas
+2. make enemies!!!
 3. Edit entity context menu option
 1. Create entity context menu option
 	-select which entity to create??
-0. make loading screen that uses css gradient
 
 
 -----------------------------------------------------------------eventual------------------------
@@ -18,6 +16,7 @@ immediate::
 	
 4. Can fix tile faces thingy by having a sorter or something in the render function of room. (painter's algorith,?) (so player isn't rendered in front of tiles she is behind)
 
+0. make loading screen that uses css gradient
 
 5. advanced spellbook: pops up a console window of a fixed size with a limited scope (change namespace of the console to the room that you are in (e.g. game.level.room.entities -> entities)
 	-further more (entities -> npc_alice, npc_chloe, swarm, grimoire)

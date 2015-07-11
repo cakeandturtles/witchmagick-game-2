@@ -10,6 +10,7 @@ function Room(player, y, x, z, width, height, zoom){
 	this.glitches = [];
 	this.glitch_index = -1;
 	
+	this.level;
 	this.player = player;
 	this.entities = [];
 	this.tile_hydra = new TileHydra(this);
@@ -94,8 +95,13 @@ Room.Import = function(obj, player){
 	return room;
 }
 
-Room.prototype.SetPlayer = function(player){
+Room.prototype.Init = function(player, level){
 	this.player = player;
+	this.level = level;
+}
+
+Room.prototype.Speak = function(text, timer){
+	this.level.Speak(text, timer);
 }
 
 Room.prototype.AddGlitch = function(glitch){
