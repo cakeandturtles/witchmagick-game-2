@@ -13,3 +13,7 @@ glitchdungeon.exe
 nw.pak
 nwsnapshot.exe
 pdf.dll
+*.swp
+*.swo
+*~
+
