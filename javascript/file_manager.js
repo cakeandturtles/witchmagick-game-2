@@ -14,7 +14,8 @@ FileManager.saveFile = function(file_name, file_content, callback){
 		});
 	}catch(err){
 		//fallback if running without nodejs in dom
-		
+		var socket = io.connect("http://localhost:8000");
+		socket.emit('saveFile', file_name, file_content, callback);
 	}
 }
 
@@ -33,6 +34,8 @@ FileManager.ensureExists = function(path, mask, cb) {
 		});
 	}catch(err){
 		//fallback if running without nodejs in dom
+		var socket = io.connect("http://localhost:8081");
+		socket.emit('ensureExists', path, mask, cb);
 	}
 }
 

@@ -115,7 +115,7 @@ Level.prototype.Speak = function(text, timer){
 }
 
 Level.prototype.IsPlayerOnBottomScreenHalf = function(){
-	if (this.player.y > this.camera.y + this.camera.height/2)
+	if (this.player.y + this.player.bb > this.camera.y + this.camera.height/2)
 		return true;	
 	return false;
 }

@@ -18,8 +18,8 @@ Camera.prototype.Follow = function(object){
 
 Camera.prototype.render = function(zoom, room){
 	this.zoom = zoom;
-	var x_offset = 24;
-	var y_offset = 16;
+	var x_offset = 64;
+	var y_offset = 32;
 	
 	var x = this.x;
 	var y = this.y;
@@ -52,15 +52,17 @@ Camera.prototype.render = function(zoom, room){
 
 		//move the camera past room boundaries sticking to the tracked object
 		//(allows for hidden paths)
-		if (object.x + object.width > x + width)
-			x += object.x + object.width - (x + width);
-		else if (object.x < x)
-			x += object.x - (x);
+		if (object.x + object.width > x + width){
+			//x += object.x + object.width - (x + width);
+		}else if (object.x < x){
+			//x += object.x - (x);
+		}
 
-		if (object.y + object.height > y + height)
-			y += object.y + object.height - (y + height);
-		else if (object.y < y)
-			y += object.y - (y);
+		if (object.y + object.height > y + height){
+			//y += object.y + object.height - (y + height);
+		}else if (object.y < y){
+			//y += object.y - (y);
+		}
 
 		this.x = x;
 		this.y = y;
