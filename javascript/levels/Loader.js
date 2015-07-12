@@ -58,7 +58,7 @@ LevelLoader.Export = function(level_name, level, should_alert){
 				FileManager.saveFile(path + "etc.json", json.etc);
 				if (should_alert)
 					alert("level saved to file!");
-				return
+				return;
 			}else{
 				console.log(err);
 			}

@@ -1,16 +1,14 @@
+var port = 8080;
+
 var http = require('http');
 var fs = require('fs');
 var path = require('path');
 
-var port = 8080;
-
-//http://ericsowell.com/blog/2011/5/6/serving-static-files-from-node-js
-var app = http.createServer(function (request, response) {
-    console.log('request starting for: ' + request.url);
-	
-	var filePath = '.' + request.url;
+// Send index.html to all requests
+var app = http.createServer(function(request, response) {
+    var filePath = '.' + request.url;
 	if (filePath == './')
-		filePath = './index.htm';
+		filePath = './index.html';
 		
 	var extname = path.extname(filePath);
 	var contentType = 'text/html';
@@ -23,7 +21,7 @@ var app = http.createServer(function (request, response) {
 			break;
 	}
 	
-	path.exists(filePath, function(exists) {
+	fs.exists(filePath, function(exists) {
 		if (exists) {
 			fs.readFile(filePath, function(error, content) {
 				if (error) {
@@ -43,34 +41,44 @@ var app = http.createServer(function (request, response) {
 			response.end();
 		}
 	});
-	
-}).listen(port);
-console.log('Server running at http://127.0.0.1:' + port + '/');
+});
 
-//http://stackoverflow.com/questions/20717076/two-way-communication-between-server-and-client-on-socket-io-node-js
-var io = require("socket.io").listen(8081);
-io.on('connection', function(socket){
-	socket.on('saveFile', function(file_name, file_content, callback){
-		fs.writeFile(file_name, file_content, function(err){
+// Socket.io server listens to our app
+var io = require('socket.io').listen(app);
+
+// Emit welcome message on connection
+io.on('connection', function(socket) {
+    socket.on('saveFile', function(data){
+      var file_name = data.file_name;
+      var file_content = data.file_content;
+  		fs.writeFile(file_name, file_content, function(err){
 			if (err){
 				console.log(err);
+				io.sockets.emit("saveFileFailure", {err: err});
 			}
-			if (typeof(callback) === 'function'){
-				callback();
+			else{
+			  console.log("file " +file_name+" saved.");
+			  io.sockets.emit("saveFileSuccess", {});
 			}
 		});
 	});
-	socket.on("ensureExists", function(path, mask, cb){
-		if (typeof mask == 'function'){
-			cb = mask;
-			mask = 0777;
-		}
+	socket.on("ensureExists", function(data){
+	  var path = data.path;
+	  var mask = data.mask;
+
 		fs.mkdir(path, mask, function(err){
 			if (err){
-				if (err.code == 'EEXIST') cb(null);
-				else cb(err);
-			} else cb(null);
+			  if (err.code !== "EEXIST")
+			    console.log(err);
+			  io.sockets.emit("ensureExistsFailure", {err: err});
+			} else{
+			  console.log("file "+path+" exists");
+			  io.sockets.emit("ensureExistsSuccess", {});
+			}
 		});
 	});
 });
-var publisher = require("socket.io").listen(app);
+
+app.listen(port);
+
+console.log("Nodejs http & socket server started at 127.0.0.1:"+port+"...");
