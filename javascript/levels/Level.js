@@ -83,10 +83,6 @@ Level.prototype.ChangeRoom = function(y_inc, x_inc, z_inc, delay){
 Level.prototype.SetRoom = function(y, x, z, delay){
   if (delay === undefined)
     delay = false;
-  console.log(y + ", " + x + ", " + z);
-  console.log(this.rooms[y]);
-  console.log(this.rooms[y][x]);
-  console.log(this.rooms[y][x][z]);
 	try{
 	  
 	  this.delayed_room_set = delay;
