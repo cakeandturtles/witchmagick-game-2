@@ -1,4 +1,5 @@
-function Camera(x, y){
+function Camera(level, x, y){
+  this.level = level;
 	this.x = defaultTo(x, 0);
 	this.y = defaultTo(y, 0);
 	this.z = 0;
@@ -54,14 +55,19 @@ Camera.prototype.render = function(zoom, room){
 		//(allows for hidden paths)
 		if (object.x + object.width > x + width){
 			//x += object.x + object.width - (x + width);
+			                    //y, x, z
+			this.level.ChangeRoom(0, 1, 0, true);
 		}else if (object.x < x){
 			//x += object.x - (x);
+			this.level.ChangeRoom(0, -1, 0, true);
 		}
 
 		if (object.y + object.height > y + height){
 			//y += object.y + object.height - (y + height);
+			this.level.ChangeRoom(1, 0, 0, true);
 		}else if (object.y < y){
 			//y += object.y - (y);
+			this.level.ChangeRoom(-1, 0, 0, true);
 		}
 
 		this.x = x;
@@ -78,7 +84,7 @@ Camera.prototype.IsOrthogonal = function(){
 	return (this.view === "orthogonal");
 }
 
-Camera.prototype.CalculateMatrices_orthogonal = function(x, y, width, height, zoom){	
+Camera.prototype.CalculateMatrices_orthogonal = function(x, y, width, height, zoom){
 	this.view = "orthogonal";
 
 	//left, right, bottom, top, near, far, dest

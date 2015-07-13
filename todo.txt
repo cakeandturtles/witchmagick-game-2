@@ -1,5 +1,6 @@
 immediate::
-0. offscreen goes to next room. make others rooms. make other levels.
+0. make levels on the fly while playing (???)
+  A. make other levels.
 1. entity bug when moving entity offscreen and mouse leaves canvas
 2. make enemies!!!
 3. Edit entity context menu option

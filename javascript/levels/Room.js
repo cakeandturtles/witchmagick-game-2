@@ -1,4 +1,4 @@
-function Room(player, y, x, z, width, height, zoom){	
+function Room(player, y, x, z, width, height, zoom){
 	this.y = y;
 	this.x = x;
 	this.z = z;

@@ -26,18 +26,22 @@ LevelLoader.Import = function(level_name, canvas, text_canvas, input, callback_)
 			var y = index.y;
 			var x = index.x;
 			var z = index.z;
-			FileManager.loadFile(path + y + "_" + x + "_" + z + ".json", function(error, json){
+			FileManager.loadFile(path + y + "_" + x + "_" + z + ".json", function(y, x, z, error, json){
 				if (error){
 					alert("error loading level");
 					console.log(error);
 				}
 				
-				obj.rooms.push(json);
+				var room = JSON.parse(json);
+				room.y = y;
+				room.x = x;
+				room.z = z;
+				obj.rooms.push(room);
 				loaded++;
 				if (loaded === needs_loading){
 					callback_(Level.Import(obj, canvas, text_canvas, input));
 				}
-			});
+			}.bind(this, y, x, z));
 		}
 	});
 }
