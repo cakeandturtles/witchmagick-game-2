@@ -15,7 +15,9 @@ Glitch.DEFAULT_GLITCHES = [
 	"None",
 	"FloorGlitch",
 	"WallGlitch",
-	"FeatherGlitch"
+	"FeatherGlitch",
+	"TeleportGlitch",
+	"WrapGlitch",
 ];
 
 //pass a single object/entity to glitch that object/entity

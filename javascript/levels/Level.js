@@ -71,7 +71,7 @@ Level.Import = function(obj, canvas, input){
 	return level;
 }
 
-Level.prototype.ChangeRoom = function(y_inc, x_inc, z_inc, delay){
+Level.prototype.ChangeRoomTeleport = function(y_inc, x_inc, z_inc, delay){
   this.SetRoom(
     this.room_index.y+y_inc,
     this.room_index.x+x_inc,
@@ -79,6 +79,36 @@ Level.prototype.ChangeRoom = function(y_inc, x_inc, z_inc, delay){
     delay
   );
 }
+Level.prototype.ChangeRoomWrap = function(y_inc, x_inc, z_inc, delay){
+  var space = 8;
+  if (x_inc > 0)
+  	this.player.x = space;
+  else if (x_inc < 0)
+  	this.player.x = this.room.width-this.player.rb-space;
+  if (y_inc > 0)
+  	this.player.y = space;
+  else if (y_inc < 0)
+  	this.player.y = this.room.height-this.player.bb-space;
+}
+Level.prototype.ChangeRoomProper = function(y_inc, x_inc, z_inc, delay){
+  this.SetRoom(
+    this.room_index.y+y_inc,
+    this.room_index.x+x_inc,
+    this.room_index.z+z_inc,
+    delay
+  );
+  
+  var space = 8;
+  if (x_inc > 0)
+  	this.player.x = space;
+  else if (x_inc < 0)
+  	this.player.x = this.room.width-this.player.rb-space;
+  if (y_inc > 0)
+  	this.player.y = space;
+  else if (y_inc < 0)
+  	this.player.y = this.room.height-this.player.bb-space;
+}
+Level.prototype.ChangeRoom = Level.prototype.ChangeRoomProper;
 
 Level.prototype.SetRoom = function(y, x, z, delay){
   if (delay === undefined)

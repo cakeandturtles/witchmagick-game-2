@@ -62,6 +62,8 @@ function glitchdungeon_loadScripts(callback){
 		{src: "javascript/glitches/FloorGlitch.js"},
 		{src: "javascript/glitches/WallGlitch.js"},
 		{src: "javascript/glitches/FeatherGlitch.js"},
+		{src: "javascript/glitches/TeleportGlitch.js"},
+		{src: "javascript/glitches/WrapGlitch.js"},
 		
 		//shaders
 		//{src: "shaders/vertex_shader.js", type: "x-shader/x-vertex"},
