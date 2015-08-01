@@ -3,7 +3,7 @@ function TeleportGlitch(){
 	
 	this.type = "TeleportGlitch";
 	
-	this.tile_img_name = "tile_sheet_red.png";
+	this.tile_img_name = "tile_sheet_yellow.png";
 }
 extend(Glitch, TeleportGlitch);
 

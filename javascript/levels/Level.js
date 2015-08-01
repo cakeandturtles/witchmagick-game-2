@@ -42,7 +42,7 @@ Level.prototype.Export = function(){
 		for (var j = 0; j < this.rooms[i].length; j++){
 			var room_z_row = [];
 			for (var k = 0; k < this.rooms[i][j].length; k++){
-				var room_json = this.rooms[i][j][k].Export();
+				var room_json = JSON.stringify(this.rooms[i][j][k].Export());
 				room_z_row.push(room_json);
 				etc.room_indices.push({y:i, x:j, z:k});
 			}
@@ -111,14 +111,13 @@ Level.prototype.ChangeRoomProper = function(y_inc, x_inc, z_inc, delay){
 Level.prototype.ChangeRoom = Level.prototype.ChangeRoomProper;
 
 Level.prototype.SetRoom = function(y, x, z, delay){
-  if (delay === undefined)
-    delay = false;
+	if (delay === undefined)
+    	delay = false;
 	try{
-	  
-	  this.delayed_room_set = delay;
-	  if (!delay){
-		  this.InitNewRoom(y, x, z);
-	  }
+		this.delayed_room_set = delay;
+		if (!delay){
+		  	this.InitNewRoom(y, x, z);
+		}
 		this.room_index.y = y;
 		this.room_index.x = x;
 		this.room_index.z = z;
@@ -130,17 +129,20 @@ Level.prototype.SetRoomAt = function(y, x, z, room){
 	if (this.rooms[y][x] === undefined)
 		this.rooms[y][x] = [];
 	this.rooms[y][x][z] = room;
-	
-	console.log(y + ", " + x + ", " +z);
-	console.log(room);
 }
 
 Level.prototype.InitNewRoom = function(y, x, z){
-  if (this.room !== undefined)
-	  this.room.player = undefined;
+  if (this.room !== undefined){
+  	try{
+  	  this.room.glitches[this.room.glitch_index].RevertRoom(this.room);
+  	}catch(e){}
+  	this.player = this.room.player;
+	this.room.player = undefined;
+  }
 
   this.room = this.rooms[y][x][z];
   this.room.Init(this.player, this);
+  this.room.SetGlitchIndex(this.room.glitch_index);
 }
 
 Level.prototype.update = function(delta, input){

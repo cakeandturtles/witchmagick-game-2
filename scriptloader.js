@@ -45,7 +45,7 @@ function loadExternalScripts(file_objects, final_callback){
 		
 		var timeout_id = setTimeout(function(path){
 			console.log("could not load file: " + path);
-		}.bind(this, file_obj.src ? file_obj.src : file_obj.href), 100);
+		}.bind(this, file_obj.src ? file_obj.src : file_obj.href), 3000);
 		
 		var callback = function(timeout_id){
 			clearTimeout(timeout_id);

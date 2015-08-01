@@ -60,7 +60,7 @@ Room.prototype.Export = function(){
 			}
 		}
 	}
-	return JSON.stringify(room);
+	return room;
 }
 Room.Import = function(obj, player){
 	var room = new Room(player, obj.y, obj.x, obj.z, obj.width, obj.height, obj.zoom);
