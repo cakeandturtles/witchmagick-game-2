@@ -8,6 +8,10 @@ function glitchdungeon_loadScripts(callback){
 		//Colorflow (for triadic color creation for css gradient
 		{src: "javascript/lib/colorflow.min.js"},
 		
+		//timbre.js (for music generation)
+		{src: "javascript/lib/timbre.js"},
+	  //{src: "javascript/lib/subcollider.js"},
+		
 		//custom context menu and dialog libraries (custom made)
 		{src: "javascript/lib/contextmenu.js"},
 		{href: "javascript/lib/contextmenu.css"},

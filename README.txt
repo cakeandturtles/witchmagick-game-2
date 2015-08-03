@@ -12,10 +12,12 @@ Built on top of NW.js (http://nwjs.io/)
 
 Unit Testing with Jasmine (http://jasmine.github.io/)
 
+Music generation with timbre.js & subcollider.js (http://mohayonao.github.io/timbre.js)
+
 Preloading resources from PxLoader (http://thinkpixellab.com/pxloader/)
 
 For learning WebGL (make sure to start with lesson one if you're new and read the whole lesson: very helpful if you're used to just vanilla JavaScript.
-	http://learningwebgl.com/lessons/ 
+	http://learningwebgl.com/lessons/
 	
 JavaScript Matrix and Vector library:
 	https://github.com/toji/gl-matrix

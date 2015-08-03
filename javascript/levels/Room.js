@@ -48,14 +48,14 @@ Room.prototype.Export = function(){
 	var tiles = this.tile_hydra.tiles;
 	var tile_keys = Object.keys(tiles);
 	room.tiles = [];
-	for (var i in tile_keys){
-		i = tile_keys[i];
+	for (var ii = 0; ii < tile_keys.length; ii++){
+		i = tile_keys[ii];
 		var tile_row_keys = Object.keys(tiles[i]);
-		for (var j in tile_row_keys){
-			j = tile_row_keys[j];
+		for (var jj = 0; jj < tile_row_keys.length; jj++){
+			j = tile_row_keys[jj];
 			var tile_row_row_keys = Object.keys(tiles[i][j]);
-			for (var k in tile_row_row_keys){
-				k = tile_row_row_keys[k];
+			for (var kk = 0; kk < tile_row_row_keys.length; kk++){
+				k = tile_row_row_keys[kk];
 				room.tiles.push(tiles[i][j][k].Export());
 			}
 		}

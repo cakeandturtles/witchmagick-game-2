@@ -5,7 +5,7 @@ function TileHydra(room){
 	this.room = room;
 	this.tiles = {};
 	//use the following two for rendering tiles !!!
-	//placed tiles for rendering tiles not yet aggregated but 
+	//placed tiles for rendering tiles not yet aggregated but
 	//being placed by the level editor (to prevent lag during placement)
 	this.placed_tiles = [];
 	//use this to aggregate tiles into fewer visual objects so performance is slightly more efficient (less vertices to render)
@@ -15,7 +15,7 @@ function TileHydra(room){
 }
 
 TileHydra.prototype.initTexture = function(img_name){
-	//you can do this even though tilehydra isn't a 'child' of GLObject!! 
+	//you can do this even though tilehydra isn't a 'child' of GLObject!!
 	//javascript oop is so flexible :0
 	GLObject.prototype.initTexture.call(this, img_name);
 }
@@ -55,7 +55,7 @@ TileHydra.prototype.RemoveTile = function(y_index, x_index, z_index, suppress_ag
 				delete this.tiles[y_index];
 			}
 		}
-	}	
+	}
 	
 	
 	this.TrySuppressAggregation(suppress_aggregation);
@@ -69,9 +69,15 @@ TileHydra.prototype.TrySuppressAggregation = function(suppress_aggregation){
 
 TileHydra.prototype.deaggregateTiles = function(){
 	this.aggregated_tiles = [];
-	for (var i in this.tiles){
-		for (var j in this.tiles[i]){
-			for (var k in this.tiles[i][j]){
+	var i_keys = Object.keys(this.tiles);
+	for (var ii = 0; ii < i_keys.length; ii++){
+	  var i = i_keys[ii];
+	  var j_keys = Object.keys(this.tiles[i]);
+		for (var jj = 0; jj < j_keys.length; jj++){
+		  var j = j_keys[jj];
+		  var k_keys = Object.keys(this.tiles[i][j]);
+			for (var kk = 0; kk < k_keys.length; kk++){
+			  var k = k_keys[kk];
 				this.tiles[i][j][k].has_been_aggregated = false;
 			}
 		}
@@ -97,14 +103,15 @@ TileHydra.prototype.AggregateTiles = function(){
 	
 	var numerically = function(a,b){return a-b;};
 	var i_keys = Object.keys(this.tiles).map(Number).sort(numerically);
-	for (var i in i_keys){
-		i = i_keys[i];
+	
+	for (var ii = 0; ii < i_keys.length; ii++){
+		i = i_keys[ii];
 		var j_keys = Object.keys(this.tiles[i]).map(Number).sort(numerically);
-		for (var j in j_keys){
-			j = j_keys[j];
+		for (var jj = 0; jj < j_keys.length; jj++){
+			j = j_keys[jj];
 			var k_keys = Object.keys(this.tiles[i][j]).map(Number).sort(numerically).reverse();
-			for (var k in k_keys){
-				k = k_keys[k];
+			for (var kk = 0; kk < k_keys.length; kk++){
+				k = k_keys[kk];
 				//if we already haven't been aggregated!
 				if (!this.tiles[i][j][k].has_been_aggregated){
 					i2 = i;
