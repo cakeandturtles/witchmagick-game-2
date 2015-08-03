@@ -10,7 +10,7 @@ function glitchdungeon_loadScripts(callback){
 		
 		//timbre.js (for music generation)
 		{src: "javascript/lib/timbre.js"},
-	  //{src: "javascript/lib/subcollider.js"},
+	  	{src: "javascript/lib/subcollider.js"},
 		
 		//custom context menu and dialog libraries (custom made)
 		{src: "javascript/lib/contextmenu.js"},
@@ -59,6 +59,10 @@ function glitchdungeon_loadScripts(callback){
 			{src: "javascript/levels/architect/glitch_option.js"},
 			{src: "javascript/levels/architect/tile_option.js"},
 			{src: "javascript/levels/architect/entity_option.js"},
+			
+		
+		//Soundscape
+		{src: "javascript/music/soundscape.js"},
 		
 		//glitches
 		{src: "javascript/glitches/Glitch.js"},

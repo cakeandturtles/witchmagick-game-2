@@ -202,6 +202,16 @@ function initGradient(){
 	dialogConfirmCSS.style.color = colors[0];
 }
 
+function initTimbre(){
+  sc.use("prototype");
+  
+  timbre.setup({f64:true});
+  if (timbre.envmobile) {
+      timbre.setup({samplerate:timbre.samplerate * 0.5});
+  }
+  timbre.amp = 0.6;
+}
+
 var lastTime = 0;
 var updateTime = 22;
 
@@ -235,6 +245,7 @@ function main(){
 	}
 	
 	initGradient();
+	initTimbre();
 	webGLStart(game_canvas, "shaders/vertex.glsl", "shaders/fragment.glsl", function(){
 		game = new Game(game_canvas, document.getElementById("text-canvas"));
 		lastTime = new Date().getTime();
