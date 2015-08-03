@@ -4,6 +4,7 @@ immediate::
 	  	i. creating a new room for the level, 
 	  	ii. mapping to an existing level/room, 
 	  	iii. making a new level/room
+	  
   	
   	
 1. entity bug when moving entity offscreen and mouse leaves canvas
@@ -11,6 +12,8 @@ immediate::
 3. Edit entity context menu option
 1. Create entity context menu option
 	-select which entity to create??
+	
+5. level minimap: ability to drag rooms and rearrange them by grid????? (????)
 
 
 -----------------------------------------------------------------eventual------------------------

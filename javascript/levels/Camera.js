@@ -20,7 +20,7 @@ Camera.prototype.Follow = function(object){
 Camera.prototype.render = function(zoom, room){
 	this.zoom = zoom;
 	var x_offset = 256.0 / zoom;
-	var y_offset = 176.0 / zoom;
+	var y_offset = 192.0 / zoom;
 	
 	var x = this.x;
 	var y = this.y;

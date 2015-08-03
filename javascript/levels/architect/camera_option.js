@@ -92,7 +92,7 @@ CameraOption.prototype.mouseScroll = function(x, y, is_right_mb, level, delta){
 	//scroll up
 	else if (delta > 0){
 		level.room.zoom++;
-		if (level.room.zoom > 12)
-			level.room.zoom = 12;
+		if (level.room.zoom > 8)
+			level.room.zoom = 8;
 	}
 }

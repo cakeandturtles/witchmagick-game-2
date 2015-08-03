@@ -4,7 +4,7 @@ function Room(player, y, x, z, width, height, zoom, init_floor){
 	this.z = z;
 
 	this.width = defaultTo(width, 320);
-	this.height = defaultTo(height, 240);
+	this.height = defaultTo(height, 256);
 	this.zoom = defaultTo(zoom, 2);
 	
 	this.colspan = this.width / Room.STD_WIDTH;
@@ -28,7 +28,7 @@ function Room(player, y, x, z, width, height, zoom, init_floor){
 	}
 }
 Room.STD_WIDTH = 80;
-Room.STD_HEIGHT = 60;
+Room.STD_HEIGHT = 64;
 
 Room.prototype.Export = function(){
 	//normal entity Export functions will return objects.

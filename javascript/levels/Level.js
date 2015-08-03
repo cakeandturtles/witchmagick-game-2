@@ -266,6 +266,10 @@ Level.prototype.ChangeRoomProper = function(y_inc, x_inc, z_inc, delay){
 }
 Level.prototype.ChangeRoom = Level.prototype.ChangeRoomProper;
 
+Level.prototype.CreateNewRoom = function(y, x, z){
+	this.pause();
+}
+
 Level.prototype.SetRoom = function(y, x, z, delay){
 	if (delay === undefined)
     	delay = false;
@@ -276,6 +280,7 @@ Level.prototype.SetRoom = function(y, x, z, delay){
     	this.rooms[y][x] = [];
     if (this.rooms[y][x][z] === undefined){
 	    alert("create a new room at position: " + y + ", " + x + ", " + z + "!");
+	    this.CreateNewRoom(y, x, z);
     }
     
     	

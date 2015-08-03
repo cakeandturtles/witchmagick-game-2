@@ -15,7 +15,7 @@ LevelOption.prototype.onContextMenu = function(level){
 	}else{
 		level.pause();
 		
-		Dialog.Confirm("", function(){
+		Dialog.Confirm("generate new level<br/><br/>NOTE: you will lose any unsaved progress on this level", function(){
 			game.NewLevel();
 		}, "new level", "new level", function(){
 			this.architect.tryResume()

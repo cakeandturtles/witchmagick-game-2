@@ -15,7 +15,7 @@ Game.prototype.NewLevel = function(){
 }
 
 Game.GAME_WIDTH = 640;
-Game.GAME_HEIGHT = 480;
+Game.GAME_HEIGHT = 512;
 Game.TILE_SIZE = 8;
 
 Game.prototype.update = function(delta){

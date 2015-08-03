@@ -10,7 +10,7 @@ function LevelArchitect(canvas, input, level){
 	//which will pause the level (not the level editor) and prevent default dialog boxes closing from resuming the level prematurely
 	this.paused = false;
 	this.is_mouse_down = false;
-	
+
 	canvas.onmousedown = this.mouseDown.bind(this);
 	canvas.onmouseup = this.mouseUp.bind(this);
 	canvas.onmousemove = this.mouseMove.bind(this);
@@ -47,6 +47,10 @@ LevelArchitect.prototype.InitMenuOptions = function(){
 	//NEW LEVEL OPTION
 	this.newlevel_option = new LevelOption(this, this.menu.dom);
 	this.menu.options.push(this.newlevel_option);
+	
+	//ROOM OPTION
+	this.room_option = new RoomOption(this, this.menu.dom);
+	this.menu.options.push(this.room_option);
 	
 	//GLITCH OPTION
 	this.glitch_option = new GlitchOption(this, this.menu.dom);
@@ -186,6 +190,7 @@ LevelArchitect.prototype.mouseUp = function(e){
 LevelArchitect.prototype.mouseMove = function(e){
 	var mouseX = e.clientX + document.body.scrollLeft;
 	var mouseY = e.clientY + document.body.scrollTop;
+	console.log(e.pageY - window.scrollY);
 	var zoom = this.level.room.zoom;
 	var gridX = ~~((mouseX + this.level.camera.x*zoom) / (Game.TILE_SIZE * zoom));
 	var gridY = ~~((mouseY + this.level.camera.y*zoom) / (Game.TILE_SIZE * zoom));

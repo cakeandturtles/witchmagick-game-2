@@ -10,13 +10,6 @@ body{
     -ms-user-select: none;
     user-select: none;
 }
-#enchanted-canvas{
-	position:absolute;
-	top: 0px;
-	left: 0px;
-	width: 640px;
-	height: 480px;
-}
 #level-architect-menu{
 	position:absolute;
 	top:0px;
