@@ -1,4 +1,4 @@
-function Level(canvas, text_canvas, input){
+function Level(canvas, text_canvas, input, init_empty_room){
 	this.text_ctx = text_canvas.getContext("2d");
 	this.level_name = "insert_level_name";
 	
@@ -17,6 +17,13 @@ function Level(canvas, text_canvas, input){
 	this.paused = false;
 	
 	this.soundscape = Soundscape.create_chordwork();
+	
+	if (init_empty_room === undefined) init_empty_room = false;
+	if (init_empty_room){
+		this.SetRoomAt(0, 0, 0, new Room(null, 0, 0, 0, 320, 240, 2, true));
+		this.SetRoom(0, 0, 0);
+		this.delayed_room_set = true;
+	}
 }
 Level.prototype.pause = function(){
 	this.paused = true;

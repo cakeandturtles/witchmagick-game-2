@@ -53,6 +53,7 @@ function glitchdungeon_loadScripts(callback){
 			{src: "javascript/levels/architect/architect.js"},
 			{src: "javascript/levels/architect/option.js"},
 			{src: "javascript/levels/architect/save_option.js"},
+			{src: "javascript/levels/architect/level_option.js"},
 			{src: "javascript/levels/architect/pause_option.js"},
 			{src: "javascript/levels/architect/space_option.js"},
 			{src: "javascript/levels/architect/camera_option.js"},

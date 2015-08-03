@@ -1,4 +1,4 @@
-function Room(player, y, x, z, width, height, zoom){
+function Room(player, y, x, z, width, height, zoom, init_floor){
 	this.y = y;
 	this.x = x;
 	this.z = z;
@@ -14,6 +14,15 @@ function Room(player, y, x, z, width, height, zoom){
 	this.player = player;
 	this.entities = [];
 	this.tile_hydra = new TileHydra(this);
+	
+	if (init_floor === undefined) init_floor = false;
+	if (init_floor){
+		var y_index = (this.height - Game.TILE_SIZE) / Game.TILE_SIZE;
+		for (var i = 0; i < this.width / Game.TILE_SIZE; i++){
+			this.AddTile(y_index, i, 0, new Tile(i*Game.TILE_SIZE, y_index*Game.TILE_SIZE, 0), true);
+		}
+		this.AggregateTiles();
+	}
 }
 
 Room.prototype.Export = function(){

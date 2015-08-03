@@ -15,7 +15,13 @@ Collision.FALLTHROUGH = 2;
 Collision.KILL_PLAYER = 3;
 
 function Tile(x, y, z, width, height, depth, collision, slope, slope_index){
-	GL3dObject.call(this, null, x, y, z, 0, 0, 0, width, height, -depth, width, height, depth);
+	this.width = defaultTo(width, Game.TILE_SIZE);
+	this.height = defaultTo(height, Game.TILE_SIZE);
+	this.depth = defaultTo(depth, Game.TILE_SIZE);
+	GL3dObject.call(this, null, x, y, z, 0, 0, 0, 
+		this.width, this.height, -this.depth, 
+		this.width, this.height, this.depth
+	);
 	
 	this.y_index = y / Game.TILE_SIZE;
 	this.x_index = x / Game.TILE_SIZE;

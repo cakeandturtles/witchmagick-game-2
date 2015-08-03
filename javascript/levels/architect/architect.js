@@ -43,6 +43,10 @@ LevelArchitect.prototype.InitMenuOptions = function(){
 	this.export_option = new ExportOption(this, this.menu.dom);
 	this.menu.options.push(this.export_option);
 	
+	//NEW LEVEL OPTION
+	this.newlevel_option = new LevelOption(this, this.menu.dom);
+	this.menu.options.push(this.newlevel_option);
+	
 	//GLITCH OPTION
 	this.glitch_option = new GlitchOption(this, this.menu.dom);
 	this.menu.options.push(this.glitch_option);
