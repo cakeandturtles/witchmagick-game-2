@@ -7,6 +7,9 @@ function Room(player, y, x, z, width, height, zoom, init_floor){
 	this.height = defaultTo(height, 240);
 	this.zoom = defaultTo(zoom, 2);
 	
+	this.colspan = this.width / Room.STD_WIDTH;
+	this.rowspan = this.height / Room.STD_HEIGHT;
+	
 	this.glitches = [];
 	this.glitch_index = -1;
 	
@@ -24,6 +27,8 @@ function Room(player, y, x, z, width, height, zoom, init_floor){
 		this.AggregateTiles();
 	}
 }
+Room.STD_WIDTH = 80;
+Room.STD_HEIGHT = 60;
 
 Room.prototype.Export = function(){
 	//normal entity Export functions will return objects.

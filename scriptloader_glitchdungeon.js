@@ -48,6 +48,7 @@ function glitchdungeon_loadScripts(callback){
 		{src: "javascript/levels/tile_hydra.js"},
 		{src: "javascript/levels/Camera.js"},
 		{src: "javascript/levels/Room.js"},
+		{src: "javascript/levels/RoomIllusion.js"},
 		{src: "javascript/levels/Level.js"},
 			//architect && options
 			{src: "javascript/levels/architect/architect.js"},

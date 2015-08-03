@@ -1,11 +1,11 @@
 immediate::
-0. need to get rid of first set of level architect or make it game wide??
-	(when making new levels);
-
-A. when walking off screen, dialog pops up to prompt: 
-  	i. creating a new room for the level, 
-  	ii. mapping to an existing level/room, 
-  	iii. making a new level/room
+0. when walking off screen:
+	A. if next room is empty) dialog pops up to prompt: 
+	  	i. creating a new room for the level, 
+	  	ii. mapping to an existing level/room, 
+	  	iii. making a new level/room
+  	
+  	
 1. entity bug when moving entity offscreen and mouse leaves canvas
 2. make enemies!!!
 3. Edit entity context menu option

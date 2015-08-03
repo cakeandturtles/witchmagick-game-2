@@ -37,6 +37,7 @@ LevelArchitect.prototype.InitMenuOptions = function(){
 	var architect = this;
 	this.menu = {};
 	this.menu.dom = document.getElementById("level-architect-menu");
+	this.menu.dom.innerHTML = "";
 	this.menu.options = [];
 	
 	//Export OPTION
