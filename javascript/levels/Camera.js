@@ -19,13 +19,19 @@ Camera.prototype.Follow = function(object){
 
 Camera.prototype.render = function(zoom, room){
 	this.zoom = zoom;
-	var x_offset = 256.0 / zoom;
-	var y_offset = 192.0 / zoom;
+	var x_offset = 240.0 / zoom;
+	var y_offset = 176.0 / zoom;
 	
 	var x = this.x;
 	var y = this.y;
-	var width = gl.viewportWidth / zoom;
-	var height = gl.viewportHeight / zoom;
+	
+	var width = gl.viewportWidth;
+	var height = gl.viewportHeight;
+	if (width/2 > room.width) width = room.width*2;
+	if (height/2 > room.height) height = room.height*2;
+	
+	width /= zoom;
+	height /= zoom;
 	this.width = width;
 	this.height = height;
 	
@@ -74,10 +80,17 @@ Camera.prototype.render = function(zoom, room){
 		this.y = y;
 		this.eye_z = object.z + 100;
 
-		y *= -1;
+		this.y *= -1;
 	}
 	
-	this.CalculateMatrices(x, y, width, height, zoom);
+	if (this.width > room.width){
+		this.x = (this.width - room.width) / 2;
+	}
+	if (this.height > room.height){
+		this.y = (this.height - room.height) / 2;
+	}
+	
+	this.CalculateMatrices(this.x, this.y, this.width, this.height, zoom);
 }
 
 Camera.prototype.IsOrthogonal = function(){

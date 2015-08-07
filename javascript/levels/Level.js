@@ -205,21 +205,13 @@ Level.prototype.ChangeRoomTeleport = function(y_inc, x_inc, z_inc, delay){
 	//y_inc, x_inc, and z_inc should only be -1, 0, or 1
 	//and only one should be nonzero per call
 	//else use SetRoom directly (doors?)
-	if (y_inc > 0){
-		y_inc *= this.room.rowspan;
-		x_inc = ~~(this.room.player.x / Room.STD_WIDTH);
-	}
-	else if (x_inc > 0){
-		x_inc *= this.room.colspan;
-		y_inc = ~~(this.room.player.y / Room.STD_HEIGHT);
-	}
-	//TODO:REDUNDANCY
 	
   	this.SetRoom(
 	    this.room_index.y+y_inc,
 	    this.room_index.x+x_inc,
 	    this.room_index.z+z_inc,
-	    delay
+	    delay,
+	    function(){}
   	);
 }
 Level.prototype.ChangeRoomWrap = function(y_inc, x_inc, z_inc, delay){
@@ -237,40 +229,33 @@ Level.prototype.ChangeRoomProper = function(y_inc, x_inc, z_inc, delay){
 	//y_inc, x_inc, and z_inc should only be -1, 0, or 1
 	//and only one should be nonzero per call
 	//else use SetRoom directly (doors?)
-	if (y_inc > 0){
-		y_inc *= this.room.rowspan;
-		x_inc = ~~(this.room.player.x / Room.STD_WIDTH);
-	}
-	else if (x_inc > 0){
-		x_inc *= this.room.colspan;
-		y_inc = ~~(this.room.player.y / Room.STD_HEIGHT);
-	}
-	//TODO:REDUNDANCY
 	
   	this.SetRoom(
 	    this.room_index.y+y_inc,
 	    this.room_index.x+x_inc,
 	    this.room_index.z+z_inc,
-	    delay
+	    delay,
+	    function(){
+	    	var space = 8;
+		  	if (x_inc > 0)
+			  	this.player.x = space;
+		  	else if (x_inc < 0)
+		  		this.player.x = this.room.width-this.player.rb-space;
+		  	if (y_inc > 0)
+		  		this.player.y = space;
+		  	else if (y_inc < 0)
+		  		this.player.y = this.room.height-this.player.bb-space;
+	    }
   	);
-  
-	var space = 8;
-  	if (x_inc > 0)
-	  	this.player.x = space;
-  	else if (x_inc < 0)
-  		this.player.x = this.room.width-this.player.rb-space;
-  	if (y_inc > 0)
-  		this.player.y = space;
-  	else if (y_inc < 0)
-  		this.player.y = this.room.height-this.player.bb-space;
 }
 Level.prototype.ChangeRoom = Level.prototype.ChangeRoomProper;
 
 Level.prototype.CreateNewRoom = function(y, x, z){
+	this.architect.room_option.onContextMenu(this);
 	this.pause();
 }
 
-Level.prototype.SetRoom = function(y, x, z, delay){
+Level.prototype.SetRoom = function(y, x, z, delay, callback){
 	if (delay === undefined)
     	delay = false;
     
@@ -281,6 +266,7 @@ Level.prototype.SetRoom = function(y, x, z, delay){
     if (this.rooms[y][x][z] === undefined){
 	    alert("create a new room at position: " + y + ", " + x + ", " + z + "!");
 	    this.CreateNewRoom(y, x, z);
+	    return;
     }
     
     	
@@ -289,25 +275,14 @@ Level.prototype.SetRoom = function(y, x, z, delay){
 		
 		var room = this.rooms[y][x][z];
 		
-		var y_offset = 0;
-		var x_offset = 0;
-		var z_offset = 0;
-		if (room.constructor.name === "RoomIllusion"){
-			var holder = this.rooms[y][x][z];
-			y = holder.room_y;
-			x = holder.room_x;
-			z = holder.room_z;
-			y_offset = holder.y_offset;
-			x_offset = holder.x_offset;
-			z_offset = holder.z_offset;
-		}
-		
 		if (!delay){
-		  	this.InitNewRoom(y, x, z, y_offset, x_offset, z_offset);
+		  	this.InitNewRoom(y, x, z);
 		}
 		this.room_index.y = y;
 		this.room_index.x = x;
 		this.room_index.z = z;
+		
+		callback();
 	}catch(err){ console.log(err); }
 }
 Level.prototype.SetRoomAt = function(y, x, z, room){
@@ -316,21 +291,9 @@ Level.prototype.SetRoomAt = function(y, x, z, room){
 	if (this.rooms[y][x] === undefined)
 		this.rooms[y][x] = [];
 	this.rooms[y][x][z] = room;
-	
-	for (var i = 0; i < room.rowspan; i++){
-		if (this.rooms[y+i] === undefined)
-			this.rooms[y+i] = [];
-		for (var j = 0; j < room.colspan; j++){
-			if (this.rooms[y+i][x+j] === undefined)
-				this.rooms[y+i][x+j] = [];
-				
-			if (i === 0 && j === 0) continue;
-			this.rooms[y+i][x+j][z] = new RoomIllusion(y+i, x+j, z, i, j, 0);
-		}
-	}
 }
 
-Level.prototype.InitNewRoom = function(y, x, z, y_offset, x_offset, z_offset){
+Level.prototype.InitNewRoom = function(y, x, z){
   if (this.room !== undefined){
   	try{
   	  this.room.glitches[this.room.glitch_index].RevertRoom(this.room);
@@ -338,15 +301,9 @@ Level.prototype.InitNewRoom = function(y, x, z, y_offset, x_offset, z_offset){
   	this.player = this.room.player;
 	this.room.player = undefined;
   }
-  
-  y_offset = defaultTo(y_offset, 0);
-  x_offset = defaultTo(x_offset, 0);
-  z_offset = defaultTo(z_offset, 0);
 
   this.room = this.rooms[y][x][z];
   this.room.Init(this.player, this);
-  this.room.player.y += Room.STD_HEIGHT * y_offset;
-  this.room.player.x += Room.STD_WIDTH * x_offset;
   
   this.room.SetGlitchIndex(this.room.glitch_index);
 }

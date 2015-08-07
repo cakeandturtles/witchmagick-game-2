@@ -190,7 +190,6 @@ LevelArchitect.prototype.mouseUp = function(e){
 LevelArchitect.prototype.mouseMove = function(e){
 	var mouseX = e.clientX + document.body.scrollLeft;
 	var mouseY = e.clientY + document.body.scrollTop;
-	console.log(e.pageY - window.scrollY);
 	var zoom = this.level.room.zoom;
 	var gridX = ~~((mouseX + this.level.camera.x*zoom) / (Game.TILE_SIZE * zoom));
 	var gridY = ~~((mouseY + this.level.camera.y*zoom) / (Game.TILE_SIZE * zoom));

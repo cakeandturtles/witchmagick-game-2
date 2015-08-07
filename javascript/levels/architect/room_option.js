@@ -27,7 +27,7 @@ RoomOption.prototype.onContextMenu = function(level){
 		input.value = this.architect.level.room.width;
 		input.onchange = function(){
 		    if (this.value < Room.STD_WIDTH) this.value = Room.STD_WIDTH;
-		    this.value = (~~(this.value / Room.STD_WIDTH) * Room.STD_WIDTH);
+		    //this.value = (~~(this.value / Room.STD_WIDTH) * Room.STD_WIDTH);
 		    
 		    self.architect.level.room.width = this.value;
 		}
@@ -42,7 +42,7 @@ RoomOption.prototype.onContextMenu = function(level){
 		input.value = this.architect.level.room.height;
 		input.onchange = function(){
 		    if (this.value < Room.STD_HEIGHT) this.value = Room.STD_HEIGHT;
-		    this.value = (~~(this.value / Room.STD_HEIGHT) * Room.STD_HEIGHT);
+		    //this.value = (~~(this.value / Room.STD_HEIGHT) * Room.STD_HEIGHT);
 		    
 		    self.architect.level.room.height = this.value;
 		}

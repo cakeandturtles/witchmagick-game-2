@@ -7,8 +7,8 @@ function Room(player, y, x, z, width, height, zoom, init_floor){
 	this.height = defaultTo(height, 256);
 	this.zoom = defaultTo(zoom, 2);
 	
-	this.colspan = this.width / Room.STD_WIDTH;
-	this.rowspan = this.height / Room.STD_HEIGHT;
+	//this.colspan = this.width / Room.STD_WIDTH;
+	//this.rowspan = this.height / Room.STD_HEIGHT;
 	
 	this.glitches = [];
 	this.glitch_index = -1;
