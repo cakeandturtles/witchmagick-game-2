@@ -3,8 +3,6 @@ var gl;
 function initGL(canvas) {
 	try {
 		gl = canvas.getContext("experimental-webgl", {antialias:false});
-		console.log(canvas);
-		console.log(canvas.height);
 		gl.viewportWidth = canvas.width;
 		gl.viewportHeight = canvas.height;
 	} catch (e) {
@@ -74,7 +72,7 @@ function createShader(gl, type, str){
 
 var shaderProgram;
 
-function initShaders(vertShaderPath, fragShaderPath, callback) {	
+function initShaders(vertShaderPath, fragShaderPath, callback) {
 	var vertexShader;
 	var fragmentShader;
 	
@@ -176,7 +174,7 @@ function drawScene() {
 	game.render();
 }
 
-function webGLStart(canvas, vertShaderPath, fragShaderPath, callback) {	
+function webGLStart(canvas, vertShaderPath, fragShaderPath, callback) {
 	mvMatrix = mat4.create();
 	mvMatrixStack = [];
 	pMatrix = mat4.create();

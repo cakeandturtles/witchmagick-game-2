@@ -4,7 +4,7 @@ function Room(player, y, x, z, width, height, zoom, init_floor){
 	this.z = z;
 
 	this.width = defaultTo(width, 320);
-	this.height = defaultTo(height, 256);
+	this.height = defaultTo(height, 240);
 	this.zoom = defaultTo(zoom, 2);
 	
 	//this.colspan = this.width / Room.STD_WIDTH;

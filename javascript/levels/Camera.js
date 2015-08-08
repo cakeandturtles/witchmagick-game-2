@@ -17,8 +17,9 @@ Camera.prototype.Follow = function(object){
 	this.leader = object;
 }
 
-Camera.prototype.render = function(zoom, room){
-	this.zoom = zoom;
+Camera.prototype.update = function(room){
+  this.zoom = room.zoom;
+  var zoom = this.zoom;
 	var x_offset = 240.0 / zoom;
 	var y_offset = 176.0 / zoom;
 	
@@ -67,8 +68,7 @@ Camera.prototype.render = function(zoom, room){
 			//x += object.x - (x);
 			this.level.ChangeRoom(0, -1, 0, true);
 		}
-
-		if (object.y + object.height > y + height){
+		else if (object.y + object.height > y + height){
 			//y += object.y + object.height - (y + height);
 			this.level.ChangeRoom(1, 0, 0, true);
 		}else if (object.y < y){
@@ -89,8 +89,10 @@ Camera.prototype.render = function(zoom, room){
 	if (this.height > room.height){
 		this.y = (this.height - room.height) / 2;
 	}
-	
-	this.CalculateMatrices(this.x, this.y, this.width, this.height, zoom);
+}
+
+Camera.prototype.render = function(){
+	this.CalculateMatrices(this.x, this.y, this.width, this.height, this.zoom);
 }
 
 Camera.prototype.IsOrthogonal = function(){

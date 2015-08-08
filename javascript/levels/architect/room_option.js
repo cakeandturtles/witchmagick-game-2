@@ -6,15 +6,29 @@ function RoomOption(architect, menu_dom){
 }
 extend(Option, RoomOption);
 
-RoomOption.prototype.onContextMenu = function(level){
-    var self = this;
+RoomOption.prototype.onContextMenu = function(level, new_room_callback){
+  var new_room = false;
+  var room;
+  if (new_room_callback !== undefined) new_room = true;
+  var text = "room manager";
+  
+  if (new_room){
+    text = "new room?";
+    room = new Room(level.player, 0, 0, 0, 320, 240, 2, true);
+  }else{
+    room = this.architect.level.room;
+  }
+  
+  var self = this;
 	if (hasClass(this.dom, "selected")){
 		Dialog.Close();
 		addClass(this.dom, "selected");
 	}else{
 		level.pause();
 		
-		Dialog.Alert("", "room manager", function(){
+		Dialog.Alert("", text, function(){
+		  if (new_room)
+		    new_room_callback(room);
 			this.architect.tryResume();
 			removeClass(this.dom, "selected");
 		}.bind(this));
@@ -29,7 +43,7 @@ RoomOption.prototype.onContextMenu = function(level){
 		    if (this.value < Room.STD_WIDTH) this.value = Room.STD_WIDTH;
 		    //this.value = (~~(this.value / Room.STD_WIDTH) * Room.STD_WIDTH);
 		    
-		    self.architect.level.room.width = this.value;
+		    room.width = this.value;
 		}
 		div.appendChild(text);
 		div.appendChild(input);
@@ -44,7 +58,7 @@ RoomOption.prototype.onContextMenu = function(level){
 		    if (this.value < Room.STD_HEIGHT) this.value = Room.STD_HEIGHT;
 		    //this.value = (~~(this.value / Room.STD_HEIGHT) * Room.STD_HEIGHT);
 		    
-		    self.architect.level.room.height = this.value;
+		    room.height = this.value;
 		}
 		div.appendChild(text);
 		div.appendChild(input);
@@ -59,34 +73,34 @@ RoomOption.prototype.onContextMenu = function(level){
 		    if (this.value < 1) this.value = 1;
 		    if (this.value > 8) this.value = 8;
 		    
-		    self.architect.level.room.zoom = this.value;
+		    room.zoom = this.value;
 		}
 		div.appendChild(text);
 		div.appendChild(input);
 		div.appendChild(document.createElement("br"));
 		div.appendChild(document.createElement("br"));
 		
-		
-		//RESET ROOM TO ORIGINAL POSITIONS OF GLITCHES/ENTITIES
-		input = document.createElement("input");
-		input.type = "submit";
-		input.value = "reset room";
-		div.appendChild(input);
-		div.appendChild(document.createElement("br"));
-		
-		//MOVE OFFSCREEN ITEMS BACK ON SCREEN
-		input = document.createElement("input");
-		input.type = "submit";
-		input.value = "move offscreen items";
-		div.appendChild(input);
-		div.appendChild(document.createElement("br"));
-		
-		//DELETE ANY OFFSCREEN TILES
-		input = document.createElement("input");
-		input.type = "submit";
-		input.value = "delete offscreen tiles";
-		div.appendChild(input);
-		
+		if (!new_room){
+  		//RESET ROOM TO ORIGINAL POSITIONS OF GLITCHES/ENTITIES
+  		input = document.createElement("input");
+  		input.type = "submit";
+  		input.value = "reset room";
+  		div.appendChild(input);
+  		div.appendChild(document.createElement("br"));
+  		
+  		//MOVE OFFSCREEN ITEMS BACK ON SCREEN
+  		input = document.createElement("input");
+  		input.type = "submit";
+  		input.value = "move offscreen items";
+  		div.appendChild(input);
+  		div.appendChild(document.createElement("br"));
+  		
+  		//DELETE ANY OFFSCREEN TILES
+  		input = document.createElement("input");
+  		input.type = "submit";
+  		input.value = "delete offscreen tiles";
+  		div.appendChild(input);
+		}
 		
 		Dialog.AddElement(div);
 	}

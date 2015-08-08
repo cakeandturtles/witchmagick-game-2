@@ -10,11 +10,12 @@ function Level(canvas, text_canvas, input, init_empty_room){
 	this.room_index = {y: 0, x: 0, z: 0};
 	this.delayed_room_set = false;
 	this.room = undefined;
-	this.rooms = [[[]]];
+	this.rooms = {};
 	
 	this.architect = new LevelArchitect(canvas, input, this);
 	
 	this.paused = false;
+	this.creating_room = false;
 	
 	this.soundscape = Soundscape.create_chordwork();
 	
@@ -46,17 +47,25 @@ Level.prototype.Export = function(){
 	//other things to save for the level!!!
 	var etc = {room_indices: []};
 	
-	for (var i = 0; i < this.rooms.length; i++){
+	var i_keys = getObjectKeys(this.rooms);
+	var j_keys;
+	var k_keys;
+	for (var i = 0; i < i_keys.length; i++){
 		var room_row = [];
-		for (var j = 0; j < this.rooms[i].length; j++){
+		ikey = i_keys[i];
+		j_keys = getObjectKeys(this.rooms[ikey]);
+		for (var j = 0; j < j_keys.length; j++){
 			var room_z_row = [];
-			for (var k = 0; k < this.rooms[i][j].length; k++){
-				var room = this.rooms[i][j][k];
+			jkey = j_keys[j];
+			k_keys = getObjectKeys(this.rooms[ikey][jkey]);
+			for (var k = 0; k < k_keys.length; k++){
+			  kkey = k_keys[k];
+				var room = this.rooms[ikey][jkey][kkey];
 				if (room.constructor.name === "RoomIllusion") continue;
 				
-				var room_json = JSON.stringify(room.Export());
-				room_z_row.push(room_json);
-				etc.room_indices.push({y:i, x:j, z:k});
+				//var room_json = JSON.stringify(room.Export());
+				room_z_row.push(room.Export());
+				etc.room_indices.push({y:ikey, x:jkey, z:kkey});
 			}
 			room_row.push(room_z_row);
 		}
@@ -90,10 +99,11 @@ Level.prototype.update = function(delta, input){
   }
   
 	this.detectInput(delta, input);
-	if (!this.paused){
+	if (!this.paused && !this.creating_room){
 		this.room.update(delta);
 		this.player = this.room.player;
 		this.camera.Follow(this.player);
+		this.camera.update(this.room);
 		
 		if (this.spoken_text !== null && this.spoken_text !== undefined && this.spoken_text.length > 0){
 			this.speech_timer+=delta;
@@ -245,45 +255,62 @@ Level.prototype.ChangeRoomProper = function(y_inc, x_inc, z_inc, delay){
 		  		this.player.y = space;
 		  	else if (y_inc < 0)
 		  		this.player.y = this.room.height-this.player.bb-space;
-	    }
+	    }.bind(this)
   	);
 }
 Level.prototype.ChangeRoom = Level.prototype.ChangeRoomProper;
 
-Level.prototype.CreateNewRoom = function(y, x, z){
-	this.architect.room_option.onContextMenu(this);
-	this.pause();
+Level.prototype.CreateNewRoom = function(y, x, z, delay, callback){
+	this.architect.room_option.onContextMenu(this, function(room){
+	  console.log("oh no you didn't");
+	  this.rooms[y][x][z] = room;
+	  room.y = y;
+	  room.x = x;
+	  room.z = z;
+	  this.SetRoom(y, x, z);
+	  this.resume();
+	  this.creating_room = false;
+	  
+	  this.delayed_room_set = delay;
+	  if (callback !== undefined)
+	    callback();
+	}.bind(this));
+	this.creating_room = true;
+	console.log("OPEN!");
 }
 
 Level.prototype.SetRoom = function(y, x, z, delay, callback){
 	if (delay === undefined)
     	delay = false;
     
-    if (this.rooms[y] === undefined)
-    	this.rooms[y] = [];
-    if (this.rooms[y][x] === undefined)
-    	this.rooms[y][x] = [];
-    if (this.rooms[y][x][z] === undefined){
-	    alert("create a new room at position: " + y + ", " + x + ", " + z + "!");
-	    this.CreateNewRoom(y, x, z);
-	    return;
-    }
-    
-    	
-	try{
-		this.delayed_room_set = delay;
-		
-		var room = this.rooms[y][x][z];
-		
-		if (!delay){
-		  	this.InitNewRoom(y, x, z);
-		}
-		this.room_index.y = y;
-		this.room_index.x = x;
-		this.room_index.z = z;
-		
-		callback();
-	}catch(err){ console.log(err); }
+  if (this.rooms[y] === undefined){
+  	this.rooms[y] = [];
+  }
+  console.log(this.rooms[y][x]);
+  if (this.rooms[y][x] === undefined){
+  	this.rooms[y][x] = [];
+  }
+  console.log(this.rooms[y][x][z]);
+  console.log(this.creating_room);
+  if (this.rooms[y][x][z] === undefined && !this.creating_room){
+    this.delayed_room_set = false;
+    this.CreateNewRoom(y, x, z, delay, callback);
+    return;
+  }
+
+	this.delayed_room_set = delay;
+	
+	var room = this.rooms[y][x][z];
+	
+	if (!delay){
+	  	this.InitNewRoom(y, x, z);
+	}
+	this.room_index.y = y;
+	this.room_index.x = x;
+	this.room_index.z = z;
+	
+	if (callback !== undefined)
+	  callback();
 }
 Level.prototype.SetRoomAt = function(y, x, z, room){
 	if (this.rooms[y] === undefined)

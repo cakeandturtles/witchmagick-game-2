@@ -55,13 +55,17 @@ LevelLoader.Export = function(level_name, level, should_alert){
 				for (var i = 0; i < json.rooms.length; i++){
 					for (var j = 0; j < json.rooms[i].length; j++){
 						for (var k = 0; k < json.rooms[i][j].length; k++){
-							FileManager.saveFile(path + i + "_" + j + "_" + k + ".json", json.rooms[i][j][k]);
+						  var room = json.rooms[i][j][k];
+						  var ikey = room.y, jkey = room.x, kkey = room.z;
+							FileManager.saveFile(path + ikey + "_" + jkey + "_" + kkey + ".json", JSON.stringify(room));
 						}
 					}
 				}
 				FileManager.saveFile(path + "etc.json", json.etc);
-				if (should_alert)
-					alert("level saved to file!");
+				if (should_alert){
+					//alert("level saved to file!");
+					Dialog.Alert("level saved to file!");
+				}
 				return;
 			}else{
 				console.log(err);
@@ -69,7 +73,9 @@ LevelLoader.Export = function(level_name, level, should_alert){
 		}catch(e){
 			console.log(e);
 		}
-		if (should_alert)
-			alert("error saving level!");
+		if (should_alert){
+		  Dialog.Alert("error saving level!<br/>(check console for details)");
+			//alert("error saving level!");
+		}
 	});
 }

@@ -7,7 +7,7 @@ level/room control management design:
 		-this may result in wonky transitions (i.e. falling from a horizontal room into a vertical room) (oh well)
 	  
   	
-  	
+0. saving level doesn't report success???
 1. entity bug when moving entity offscreen and mouse leaves canvas
 2. make scriptable entities???
 3. Edit entity context menu option
