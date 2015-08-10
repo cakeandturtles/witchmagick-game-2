@@ -1,8 +1,9 @@
-function Game(canvas, text_canvas){
+function Game(canvas, text_canvas, bg_canvas){
 	this.canvas = canvas;
 	this.text_canvas = text_canvas;
+	this.bg_canvas = bg_canvas;
 	this.input = new Input();
-	LevelLoader.Import("test_level", canvas, text_canvas, this.input, function(level){
+	LevelLoader.Import("test_level", canvas, text_canvas, bg_canvas, this.input, function(level){
 		this.level = level;
 		this.has_loaded = true;
 	}.bind(this));
@@ -11,7 +12,7 @@ function Game(canvas, text_canvas){
 }
 
 Game.prototype.NewLevel = function(){
-	this.level = new Level(this.canvas, this.text_canvas, this.input, true);
+	this.level = new Level(this.canvas, this.text_canvas, this.bg_canvas, this.input, true);
 }
 
 Game.GAME_WIDTH = 640;

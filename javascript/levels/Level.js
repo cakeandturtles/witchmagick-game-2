@@ -1,5 +1,6 @@
-function Level(canvas, text_canvas, input, init_empty_room){
+function Level(canvas, text_canvas, bg_canvas, input, init_empty_room){
 	this.text_ctx = text_canvas.getContext("2d");
+	this.bg_ctx = bg_canvas.getContext("2d");
 	this.level_name = "insert_level_name";
 	
 	this.player = new Player(0, 152);
@@ -77,8 +78,8 @@ Level.prototype.Export = function(){
 	return {rooms: room_jsons, etc: JSON.stringify(etc)};
 }
 
-Level.Import = function(obj, canvas, input){
-	var level = new Level(canvas, input);
+Level.Import = function(obj, canvas, text_canvas, bg_canvas, input){
+	var level = new Level(canvas, text_canvas, bg_canvas, input);
 	level.level_name = obj.level_name;
 	for (var i = 0; i < obj.rooms.length; i++){
 		var room = obj.rooms[i];
@@ -116,7 +117,7 @@ Level.prototype.update = function(delta, input){
 }
 
 Level.prototype.render = function(){
-	this.room.render(this.camera);
+	this.room.render(this.camera, this.bg_ctx);
 	this.render_speech();
 	this.architect.render();
 }
@@ -240,43 +241,59 @@ Level.prototype.ChangeRoomProper = function(y_inc, x_inc, z_inc, delay){
 	//and only one should be nonzero per call
 	//else use SetRoom directly (doors?)
 	
+	var old_room = this.room;
+	
   	this.SetRoom(
 	    this.room_index.y+y_inc,
 	    this.room_index.x+x_inc,
 	    this.room_index.z+z_inc,
 	    delay,
-	    function(){
-	    	var space = 8;
+	    function(old_room, room){
+	    	var space = 4;
 		  	if (x_inc > 0)
 			  	this.player.x = space;
 		  	else if (x_inc < 0)
-		  		this.player.x = this.room.width-this.player.rb-space;
+		  		this.player.x = room.width-this.player.rb-space;
+			else{
+				this.player.x = (this.player.x / old_room.width) * room.width;
+				if (this.player.x < 0) 
+					this.player.x = space;
+				if (this.player.x + this.player.width > room.width)
+					this.player.x = room.width - this.player.width - space;
+			}
+			
 		  	if (y_inc > 0)
 		  		this.player.y = space;
 		  	else if (y_inc < 0)
-		  		this.player.y = this.room.height-this.player.bb-space;
-	    }.bind(this)
+		  		this.player.y = room.height-this.player.height-space;
+			else{
+				this.player.y = (this.player.y / old_room.height) * room.height;
+				if (this.player.y < 0)
+					this.player.y = space;
+				if (this.player.y + this.player.height > room.height)
+					this.player.y = room.height - this.player.height - space;
+			}
+	    }.bind(this, old_room)
   	);
 }
 Level.prototype.ChangeRoom = Level.prototype.ChangeRoomProper;
 
 Level.prototype.CreateNewRoom = function(y, x, z, delay, callback){
 	this.architect.room_option.onContextMenu(this, function(room){
-	  console.log("oh no you didn't");
 	  this.rooms[y][x][z] = room;
 	  room.y = y;
 	  room.x = x;
 	  room.z = z;
+	  room.InitFloor();
 	  this.SetRoom(y, x, z);
 	  this.resume();
 	  this.creating_room = false;
 	  
 	  this.delayed_room_set = delay;
 	  if (callback !== undefined)
-	    callback();
+	    callback(room);
 	}.bind(this));
 	this.creating_room = true;
-	console.log("OPEN!");
 }
 
 Level.prototype.SetRoom = function(y, x, z, delay, callback){
@@ -286,12 +303,9 @@ Level.prototype.SetRoom = function(y, x, z, delay, callback){
   if (this.rooms[y] === undefined){
   	this.rooms[y] = [];
   }
-  console.log(this.rooms[y][x]);
   if (this.rooms[y][x] === undefined){
   	this.rooms[y][x] = [];
   }
-  console.log(this.rooms[y][x][z]);
-  console.log(this.creating_room);
   if (this.rooms[y][x][z] === undefined && !this.creating_room){
     this.delayed_room_set = false;
     this.CreateNewRoom(y, x, z, delay, callback);
@@ -310,7 +324,7 @@ Level.prototype.SetRoom = function(y, x, z, delay, callback){
 	this.room_index.z = z;
 	
 	if (callback !== undefined)
-	  callback();
+	  callback(room);
 }
 Level.prototype.SetRoomAt = function(y, x, z, room){
 	if (this.rooms[y] === undefined)

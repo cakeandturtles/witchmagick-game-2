@@ -14,7 +14,7 @@ RoomOption.prototype.onContextMenu = function(level, new_room_callback){
   
   if (new_room){
     text = "new room?";
-    room = new Room(level.player, 0, 0, 0, 320, 240, 2, true);
+    room = new Room(level.player, 0, 0, 0, 320, 240, 2);
   }else{
     room = this.architect.level.room;
   }
@@ -38,12 +38,12 @@ RoomOption.prototype.onContextMenu = function(level, new_room_callback){
 		var text = document.createTextNode("width: ");
 		var input = document.createElement("input");
 		input.type = "number";
-		input.value = this.architect.level.room.width;
+		input.value = room.width;
 		input.onchange = function(){
 		    if (this.value < Room.STD_WIDTH) this.value = Room.STD_WIDTH;
-		    //this.value = (~~(this.value / Room.STD_WIDTH) * Room.STD_WIDTH);
+		    this.value = (~~(this.value / Game.TILE_SIZE) * Game.TILE_SIZE);
 		    
-		    room.width = this.value;
+		    room.width = Number(this.value);
 		}
 		div.appendChild(text);
 		div.appendChild(input);
@@ -53,12 +53,12 @@ RoomOption.prototype.onContextMenu = function(level, new_room_callback){
 		text = document.createTextNode("height: ");
 		input = document.createElement("input");
 		input.type = "number";
-		input.value = this.architect.level.room.height;
+		input.value = room.height;
 		input.onchange = function(){
 		    if (this.value < Room.STD_HEIGHT) this.value = Room.STD_HEIGHT;
-		    //this.value = (~~(this.value / Room.STD_HEIGHT) * Room.STD_HEIGHT);
+		    this.value = (~~(this.value / Game.TILE_SIZE) * Game.TILE_SIZE);
 		    
-		    room.height = this.value;
+		    room.height = Number(this.value);
 		}
 		div.appendChild(text);
 		div.appendChild(input);
@@ -68,7 +68,7 @@ RoomOption.prototype.onContextMenu = function(level, new_room_callback){
 		text = document.createTextNode("zoom: ");
 		input = document.createElement("input");
 		input.type = "number";
-		input.value = this.architect.level.room.zoom;
+		input.value = room.zoom;
 		input.oninput = function(){
 		    if (this.value < 1) this.value = 1;
 		    if (this.value > 8) this.value = 8;

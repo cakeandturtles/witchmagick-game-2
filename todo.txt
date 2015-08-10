@@ -1,18 +1,14 @@
 level/room control management design:
-	1. levels are things that have grids of rooms and have their own glitch codexes
-		1. rooms are things that have dimensions, tiles, and entities
-	2. levels can be composed of many rooms or only a single room
-	3. rooms can be any size that is divisible by Game.TILE_SIZE
-	4. regardlesss of room size, rooms fit into a single grid location in the level manager,
-		-this may result in wonky transitions (i.e. falling from a horizontal room into a vertical room) (oh well)
+	1. levels are things that have their own glitch codexes
 	  
-  	
-0. saving level doesn't report success???
+0. grabby hand + tile placement not working at zoom levels other than 2??
+	-also grabby hand should freeze camera position until dropped?? (don't move while moving player)
 1. entity bug when moving entity offscreen and mouse leaves canvas
 2. make scriptable entities???
 3. Edit entity context menu option
 1. Create entity context menu option
 	-select which entity to create??
+2. make player sprite look better against light gradients (get rid of black outline
 	
 5. level minimap: ability to drag rooms and rearrange them by grid????? (????)
 

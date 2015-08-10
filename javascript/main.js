@@ -181,7 +181,7 @@ function webGLStart(canvas, vertShaderPath, fragShaderPath, callback) {
 	
 	initGL(canvas);
 	initShaders(vertShaderPath, fragShaderPath, function(){
-		gl.clearColor(0.0, 0.0, 0.0, 1.0);
+		gl.clearColor(0.0, 0.0, 0.0, 0.0);
 		gl.disable(gl.DEPTH_TEST);
 		
 		gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
@@ -239,6 +239,8 @@ var game;
 
 function main(){
 	var game_canvas = document.getElementById("enchanted-canvas");
+	var text_canvas = document.getElementById("text-canvas");
+	var bg_canvas = document.getElementById("background-canvas");
 	game_canvas.oncontextmenu = function(e){
 		e.preventDefault();
 		return false;
@@ -247,7 +249,7 @@ function main(){
 	initGradient();
 	initTimbre();
 	webGLStart(game_canvas, "shaders/vertex.glsl", "shaders/fragment.glsl", function(){
-		game = new Game(game_canvas, document.getElementById("text-canvas"));
+		game = new Game(game_canvas, text_canvas, bg_canvas);
 		lastTime = new Date().getTime();
 		tick();
 	});

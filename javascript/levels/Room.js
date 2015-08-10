@@ -1,11 +1,11 @@
-function Room(player, y, x, z, width, height, zoom, init_floor){
+function Room(player, y, x, z, width, height, zoom){
 	this.y = y;
 	this.x = x;
 	this.z = z;
 
-	this.width = defaultTo(width, 320);
-	this.height = defaultTo(height, 240);
-	this.zoom = defaultTo(zoom, 2);
+	this.width = Number(defaultTo(width, 320));
+	this.height = Number(defaultTo(height, 240));
+	this.zoom = Number(defaultTo(zoom, 2));
 	
 	//this.colspan = this.width / Room.STD_WIDTH;
 	//this.rowspan = this.height / Room.STD_HEIGHT;
@@ -17,15 +17,6 @@ function Room(player, y, x, z, width, height, zoom, init_floor){
 	this.player = player;
 	this.entities = [];
 	this.tile_hydra = new TileHydra(this);
-	
-	if (init_floor === undefined) init_floor = false;
-	if (init_floor){
-		var y_index = (this.height - Game.TILE_SIZE) / Game.TILE_SIZE;
-		for (var i = 0; i < this.width / Game.TILE_SIZE; i++){
-			this.AddTile(y_index, i, 0, new Tile(i*Game.TILE_SIZE, y_index*Game.TILE_SIZE, 0), true);
-		}
-		this.AggregateTiles();
-	}
 }
 Room.STD_WIDTH = 80;
 Room.STD_HEIGHT = 64;
@@ -112,6 +103,13 @@ Room.Import = function(obj, player){
 Room.prototype.Init = function(player, level){
 	this.player = player;
 	this.level = level;
+}
+Room.prototype.InitFloor = function(){	
+	var y_index = (this.height - Game.TILE_SIZE) / Game.TILE_SIZE;
+	for (var i = 0; i < this.width / Game.TILE_SIZE; i++){
+		this.AddTile(y_index, i, 0, new Tile(i*Game.TILE_SIZE, y_index*Game.TILE_SIZE, 0), true);
+	}
+	this.AggregateTiles();
 }
 
 Room.prototype.Speak = function(text, timer){
@@ -224,15 +222,38 @@ Room.prototype.AggregateTiles = function(){
 	this.tile_hydra.AggregateTiles();
 }
 
+Room.prototype.CheckChangeRoom = function(){
+	if (this.player.x + this.player.rb > this.width){
+		this.level.ChangeRoom(0, 1, 0, true);
+	}
+	else if (this.player.x < 0){
+		this.level.ChangeRoom(0, -1, 0, true);
+	}
+	else if (this.player.y + this.player.bb > this.height)
+		this.level.ChangeRoom(1, 0, 0, true);
+	else if (this.player.y < 0)
+		this.level.ChangeRoom(-1, 0, 0, true);
+}
+
 Room.prototype.update = function(delta){
 	this.player.update(delta, this);
+	this.CheckChangeRoom();
 	for (var i = 0; i < this.entities.length; i++){
 		this.entities[i].update(delta, this);
 	}
 }
 
-Room.prototype.render = function(camera){
+Room.prototype.render = function(camera, bg_ctx){
 	camera.render(this.zoom, this);
+	bg_ctx.clearRect(0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT);
+	bg_ctx.fillStyle = "#000000";
+	
+	var x = 0, y = 0;
+	if (camera.x < 0)
+		x = Math.abs(camera.x * this.zoom);
+	if (camera.y > 0)
+		y = Math.abs(camera.y * this.zoom);
+	bg_ctx.fillRect(x, y, this.width*this.zoom, this.height*this.zoom);
 	
 	this.tile_hydra.render(camera);
 	

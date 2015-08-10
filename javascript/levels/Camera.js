@@ -25,11 +25,11 @@ Camera.prototype.update = function(room){
 	
 	var x = this.x;
 	var y = this.y;
-	
 	var width = gl.viewportWidth;
 	var height = gl.viewportHeight;
-	if (width/2 > room.width) width = room.width*2;
-	if (height/2 > room.height) height = room.height*2;
+	
+	//if (width/2 > room.width) width = room.width*2;
+	//if (height/2 > room.height) height = room.height*2;
 	
 	width /= zoom;
 	height /= zoom;
@@ -52,28 +52,26 @@ Camera.prototype.update = function(room){
 		//correct the x and y positions so the buffer doesn't look past
 		//the boundaries of the room
 		if (x < 0) x = 0;
-		if (x + width > room.width)
+		if (width > room.width)
+			x = (room.width - width) / 2;
+		else if (x + width > room.width)
 			x = room.width - width;
 		if (y < 0) y = 0;
-		if (y + height > room.height)
+		if (height > room.height)
+			y = (room.height - height) / 2;
+		else if (y + height > room.height)
 			y = room.height - height;
 
 		//move the camera past room boundaries sticking to the tracked object
 		//(allows for hidden paths)
 		if (object.x + object.width > x + width){
 			//x += object.x + object.width - (x + width);
-			                    //y, x, z
-			this.level.ChangeRoom(0, 1, 0, true);
 		}else if (object.x < x){
 			//x += object.x - (x);
-			this.level.ChangeRoom(0, -1, 0, true);
-		}
-		else if (object.y + object.height > y + height){
+		}else if (object.y + object.height > y + height){
 			//y += object.y + object.height - (y + height);
-			this.level.ChangeRoom(1, 0, 0, true);
 		}else if (object.y < y){
 			//y += object.y - (y);
-			this.level.ChangeRoom(-1, 0, 0, true);
 		}
 
 		this.x = x;
@@ -81,13 +79,6 @@ Camera.prototype.update = function(room){
 		this.eye_z = object.z + 100;
 
 		this.y *= -1;
-	}
-	
-	if (this.width > room.width){
-		this.x = (this.width - room.width) / 2;
-	}
-	if (this.height > room.height){
-		this.y = (this.height - room.height) / 2;
 	}
 }
 
