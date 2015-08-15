@@ -4,13 +4,12 @@ level/room control management design:
 0. grabby hand + tile placement not working at zoom levels other than 2??
 	-also grabby hand should freeze camera position until dropped?? (don't move while moving player)
 1. entity bug when moving entity offscreen and mouse leaves canvas
+2. make glitch crysal emitters
 2. make scriptable entities???
 3. Edit entity context menu option
 1. Create entity context menu option
 	-select which entity to create??
 2. make player sprite look better against light gradients (get rid of black outline
-	
-5. level minimap: ability to drag rooms and rearrange them by grid????? (????)
 
 
 -----------------------------------------------------------------eventual------------------------

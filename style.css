@@ -31,3 +31,39 @@ body{
 .selected{
 	opacity: 1.0;
 }
+
+#console{
+	position: absolute;
+	top: 500px;
+	bottom: 0px;
+	left: 0px;
+	right: 0px;
+	color: #000000;
+	background-color: #ffffff;
+	border: 1px solid black;
+}
+#console_messages{
+}
+.console_message{
+	border-bottom: 1px solid #cccccc;
+}
+#console_input_container{
+	
+}
+#console_input_prompt{
+	color: #000000;
+	font-weight:bold;
+	position: relative;
+	top: 3px;
+	float: left;
+}
+#console_input{
+	float: left;
+	position: relative;
+	left: 0px;
+	right: 3px;
+	top: 3px;
+	border: 1px solid #cccccc;
+	min-width: 480px;
+}
+#console_input:focus { outline: 0px solid transparent; }

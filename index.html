@@ -22,6 +22,40 @@
     <canvas id="enchanted-canvas" style="border:none;position:absolute;z-index:0;" width="640" height="480"></canvas>
 	<canvas id="background-canvas" style="border:none;position:absolute;z-index:-1;pointer-events:none;" width="640" height="480"></canvas>
 	
+	<div id="console">
+		<div id="console_messages"></div>
+		<div id="console_input_container">
+			<span id="console_input_prompt">&nbsp;&nbsp;&gt;&nbsp;&nbsp;</span>
+			<textarea id="console_input">and i will</textarea>
+		</div>
+	</div>
+	
+	<script>
+		var messages = document.getElementById("console_messages");
+		console.log = function(x, error){
+			if (error === undefined) error = false;
+			var message = document.createElement("div");
+			message.className = "console_message";
+			message.innerHTML = x;
+			
+			messages.appendChild(message);
+		}
+	
+		var input = document.getElementById("console_input");
+		input.innerHTML = "";
+		input.onkeydown = function(e){
+			if (e.keyCode === 13 && !e.shiftKey){ //enter
+				var text = this.value;
+				try{
+					console.log(eval.call(window, text));
+				}catch(e){
+					console.log(e, true);
+				}
+				this.value = "";
+				e.preventDefault();
+			}
+		}
+	</script>
 	<script>
 		window.onload = function(){
 			glitchdungeon_loadScripts(main);
