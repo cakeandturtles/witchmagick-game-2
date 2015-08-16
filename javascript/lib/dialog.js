@@ -2,16 +2,16 @@ function Dialog(){
 }
 
 Dialog.removeEventHandler = function(elem,eventType,handler) {
- if (elem.removeEventListener) 
+ if (elem.removeEventListener)
     elem.removeEventListener (eventType,handler,false);
  if (elem.detachEvent)
-    elem.detachEvent ('on'+eventType,handler); 
+    elem.detachEvent ('on'+eventType,handler);
 }
 Dialog.addEventHandler = function(elem,eventType,handler) {
  if (elem.addEventListener)
      elem.addEventListener (eventType,handler,false);
  else if (elem.attachEvent)
-     elem.attachEvent ('on'+eventType,handler); 
+     elem.attachEvent ('on'+eventType,handler);
 }
 
 Dialog.Close = function(){

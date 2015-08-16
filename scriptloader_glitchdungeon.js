@@ -16,6 +16,7 @@ function glitchdungeon_loadScripts(callback){
 		{src: "javascript/lib/contextmenu.js"},
 		{href: "javascript/lib/contextmenu.css"},
 		{src: "javascript/lib/dialog.js"},
+		{src: "javascript/lib/dialog_new.js"},
 		{href: "javascript/lib/dialog.css"},
 		
 		{href: "style.css"},
@@ -62,6 +63,7 @@ function glitchdungeon_loadScripts(callback){
 			{src: "javascript/levels/architect/glitch_option.js"},
 			{src: "javascript/levels/architect/tile_option.js"},
 			{src: "javascript/levels/architect/entity_option.js"},
+			{src: "javascript/levels/architect/console_option.js"},
 			
 		
 		//Soundscape

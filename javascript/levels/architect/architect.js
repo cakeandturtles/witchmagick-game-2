@@ -56,6 +56,10 @@ LevelArchitect.prototype.InitMenuOptions = function(){
 	this.glitch_option = new GlitchOption(this, this.menu.dom);
 	this.menu.options.push(this.glitch_option);
 	
+	//CONSOLE OPTION
+	this.console_option = new ConsoleOption(this, this.menu.dom);
+	this.menu.options.push(this.console_option);
+	
 	//SPACE HOLDER
 	this.menu.options.push(new SpaceOption(this, this.menu.dom));
 	
@@ -94,7 +98,7 @@ LevelArchitect.prototype.InitMenuOptions = function(){
 	}
 }
 
-LevelArchitect.prototype.canvasContextMenu = function(e){	
+LevelArchitect.prototype.canvasContextMenu = function(e){
 	this.context_menu = {};
 	this.context_menu.menu = CtxMenu.Init(this.x, this.y, document.body);
 	
@@ -133,7 +137,7 @@ LevelArchitect.prototype.canvasContextMenu = function(e){
 	);
 	
 	var entity = this.level.room.GetEntity(this.x + 2, this.y + 2, 0);
-	this.context_menu.menu.AddItem('clone entity (Y + click)', 
+	this.context_menu.menu.AddItem('clone entity (Y + click)',
 		function(entity){
 			var newen = eval(entity.type + ".Import(entity.Export())");
 			newen.x = entity.x + entity.rb / 2;
@@ -144,10 +148,10 @@ LevelArchitect.prototype.canvasContextMenu = function(e){
 		entity === this.level.player || entity === null || entity === undefined
 	);
 	
-	this.context_menu.menu.AddItem('delete entity (U + click)', 
+	this.context_menu.menu.AddItem('delete entity (U + click)',
 		function(entity){
 			this.level.room.RemoveEntity(entity);
-		}.bind(this, entity), 
+		}.bind(this, entity),
 		entity === this.level.player || entity === null || entity === undefined
 	);
 }
@@ -212,6 +216,6 @@ LevelArchitect.prototype.mouseOut = function(e){
 	this.is_mouse_down = false;
 }
 
-LevelArchitect.prototype.render = function(){	
+LevelArchitect.prototype.render = function(){
 	this.selected_option.render();
 }

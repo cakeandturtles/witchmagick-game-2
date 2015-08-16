@@ -33,11 +33,6 @@ body{
 }
 
 #console{
-	position: absolute;
-	top: 500px;
-	bottom: 0px;
-	left: 0px;
-	right: 0px;
 	color: #000000;
 	background-color: #ffffff;
 	border: 1px solid black;
@@ -52,29 +47,13 @@ body{
 	
 }
 #console_input_prompt{
-	color: #000000;
+	color: #00aaff;
 	font-weight:bold;
 	position: relative;
-	top: 3px;
+	top: 1px;
 	float: left;
 }
 #console_input{
-	/*remove default stylings of textarea*/
-	border: none;
-    overflow: auto;
-    outline: none;
-    -webkit-box-shadow: none;
-    -moz-box-shadow: none;
-    box-shadow: none;
-	resize: none;
-	
-	float: left;
-	position: relative;
-	left: 0px;
-	right: 3px;
-	top: 3px;
-	border: 1px solid #cccccc;
-	min-width: 480px;
-	height: auto;
+  float: left;
 }
 #console_input:focus { outline: 0px solid transparent; }
